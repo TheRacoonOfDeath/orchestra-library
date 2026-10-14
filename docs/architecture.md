@@ -109,35 +109,29 @@ No direct dependency.
 
 ## Security
 
-### Access Control
-
-Only authenticated users may download sheet music.
-
-### File Storage
-
-Sheet music files must not be publicly accessible through direct URLs.
-
-Files are delivered through a protected download endpoint.
-
-### Upload Permissions
-
-Only conductors and administrators may upload or modify sheet music.
+See [security.md](security.md).
 
 ---
 
 ## Integration Points
 
-### Piece Lookup
+See [api.md](api.md): the `LibraryService` for looking up pieces, parts and files and building
+download links (including one zip per project), and filters for preventing deletions.
 
-Provides services for:
+---
 
-- Fetching pieces
-- Fetching parts
-- Searching the library
+## Code Structure
 
-### File Download
-
-Provides secure download functionality for other plugins.
+| Namespace | Responsibility |
+|-----------|----------------|
+| `Orchestra\Library` | `Plugin` (wiring), `Capabilities`, `LibraryService` (public API) |
+| `…\Piece` | Post type, repository, deletion guard |
+| `…\Part` | Part repository, name rules, deletion with blockers |
+| `…\File` | File metadata, private storage, upload validation |
+| `…\Download` | Download endpoint, zip bundles, `Content-Disposition` |
+| `…\Admin` | Piece edit screen, list columns, notices |
+| `…\Frontend` | `[orchestra_library]` shortcode |
+| `…\Database` | Table schema and migrations, row helpers |
 
 ---
 
