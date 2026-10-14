@@ -49,7 +49,8 @@ Part names are not restricted to predefined values.
 
 ### Sheet Music Management
 
-Sheet music files can be uploaded for individual parts.
+Each part has exactly one sheet music file; uploading a new file replaces it.
+Files concerning the whole piece (full score, notes) are attached to the piece itself.
 
 Example:
 
@@ -63,10 +64,13 @@ Pirates of the Caribbean
 
 Piece
 ├── Part
-│   └── Sheet Music File
+│   └── Sheet Music File (exactly one)
 ├── Part
-│   └── Sheet Music File
-└── ...
+│   └── Sheet Music File (exactly one)
+├── ...
+└── Piece Files (score, notes, …; any number)
+
+The full domain model is documented in orchestra-core (`docs/domain-model.md`).
 
 ---
 
