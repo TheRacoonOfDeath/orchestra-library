@@ -19,7 +19,9 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 3. **On nginx**, protect the file storage, see [docs/security.md](docs/security.md).
 4. Create a page with `[orchestra_library]` for members.
 
-Updates are installed from the GitHub releases of this repository.
+Updates are installed from the GitHub releases of this repository. The plugin reads
+`update.json` from the latest release, so the GitHub API and its rate limit are not involved and
+no token is needed.
 
 ## Documentation
 
@@ -47,5 +49,5 @@ They need PHP with `pdo_sqlite`, Python 3, curl, unzip and network access.
 1. Run `composer check` and `composer e2e`.
 2. Bump `Version:` in `orchestra-library.php`.
 3. Run `./build-plugin.sh`; it creates `build/orchestra-library-{VERSION}.zip` with production
-   dependencies only.
-4. Create a GitHub release for the version and attach the zip.
+   dependencies only, and `build/update.json`.
+4. Create a GitHub release `v{VERSION}` and attach the zip **and `update.json`**.
