@@ -9,15 +9,16 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 - Parts per piece, each with exactly one sheet music file
 - Additional files for the whole piece, e.g. the full score
 - Private file storage and permission-checked downloads, including zip downloads of several parts
-- A library page for members: add the shortcode `[orchestra_library]` to any page
+- The library page `[orchestra_library]`: members search and download; conductors create and edit
+  pieces, parts and files there as well (or in **Library** in wp-admin)
 - An API for the other Orchestra plugins
 
 ## Installation
 
-1. Install and activate orchestra-core.
+1. Install and activate orchestra-core 0.4 or later.
 2. Upload `orchestra-library-{VERSION}.zip` under **Plugins → Add New → Upload Plugin** and activate it.
 3. **On nginx**, protect the file storage, see [docs/security.md](docs/security.md).
-4. Create a page with `[orchestra_library]` for members.
+4. Create the Orchestra pages (**Create Orchestra pages** in wp-admin), or put `[orchestra_library]` on a page.
 
 Updates are installed from the GitHub releases of this repository. The plugin reads
 `update.json` from the latest release, so the GitHub API and its rate limit are not involved and

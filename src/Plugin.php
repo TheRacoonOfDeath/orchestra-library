@@ -6,7 +6,9 @@ namespace Orchestra\Library;
 
 use LogicException;
 use Orchestra\Core\Authorization\CapabilityRegistry;
-use Orchestra\Library\Admin\Notices;
+use Orchestra\Core\Ui\Html;
+use Orchestra\Core\Ui\Menu;
+use Orchestra\Core\Ui\MenuItem;
 use Orchestra\Library\Admin\PieceEditor;
 use Orchestra\Library\Admin\PieceListColumns;
 use Orchestra\Library\Database\Schema;
@@ -17,9 +19,12 @@ use Orchestra\Library\File\FileService;
 use Orchestra\Library\File\FileStorage;
 use Orchestra\Library\File\UploadValidator;
 use Orchestra\Library\Frontend\LibraryShortcode;
+use Orchestra\Library\Frontend\PieceController;
 use Orchestra\Library\Part\PartRepository;
 use Orchestra\Library\Part\PartService;
 use Orchestra\Library\Piece\DeletionGuard;
+use Orchestra\Library\Piece\PieceForm;
+use Orchestra\Library\Piece\PieceFormHandler;
 use Orchestra\Library\Piece\PiecePostType;
 use Orchestra\Library\Piece\PieceRepository;
 use wpdb;
@@ -95,7 +100,8 @@ final class Plugin
      */
     public function registerFeatures(): void
     {
-        if (!\class_exists(CapabilityRegistry::class)) {
+        // The shared UI exists since orchestra-core 0.4.
+        if (!\class_exists(CapabilityRegistry::class) || !\class_exists(Html::class)) {
             \add_action('admin_notices', [$this, 'renderMissingCoreNotice']);
             return;
         }
@@ -108,22 +114,37 @@ final class Plugin
         (new DeletionGuard($this->partService))->register();
         (new DownloadController($this->files, $this->fileService, $this->parts, $this->pieces, new ZipBundler()))
             ->register();
-        (new LibraryShortcode($this->pieces, $this->parts, $this->files))->register();
+        $form = new PieceForm($this->parts, $this->files);
+        $handler = new PieceFormHandler(
+            $this->pieces,
+            $this->parts,
+            $this->partService,
+            $this->files,
+            $this->fileService,
+            new UploadValidator()
+        );
+        (new LibraryShortcode($this->pieces, $this->parts, $this->files, $form))->register();
+        (new PieceController($handler))->register();
+        \add_action(Menu::REGISTER_ACTION, [self::class, 'registerMenuItem']);
 
         if (\is_admin()) {
-            $notices = new Notices();
-            $notices->register();
-            (new PieceEditor(
-                $this->pieces,
-                $this->parts,
-                $this->partService,
-                $this->files,
-                $this->fileService,
-                new UploadValidator(),
-                $notices,
-            ))->register();
+            (new PieceEditor($this->pieces, $form, $handler))->register();
             (new PieceListColumns($this->pieces, $this->parts))->register();
         }
+    }
+
+    /**
+     * @internal Hooked to `orchestra_core_register_menu_items`.
+     */
+    public static function registerMenuItem(Menu $menu): void
+    {
+        $menu->add(new MenuItem(
+            LibraryShortcode::TAG,
+            \__('Library', 'orchestra-library'),
+            \__('Pieces and sheet music.', 'orchestra-library'),
+            static fn (int $userId): bool => \user_can($userId, Capabilities::PIECE_READ),
+            30
+        ));
     }
 
     /**
@@ -132,7 +153,7 @@ final class Plugin
     public function renderMissingCoreNotice(): void
     {
         echo '<div class="notice notice-error"><p>'
-            . \esc_html__('Orchestra Library requires the Orchestra Core plugin to be active.', 'orchestra-library')
+            . \esc_html__('Orchestra Library requires Orchestra Core 0.4 or later to be active.', 'orchestra-library')
             . '</p></div>';
     }
 

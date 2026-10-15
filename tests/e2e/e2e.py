@@ -128,17 +128,31 @@ subprocess.run(["unzip", "-q", "-o", LIBRARY_ZIP, "-d", os.path.join(WP_PATH, "w
 subprocess.run([WPC, "plugin", "activate", "orchestra-library"], capture_output=True, check=True)
 
 conductor = Session("conductor")
+library_page = int(wp_eval('echo wp_insert_post(["post_type" => "page", "post_status" => "publish", "post_title" => "Library", "post_content" => "[orchestra_library]"]);'))
+LIBRARY = f"/?page_id={library_page}"
 
-# 1. Create a piece with parts, sheet music and a piece file
-page, form = edit_form(conductor, "/wp-admin/post-new.php?post_type=orchestra_piece")
-check('enctype="multipart/form-data"' in page, "edit form is multipart")
-check("Parts and Sheet Music" in page, "parts meta box is shown")
-piece_id = int(form["post_ID"])
-status, _, body = conductor.request("/wp-admin/post.php", data={
-    **form,
-    "post_title": "Pirates of the Caribbean",
-    "content": "Arrangement for wind orchestra",
-    "publish": "Publish",
+
+def piece_form(session, piece):
+    """The hidden fields of the piece editor on the library page."""
+    _, _, body = session.request(f"{LIBRARY}&orchestra_piece={piece}")
+    page = body.decode()
+    return page, {key: field(page, key) for key in ["action", "_wpnonce", "piece", "redirect_to"]}
+
+
+def save_piece(session, piece, data, files=()):
+    page, form = piece_form(session, piece)
+    return session.request("/wp-admin/admin-post.php", data={**form, **data}, files=list(files))
+
+
+# 1. A conductor creates a piece with parts, sheet music and a piece file on the library page
+_, final, _ = (lambda r: (r[0], r[1].get("location", ""), r[2]))(conductor.request("/wp-admin/", follow=False))
+check("wp-admin" not in final, "conductors are kept out of wp-admin")
+page, form = piece_form(conductor, "new")
+check('enctype="multipart/form-data"' in page and form["action"] == "orchestra_library_save_piece_page",
+      "the library page has a piece editor for conductors")
+status, _, body = save_piece(conductor, "new", {
+    "orchestra_library_title": "Pirates of the Caribbean",
+    "orchestra_library_description": "Arrangement for wind orchestra",
     "orchestra_library_composer": "Klaus Badelt",
     "orchestra_new_parts[0][name]": "Horn 1", "orchestra_new_parts[0][position]": "1",
     "orchestra_new_parts[1][name]": " Horn  2 ", "orchestra_new_parts[1][position]": "2",
@@ -148,7 +162,12 @@ status, _, body = conductor.request("/wp-admin/post.php", data={
     ("orchestra_new_part_file[1]", horn2),
     ("orchestra_piece_files[]", score),
 ])
-check(status == 200 and wp_eval(f"echo get_post_status({piece_id});") == "publish", "conductor publishes piece")
+piece_id = int(wp_eval('echo (new WP_Query(["post_type" => "orchestra_piece", "title" => "Pirates of the Caribbean",'
+                       ' "fields" => "ids"]))->posts[0] ?? 0;') or 0)
+check(status == 200 and piece_id > 0 and wp_eval(f"echo get_post_status({piece_id});") == "publish",
+      "conductor creates a published piece")
+check("The piece has been saved." in body.decode() and f'name="piece" value="{piece_id}"' in body.decode(),
+      "the editor of the new piece opens after saving")
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 1", "horn1.pdf"), ("Horn 2", "horn2.pdf"), ("Percussion", None)],
       f"parts and sheet music stored: {parts}")
@@ -157,30 +176,30 @@ directory = storage_dir()
 stored = [f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]
 check(len(stored) == 3, f"three files in private storage ({directory})")
 check("Require all denied" in open(os.path.join(directory, ".htaccess")).read(), "storage has .htaccess protection")
+status, _, _ = save_piece(conductor, "new", {"orchestra_library_title": ""})
+check(int(wp_eval('echo count(get_posts(["post_type" => "orchestra_piece", "numberposts" => -1]));')) == 1,
+      "a piece needs a title")
 
 # 2. Duplicate names are rejected and nothing changes
-page, form = edit_form(conductor, f"/wp-admin/post.php?post={piece_id}&action=edit")
 by_name = {p["name"]: p["id"] for p in parts}
-status, _, body = conductor.request("/wp-admin/post.php", data={
-    **form, "post_title": "Pirates of the Caribbean", "save": "Update",
-    "orchestra_library_composer": "Klaus Badelt",
+_, _, body = save_piece(conductor, piece_id, {
+    "orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt",
     f"orchestra_parts[{by_name['Percussion']}][name]": "Percussion",
     f"orchestra_parts[{by_name['Percussion']}][delete]": "1",
     "orchestra_new_parts[0][name]": "horn 1",
-}, files=[])
+})
 check("used more than once" in body.decode(), "duplicate part name is reported")
 check(len(parts_of(piece_id)) == 3, "no part changed after validation error")
 
 # 3. Rename, replace a file, remove a file, delete a part, reorder
-page, form = edit_form(conductor, f"/wp-admin/post.php?post={piece_id}&action=edit")
-data = {**form, "post_title": "Pirates of the Caribbean", "save": "Update", "orchestra_library_composer": "Klaus Badelt"}
+data = {"orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt"}
 for p in parts:
     data[f"orchestra_parts[{p['id']}][name]"] = p["name"]
     data[f"orchestra_parts[{p['id']}][position]"] = str(p["position"])
 data[f"orchestra_parts[{by_name['Horn 2']}][name]"] = "Horn 2 in F"
 data[f"orchestra_parts[{by_name['Horn 2']}][position]"] = "0"
 data[f"orchestra_parts[{by_name['Percussion']}][delete]"] = "1"
-conductor.request("/wp-admin/post.php", data=data, files=[(f"orchestra_part_file[{by_name['Horn 1']}]", horn1b)])
+save_piece(conductor, piece_id, data, files=[(f"orchestra_part_file[{by_name['Horn 1']}]", horn1b)])
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 2 in F", "horn2.pdf"), ("Horn 1", "horn1b.pdf")],
       f"rename, reorder, replace and delete applied: {parts}")
@@ -188,20 +207,29 @@ check(len([f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)
       "replaced file was removed from storage")
 
 # 4. Disguised files are rejected with a notice
-page, form = edit_form(conductor, f"/wp-admin/post.php?post={piece_id}&action=edit")
-_, _, body = conductor.request("/wp-admin/post.php", data={**form, "post_title": "Pirates of the Caribbean", "save": "Update",
-                                                         "orchestra_library_composer": "Klaus Badelt"},
-                               files=[("orchestra_piece_files[]", fake)])
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              "orchestra_library_composer": "Klaus Badelt"},
+                        files=[("orchestra_piece_files[]", fake)])
 check("has a file type that is not allowed" in body.decode(), "PHP disguised as PDF is rejected")
 
+# 4b. Administrators use the piece editor in wp-admin, with the same fields
+admin = Session("admin", "admin")
+page, form = edit_form(admin, "/wp-admin/post-new.php?post_type=orchestra_piece")
+check('enctype="multipart/form-data"' in page and "Parts and Sheet Music" in page, "wp-admin editor shows the parts")
+admin_piece = int(form["post_ID"])
+admin.request("/wp-admin/post.php", data={
+    **form, "post_title": "Admin Piece", "publish": "Publish", "orchestra_library_composer": "Admin",
+    "orchestra_new_parts[0][name]": "Tuba",
+}, files=[("orchestra_new_part_file[0]", horn2)])
+check([(p["name"], p["file"]) for p in parts_of(admin_piece)] == [("Tuba", "horn2.pdf")],
+      "the wp-admin editor saves parts and files")
+wp_eval(f"wp_delete_post({admin_piece}, true);")
+
 # 5. Member library page, search and downloads
-library_page = int(wp_eval('echo wp_insert_post(["post_type" => "page", "post_status" => "publish", "post_title" => "Library", "post_content" => "[orchestra_library]"]);'))
 member = Session("member")
 _, _, body = member.request(f"/?page_id={library_page}")
 page = body.decode()
 check("Pirates of the Caribbean" in page and "Horn 2 in F" in page and "Klaus Badelt" in page, "member sees the library")
-if "Pirates of the Caribbean" not in page:
-    print("DEBUG", re.findall(r"<h3>.*?</ul>", page, re.S)[:2])
 check("Partitur" in page, "member sees the piece file")
 _, _, body = member.request(f"/?page_id={library_page}&orchestra_q=Badelt")
 check("Pirates of the Caribbean" in body.decode(), "search by composer")
@@ -242,23 +270,29 @@ status, _, _ = subscriber.request(f"/wp-admin/admin-post.php?action=orchestra_li
 check(status == 404, "subscriber cannot download")
 _, _, body = subscriber.request(f"/?page_id={library_page}")
 check("not allowed" in body.decode() and "Pirates" not in body.decode(), "subscriber does not see the library")
-status, _, body = member.request("/wp-admin/post-new.php?post_type=orchestra_piece")
-check(status == 403 or "not allowed" in body.decode(), "member cannot create pieces")
+_, _, body = member.request(f"{LIBRARY}&orchestra_piece=new")
+check("New piece" not in body.decode() and "orchestra_library_save_piece_page" not in body.decode(),
+      "members cannot create pieces")
+status, _, _ = member.request("/wp-admin/admin-post.php", data={"action": "orchestra_library_save_piece_page", "piece": "0",
+                                                               "orchestra_library_title": "Spam", "_wpnonce": "x"})
+check(status == 403, "members cannot save pieces")
 direct_status = anonymous.request("/wp-content/uploads/" + os.path.basename(directory) + "/" + stored[0], follow=False)[0]
 print(f"INFO direct URL to a stored file returns {direct_status}. PHP's built-in server ignores .htaccess,"
       " like nginx; on Apache it must be 403.")
 
 # 8. Drafts and archived pieces are hidden from members
-page, form = edit_form(conductor, "/wp-admin/post-new.php?post_type=orchestra_piece")
+page, form = edit_form(admin, "/wp-admin/post-new.php?post_type=orchestra_piece")
 draft_id = int(form["post_ID"])
-conductor.request("/wp-admin/post.php", data={**form, "post_title": "Secret Draft", "save": "Save Draft",
-                                             "orchestra_new_parts[0][name]": "Flute"},
-                  files=[("orchestra_new_part_file[0]", horn2)])
+admin.request("/wp-admin/post.php", data={**form, "post_title": "Secret Draft", "save": "Save Draft",
+                                         "orchestra_new_parts[0][name]": "Flute"},
+              files=[("orchestra_new_part_file[0]", horn2)])
 draft_file = wp_eval(f'$l = Orchestra\\Library\\Plugin::instance()->library(); echo $l->sheetMusic($l->parts({draft_id})[0]->id)->id;')
 status, _, _ = member.request(f"/wp-admin/admin-post.php?action=orchestra_library_download&file={draft_file}", output=target)
 check(status == 404, "member cannot download sheet music of a draft")
 status, _, _ = conductor.request(f"/wp-admin/admin-post.php?action=orchestra_library_download&file={draft_file}", output=target)
 check(status == 200, "conductor can download sheet music of a draft")
+_, _, body = conductor.request(f"{LIBRARY}&orchestra_archived=1")
+check("Show archived" in body.decode() or "Hide archived" in body.decode(), "conductors can show archived pieces")
 wp_eval(f'update_post_meta({piece_id}, "orchestra_library_archived", "1");')
 _, _, body = member.request(f"/?page_id={library_page}")
 check("Pirates" not in body.decode(), "archived piece is hidden in the library")
@@ -272,16 +306,14 @@ open(os.path.join(mu, "blocker.php"), "w").write(
     f" return $id === {by_name['Horn 1']} ? [...$b, 'Assigned in Spring Concert 2027.'] : $b; }}, 10, 2);"
 )
 wp_eval(f'delete_post_meta({piece_id}, "_edit_lock");')
-admin = Session("admin", "admin")
 _, _, body = admin.request(f"/wp-admin/post.php?post={piece_id}&action=edit")
 trash_link = html.unescape(re.search(r'href="([^"]*action=trash[^"]*)"', body.decode()).group(1))
 status, _, body = admin.request(trash_link.replace(BASE, ""), follow=False)
 check(status == 409 and "Assigned in Spring Concert 2027." in body.decode(), "trashing a referenced piece is blocked")
 check(wp_eval(f'echo get_post_status({piece_id});') == "publish", "piece is still published")
-page, form = edit_form(conductor, f"/wp-admin/post.php?post={piece_id}&action=edit")
-_, _, body = conductor.request("/wp-admin/post.php", data={**form, "post_title": "Pirates of the Caribbean", "save": "Update",
-                                                         f"orchestra_parts[{by_name['Horn 1']}][name]": "Horn 1",
-                                                         f"orchestra_parts[{by_name['Horn 1']}][delete]": "1"}, files=[])
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              f"orchestra_parts[{by_name['Horn 1']}][name]": "Horn 1",
+                                              f"orchestra_parts[{by_name['Horn 1']}][delete]": "1"})
 check("cannot be deleted" in body.decode() and len(parts_of(piece_id)) == 2, "deleting a referenced part is blocked")
 os.remove(os.path.join(mu, "blocker.php"))
 

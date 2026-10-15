@@ -5,7 +5,7 @@
 # Usage: tests/e2e/run.sh
 #   E2E_DIR          working directory (default: a new temporary directory, deleted afterwards)
 #   E2E_PORT         port for the web server (default: 8765)
-#   E2E_CORE_ZIP     orchestra-core zip (default: the latest GitHub release)
+#   E2E_CORE_ZIP     orchestra-core zip (default: the latest GitHub release); needs 0.4 or later
 #
 # Requirements: php 8.3+ with pdo_sqlite, zip and fileinfo; python3; curl; unzip; composer.
 
@@ -69,6 +69,15 @@ unzip -q -o "$CORE_ZIP" -d "$WP_PATH/wp-content/plugins"
 "$ROOT/build-plugin.sh" > /dev/null
 LIBRARY_ZIP=$(ls -t "$ROOT"/build/orchestra-library-*.zip | head -n 1)
 unzip -q -o "$LIBRARY_ZIP" -d "$WP_PATH/wp-content/plugins"
+
+# The tests never check GitHub for updates
+mkdir -p "$WP_PATH/wp-content/mu-plugins"
+cat > "$WP_PATH/wp-content/mu-plugins/e2e-offline.php" <<'MU'
+<?php
+foreach (['orchestra-core', 'orchestra-library', 'orchestra-members', 'orchestra-projects'] as $slug) {
+    add_filter("puc_check_now-$slug", '__return_false');
+}
+MU
 
 "$WP" plugin activate orchestra-core orchestra-library
 "$WP" user create conductor conductor@example.com --role=orchestra_conductor --user_pass=pass --quiet
