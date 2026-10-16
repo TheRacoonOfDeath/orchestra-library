@@ -1,0 +1,336 @@
+# German translation of Orchestra Library.
+msgid ""
+msgstr ""
+"Project-Id-Version: orchestra-library\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 08:31+0200\n"
+"PO-Revision-Date: 2026-10-16 00:00+0000\n"
+"Last-Translator: Julian Nickerl\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/Admin/PieceEditor.php:54
+msgid "Details"
+msgstr "Details"
+
+#: src/Admin/PieceEditor.php:55
+msgid "Parts and Sheet Music"
+msgstr "Stimmen und Noten"
+
+#: src/Admin/PieceEditor.php:56
+msgid "Piece Files"
+msgstr "Dateien zum Stück"
+
+#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:44
+msgid "Composer"
+msgstr "Komponist"
+
+#: src/Admin/PieceListColumns.php:38
+msgid "Parts"
+msgstr "Stimmen"
+
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:113
+#: src/Piece/PieceForm.php:50
+msgid "Archived"
+msgstr "Archiviert"
+
+#: src/Admin/PieceListColumns.php:60
+msgid "Yes"
+msgstr "Ja"
+
+#: src/Download/DownloadController.php:155
+msgid "The file does not exist or you are not allowed to download it."
+msgstr "Die Datei existiert nicht oder du darfst sie nicht herunterladen."
+
+#: src/Download/DownloadController.php:156
+msgid "File not found"
+msgstr "Datei nicht gefunden"
+
+#: src/File/UploadValidator.php:86
+#, php-format
+msgid "\"%s\" was not uploaded correctly."
+msgstr "„%s“ wurde nicht korrekt hochgeladen."
+
+#: src/File/UploadValidator.php:90
+#, php-format
+msgid "\"%s\" is empty."
+msgstr "„%s“ ist leer."
+
+#. translators: 1: file name, 2: list of allowed file extensions
+#: src/File/UploadValidator.php:96
+#, php-format
+msgid "\"%1$s\" has a file type that is not allowed. Allowed types: %2$s."
+msgstr "„%1$s“ hat einen nicht erlaubten Dateityp. Erlaubte Typen: %2$s."
+
+#: src/File/UploadValidator.php:146
+#, php-format
+msgid "\"%s\" is larger than the maximum upload size."
+msgstr "„%s“ ist größer als die maximale Upload-Größe."
+
+#: src/File/UploadValidator.php:149
+#, php-format
+msgid "\"%s\" was only partially uploaded."
+msgstr "„%s“ wurde nur teilweise hochgeladen."
+
+#: src/File/UploadValidator.php:150
+#, php-format
+msgid "\"%s\" could not be uploaded."
+msgstr "„%s“ konnte nicht hochgeladen werden."
+
+#: src/Frontend/LibraryShortcode.php:52
+msgid "Please log in to see the library."
+msgstr "Bitte melde dich an, um die Notenbibliothek zu sehen."
+
+#: src/Frontend/LibraryShortcode.php:55
+msgid "You are not allowed to see the library."
+msgstr "Du darfst die Notenbibliothek nicht sehen."
+
+#: src/Frontend/LibraryShortcode.php:88
+msgid "Search pieces"
+msgstr "Stücke suchen"
+
+#: src/Frontend/LibraryShortcode.php:90
+msgid "Title or composer"
+msgstr "Titel oder Komponist"
+
+#: src/Frontend/LibraryShortcode.php:93
+msgid "Search"
+msgstr "Suchen"
+
+#: src/Frontend/LibraryShortcode.php:96
+msgid "Hide archived"
+msgstr "Archivierte ausblenden"
+
+#: src/Frontend/LibraryShortcode.php:97
+msgid "Show archived"
+msgstr "Archivierte anzeigen"
+
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:173
+msgid "New piece"
+msgstr "Neues Stück"
+
+#: src/Frontend/LibraryShortcode.php:106 src/Piece/PiecePostType.php:38
+msgid "No pieces found."
+msgstr "Keine Stücke gefunden."
+
+#: src/Frontend/LibraryShortcode.php:124
+msgid "Download"
+msgstr "Herunterladen"
+
+#: src/Frontend/LibraryShortcode.php:136
+msgid "Piece files:"
+msgstr "Dateien zum Stück:"
+
+#: src/Frontend/LibraryShortcode.php:143
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: src/Frontend/LibraryShortcode.php:154
+msgid ""
+"Only the first results are shown. Refine your search to find more pieces."
+msgstr ""
+"Es werden nur die ersten Ergebnisse angezeigt. Verfeinere deine Suche, um "
+"weitere Stücke zu finden."
+
+#: src/Frontend/LibraryShortcode.php:166 src/Piece/PiecePostType.php:29
+#: src/Piece/PiecePostType.php:31 src/Plugin.php:155
+msgid "Library"
+msgstr "Notenbibliothek"
+
+#: src/Frontend/LibraryShortcode.php:169
+msgid "The piece does not exist."
+msgstr "Das Stück existiert nicht."
+
+#: src/Frontend/LibraryShortcode.php:185
+msgid "Title"
+msgstr "Titel"
+
+#: src/Frontend/LibraryShortcode.php:193 src/Piece/PieceForm.php:67
+#: src/Piece/PieceForm.php:104 src/Piece/PieceForm.php:187
+msgid "Description"
+msgstr "Beschreibung"
+
+#: src/Frontend/LibraryShortcode.php:199
+msgid "Parts and sheet music"
+msgstr "Stimmen und Noten"
+
+#: src/Frontend/LibraryShortcode.php:202
+msgid "Piece files"
+msgstr "Dateien zum Stück"
+
+#: src/Frontend/LibraryShortcode.php:204
+msgid "Save"
+msgstr "Speichern"
+
+#: src/Frontend/LibraryShortcode.php:205
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: src/Frontend/PieceController.php:47
+msgid "You are not allowed to edit this piece."
+msgstr "Du darfst dieses Stück nicht bearbeiten."
+
+#: src/Frontend/PieceController.php:54
+msgid "Please enter a title."
+msgstr "Bitte gib einen Titel ein."
+
+#: src/Frontend/PieceController.php:71
+msgid "The piece has been saved."
+msgstr "Das Stück wurde gespeichert."
+
+#: src/Part/PartNames.php:31
+msgid "Part names must not be empty."
+msgstr "Stimmnamen dürfen nicht leer sein."
+
+#. translators: 1: part name, 2: maximum number of characters
+#: src/Part/PartNames.php:36
+#, php-format
+msgid "The part name \"%1$s\" is longer than %2$d characters."
+msgstr "Der Stimmname „%1$s“ ist länger als %2$d Zeichen."
+
+#. translators: %s: part name
+#: src/Part/PartNames.php:44
+#, php-format
+msgid "The part name \"%s\" is used more than once."
+msgstr "Der Stimmname „%s“ wird mehrfach verwendet."
+
+#. translators: %s: piece title
+#: src/Piece/DeletionGuard.php:43
+#, php-format
+msgid "\"%s\" cannot be deleted"
+msgstr "„%s“ kann nicht gelöscht werden"
+
+#: src/Piece/DeletionGuard.php:50
+msgid "Archive the piece instead."
+msgstr "Archiviere das Stück stattdessen."
+
+#: src/Piece/PieceForm.php:52
+msgid ""
+"Archived pieces are hidden in the library and cannot be added to new "
+"projects."
+msgstr ""
+"Archivierte Stücke werden in der Notenbibliothek ausgeblendet und können nicht "
+"zu neuen Projekten hinzugefügt werden."
+
+#: src/Piece/PieceForm.php:65 src/Piece/PieceForm.php:214
+msgid "Order"
+msgstr "Reihenfolge"
+
+#: src/Piece/PieceForm.php:66
+msgid "Name"
+msgstr "Name"
+
+#: src/Piece/PieceForm.php:68
+msgid "Sheet music"
+msgstr "Noten"
+
+#: src/Piece/PieceForm.php:69 src/Piece/PieceForm.php:142
+msgid "Delete"
+msgstr "Löschen"
+
+#: src/Piece/PieceForm.php:85
+msgid "Remove"
+msgstr "Entfernen"
+
+#: src/Piece/PieceForm.php:91 src/Piece/PieceForm.php:190
+msgid "Upload sheet music"
+msgstr "Noten hochladen"
+
+#: src/Piece/PieceForm.php:92
+msgid "Replace sheet music"
+msgstr "Noten ersetzen"
+
+#: src/Piece/PieceForm.php:101
+msgid "Part name"
+msgstr "Stimmname"
+
+#: src/Piece/PieceForm.php:108
+msgid "Delete part"
+msgstr "Stimme löschen"
+
+#: src/Piece/PieceForm.php:120
+msgid "+ Add part"
+msgstr "+ Stimme hinzufügen"
+
+#: src/Piece/PieceForm.php:121
+msgid ""
+"Every part has one sheet music file; uploading a new file replaces the old "
+"one."
+msgstr ""
+"Jede Stimme hat eine Notendatei; eine neu hochgeladene Datei ersetzt die "
+"alte."
+
+#: src/Piece/PieceForm.php:132
+msgid "Files for the whole piece, e.g. the full score or performance notes."
+msgstr ""
+"Dateien für das ganze Stück, z. B. die Partitur oder Aufführungshinweise."
+
+#: src/Piece/PieceForm.php:152
+msgid "Upload piece files"
+msgstr "Dateien zum Stück hochladen"
+
+#: src/Piece/PieceForm.php:184
+msgid "New part, e.g. Horn 1"
+msgstr "Neue Stimme, z. B. Horn 1"
+
+#: src/Piece/PieceForm.php:185
+msgid "Name of the new part"
+msgstr "Name der neuen Stimme"
+
+#. translators: 1: part name, 2: reasons
+#: src/Piece/PieceFormHandler.php:82
+#, php-format
+msgid "The part \"%1$s\" cannot be deleted: %2$s"
+msgstr "Die Stimme „%1$s“ kann nicht gelöscht werden: %2$s"
+
+#: src/Piece/PieceFormHandler.php:121
+msgid "The parts were not saved."
+msgstr "Die Stimmen wurden nicht gespeichert."
+
+#: src/Piece/PieceFormHandler.php:147
+msgid "The parts could not be saved completely."
+msgstr "Die Stimmen konnten nicht vollständig gespeichert werden."
+
+#: src/Piece/PiecePostType.php:30
+msgid "Piece"
+msgstr "Stück"
+
+#: src/Piece/PiecePostType.php:32
+msgid "All Pieces"
+msgstr "Alle Stücke"
+
+#: src/Piece/PiecePostType.php:33
+msgid "Add Piece"
+msgstr "Stück hinzufügen"
+
+#: src/Piece/PiecePostType.php:34
+msgid "Add New Piece"
+msgstr "Neues Stück hinzufügen"
+
+#: src/Piece/PiecePostType.php:35
+msgid "Edit Piece"
+msgstr "Stück bearbeiten"
+
+#: src/Piece/PiecePostType.php:36
+msgid "New Piece"
+msgstr "Neues Stück"
+
+#: src/Piece/PiecePostType.php:37
+msgid "Search Pieces"
+msgstr "Stücke suchen"
+
+#: src/Piece/PiecePostType.php:39
+msgid "No pieces found in Trash."
+msgstr "Keine Stücke im Papierkorb gefunden."
+
+#: src/Plugin.php:156
+msgid "Pieces and sheet music."
+msgstr "Stücke und Noten."
+
+#: src/Plugin.php:168
+msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
+msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."

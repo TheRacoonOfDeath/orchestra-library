@@ -1,0 +1,333 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the orchestra-library package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: orchestra-library\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-16 08:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/Admin/PieceEditor.php:54
+msgid "Details"
+msgstr ""
+
+#: src/Admin/PieceEditor.php:55
+msgid "Parts and Sheet Music"
+msgstr ""
+
+#: src/Admin/PieceEditor.php:56
+msgid "Piece Files"
+msgstr ""
+
+#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:44
+msgid "Composer"
+msgstr ""
+
+#: src/Admin/PieceListColumns.php:38
+msgid "Parts"
+msgstr ""
+
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:113
+#: src/Piece/PieceForm.php:50
+msgid "Archived"
+msgstr ""
+
+#: src/Admin/PieceListColumns.php:60
+msgid "Yes"
+msgstr ""
+
+#: src/Download/DownloadController.php:155
+msgid "The file does not exist or you are not allowed to download it."
+msgstr ""
+
+#: src/Download/DownloadController.php:156
+msgid "File not found"
+msgstr ""
+
+#: src/File/UploadValidator.php:86
+#, php-format
+msgid "\"%s\" was not uploaded correctly."
+msgstr ""
+
+#: src/File/UploadValidator.php:90
+#, php-format
+msgid "\"%s\" is empty."
+msgstr ""
+
+#. translators: 1: file name, 2: list of allowed file extensions
+#: src/File/UploadValidator.php:96
+#, php-format
+msgid "\"%1$s\" has a file type that is not allowed. Allowed types: %2$s."
+msgstr ""
+
+#: src/File/UploadValidator.php:146
+#, php-format
+msgid "\"%s\" is larger than the maximum upload size."
+msgstr ""
+
+#: src/File/UploadValidator.php:149
+#, php-format
+msgid "\"%s\" was only partially uploaded."
+msgstr ""
+
+#: src/File/UploadValidator.php:150
+#, php-format
+msgid "\"%s\" could not be uploaded."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:52
+msgid "Please log in to see the library."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:55
+msgid "You are not allowed to see the library."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:88
+msgid "Search pieces"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:90
+msgid "Title or composer"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:93
+msgid "Search"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:96
+msgid "Hide archived"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:97
+msgid "Show archived"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:173
+msgid "New piece"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:106 src/Piece/PiecePostType.php:38
+msgid "No pieces found."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:124
+msgid "Download"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:136
+msgid "Piece files:"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:143
+msgid "Edit"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:154
+msgid ""
+"Only the first results are shown. Refine your search to find more pieces."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:166 src/Piece/PiecePostType.php:29
+#: src/Piece/PiecePostType.php:31 src/Plugin.php:155
+msgid "Library"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:169
+msgid "The piece does not exist."
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:185
+msgid "Title"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:193 src/Piece/PieceForm.php:67
+#: src/Piece/PieceForm.php:104 src/Piece/PieceForm.php:187
+msgid "Description"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:199
+msgid "Parts and sheet music"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:202
+msgid "Piece files"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:204
+msgid "Save"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:205
+msgid "Cancel"
+msgstr ""
+
+#: src/Frontend/PieceController.php:47
+msgid "You are not allowed to edit this piece."
+msgstr ""
+
+#: src/Frontend/PieceController.php:54
+msgid "Please enter a title."
+msgstr ""
+
+#: src/Frontend/PieceController.php:71
+msgid "The piece has been saved."
+msgstr ""
+
+#: src/Part/PartNames.php:31
+msgid "Part names must not be empty."
+msgstr ""
+
+#. translators: 1: part name, 2: maximum number of characters
+#: src/Part/PartNames.php:36
+#, php-format
+msgid "The part name \"%1$s\" is longer than %2$d characters."
+msgstr ""
+
+#. translators: %s: part name
+#: src/Part/PartNames.php:44
+#, php-format
+msgid "The part name \"%s\" is used more than once."
+msgstr ""
+
+#. translators: %s: piece title
+#: src/Piece/DeletionGuard.php:43
+#, php-format
+msgid "\"%s\" cannot be deleted"
+msgstr ""
+
+#: src/Piece/DeletionGuard.php:50
+msgid "Archive the piece instead."
+msgstr ""
+
+#: src/Piece/PieceForm.php:52
+msgid ""
+"Archived pieces are hidden in the library and cannot be added to new "
+"projects."
+msgstr ""
+
+#: src/Piece/PieceForm.php:65 src/Piece/PieceForm.php:214
+msgid "Order"
+msgstr ""
+
+#: src/Piece/PieceForm.php:66
+msgid "Name"
+msgstr ""
+
+#: src/Piece/PieceForm.php:68
+msgid "Sheet music"
+msgstr ""
+
+#: src/Piece/PieceForm.php:69 src/Piece/PieceForm.php:142
+msgid "Delete"
+msgstr ""
+
+#: src/Piece/PieceForm.php:85
+msgid "Remove"
+msgstr ""
+
+#: src/Piece/PieceForm.php:91 src/Piece/PieceForm.php:190
+msgid "Upload sheet music"
+msgstr ""
+
+#: src/Piece/PieceForm.php:92
+msgid "Replace sheet music"
+msgstr ""
+
+#: src/Piece/PieceForm.php:101
+msgid "Part name"
+msgstr ""
+
+#: src/Piece/PieceForm.php:108
+msgid "Delete part"
+msgstr ""
+
+#: src/Piece/PieceForm.php:120
+msgid "+ Add part"
+msgstr ""
+
+#: src/Piece/PieceForm.php:121
+msgid ""
+"Every part has one sheet music file; uploading a new file replaces the old "
+"one."
+msgstr ""
+
+#: src/Piece/PieceForm.php:132
+msgid "Files for the whole piece, e.g. the full score or performance notes."
+msgstr ""
+
+#: src/Piece/PieceForm.php:152
+msgid "Upload piece files"
+msgstr ""
+
+#: src/Piece/PieceForm.php:184
+msgid "New part, e.g. Horn 1"
+msgstr ""
+
+#: src/Piece/PieceForm.php:185
+msgid "Name of the new part"
+msgstr ""
+
+#. translators: 1: part name, 2: reasons
+#: src/Piece/PieceFormHandler.php:82
+#, php-format
+msgid "The part \"%1$s\" cannot be deleted: %2$s"
+msgstr ""
+
+#: src/Piece/PieceFormHandler.php:121
+msgid "The parts were not saved."
+msgstr ""
+
+#: src/Piece/PieceFormHandler.php:147
+msgid "The parts could not be saved completely."
+msgstr ""
+
+#: src/Piece/PiecePostType.php:30
+msgid "Piece"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:32
+msgid "All Pieces"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:33
+msgid "Add Piece"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:34
+msgid "Add New Piece"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:35
+msgid "Edit Piece"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:36
+msgid "New Piece"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:37
+msgid "Search Pieces"
+msgstr ""
+
+#: src/Piece/PiecePostType.php:39
+msgid "No pieces found in Trash."
+msgstr ""
+
+#: src/Plugin.php:156
+msgid "Pieces and sheet music."
+msgstr ""
+
+#: src/Plugin.php:168
+msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
+msgstr ""
