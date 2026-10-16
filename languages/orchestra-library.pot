@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 08:31+0200\n"
+"POT-Creation-Date: 2026-10-16 16:01+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr ""
 msgid "Piece Files"
 msgstr ""
 
-#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:44
+#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:48
 msgid "Composer"
 msgstr ""
 
@@ -38,7 +38,7 @@ msgid "Parts"
 msgstr ""
 
 #: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:113
-#: src/Piece/PieceForm.php:50
+#: src/Piece/PieceForm.php:54
 msgid "Archived"
 msgstr ""
 
@@ -151,8 +151,8 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:193 src/Piece/PieceForm.php:67
-#: src/Piece/PieceForm.php:104 src/Piece/PieceForm.php:187
+#: src/Frontend/LibraryShortcode.php:193 src/Piece/PieceForm.php:70
+#: src/Piece/PieceForm.php:107 src/Piece/PieceForm.php:191
 msgid "Description"
 msgstr ""
 
@@ -210,85 +210,95 @@ msgstr ""
 msgid "Archive the piece instead."
 msgstr ""
 
-#: src/Piece/PieceForm.php:52
+#: src/Piece/PieceForm.php:56
 msgid ""
 "Archived pieces are hidden in the library and cannot be added to new "
 "projects."
 msgstr ""
 
-#: src/Piece/PieceForm.php:65 src/Piece/PieceForm.php:214
-msgid "Order"
-msgstr ""
-
-#: src/Piece/PieceForm.php:66
+#: src/Piece/PieceForm.php:69
 msgid "Name"
 msgstr ""
 
-#: src/Piece/PieceForm.php:68
+#: src/Piece/PieceForm.php:71
 msgid "Sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:69 src/Piece/PieceForm.php:142
+#: src/Piece/PieceForm.php:72 src/Piece/PieceForm.php:146
 msgid "Delete"
 msgstr ""
 
-#: src/Piece/PieceForm.php:85
+#: src/Piece/PieceForm.php:88 src/Piece/PieceForm.php:197
 msgid "Remove"
 msgstr ""
 
-#: src/Piece/PieceForm.php:91 src/Piece/PieceForm.php:190
+#: src/Piece/PieceForm.php:94 src/Piece/PieceForm.php:194
 msgid "Upload sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:92
+#: src/Piece/PieceForm.php:95
 msgid "Replace sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:101
+#: src/Piece/PieceForm.php:104
 msgid "Part name"
 msgstr ""
 
-#: src/Piece/PieceForm.php:108
+#: src/Piece/PieceForm.php:111
 msgid "Delete part"
 msgstr ""
 
-#: src/Piece/PieceForm.php:120
+#: src/Piece/PieceForm.php:123
 msgid "+ Add part"
 msgstr ""
 
-#: src/Piece/PieceForm.php:121
+#: src/Piece/PieceForm.php:124
 msgid ""
-"Every part has one sheet music file; uploading a new file replaces the old "
-"one."
+"Drag the parts by their handle to change the order. Every part has one sheet "
+"music file; uploading a new file replaces the old one."
 msgstr ""
 
-#: src/Piece/PieceForm.php:132
+#: src/Piece/PieceForm.php:136
 msgid "Files for the whole piece, e.g. the full score or performance notes."
 msgstr ""
 
-#: src/Piece/PieceForm.php:152
+#: src/Piece/PieceForm.php:156
 msgid "Upload piece files"
 msgstr ""
 
-#: src/Piece/PieceForm.php:184
+#: src/Piece/PieceForm.php:185
+msgid "New part"
+msgstr ""
+
+#: src/Piece/PieceForm.php:188
 msgid "New part, e.g. Horn 1"
 msgstr ""
 
-#: src/Piece/PieceForm.php:185
+#: src/Piece/PieceForm.php:189
 msgid "Name of the new part"
 msgstr ""
 
+#. translators: %s: part name
+#: src/Piece/PieceForm.php:221
+#, php-format
+msgid "Move \"%s\""
+msgstr ""
+
+#: src/Piece/PieceForm.php:226
+msgid "Drag to change the order, or use the arrow keys"
+msgstr ""
+
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:82
+#: src/Piece/PieceFormHandler.php:93
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:121
+#: src/Piece/PieceFormHandler.php:131
 msgid "The parts were not saved."
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:147
+#: src/Piece/PieceFormHandler.php:157
 msgid "The parts could not be saved completely."
 msgstr ""
 

@@ -61,6 +61,17 @@ final class PieceFormHandler
         $errors = [];
         $existing = $this->parts->forPiece($pieceId);
         $submitted = \is_array($input[PieceForm::FIELD_PARTS] ?? null) ? $input[PieceForm::FIELD_PARTS] : [];
+        // Positions follow the order of the rows; rows missing from the order go after the ordered ones.
+        $order = \is_array($input[PieceForm::FIELD_PART_ORDER] ?? null)
+            ? \array_values(\array_filter($input[PieceForm::FIELD_PART_ORDER], 'is_string'))
+            : [];
+        $unordered = \count($order);
+        $position = static function (string $key) use ($order, &$unordered): int {
+            $index = \array_search($key, $order, true);
+
+            return ($index === false ? $unordered++ : $index) + 1;
+        };
+        $nextPosition = PieceForm::nextPosition($existing);
 
         $names = [];
         $toDelete = [];
@@ -91,14 +102,13 @@ final class PieceFormHandler
                     $pieceId,
                     $name,
                     \sanitize_text_field(self::string($row, 'description')),
-                    self::int($row, 'position', $part->position),
+                    $order === [] ? $part->position : $position((string) $part->id),
                 ),
                 'removeFile' => !empty($row['remove_file']),
             ];
         }
 
         $toInsert = [];
-        $nextPosition = PieceForm::nextPosition($existing);
         $newRows = \is_array($input[PieceForm::FIELD_NEW_PARTS] ?? null) ? $input[PieceForm::FIELD_NEW_PARTS] : [];
         foreach ($newRows as $key => $row) {
             if (!\is_array($row)) {
@@ -112,7 +122,7 @@ final class PieceFormHandler
             $toInsert[$key] = [
                 'name' => $name,
                 'description' => \sanitize_text_field(self::string($row, 'description')),
-                'position' => self::int($row, 'position', $nextPosition++),
+                'position' => $order === [] ? $nextPosition++ : $position(PieceForm::NEW_PART_KEY_PREFIX . $key),
             ];
         }
 
@@ -225,15 +235,5 @@ final class PieceFormHandler
     private static function string(array $values, string $key): string
     {
         return \is_string($values[$key] ?? null) ? $values[$key] : '';
-    }
-
-    /**
-     * @param array<mixed> $values
-     */
-    private static function int(array $values, string $key, int $default): int
-    {
-        $value = $values[$key] ?? null;
-
-        return \is_string($value) && \is_numeric($value) ? (int) $value : $default;
     }
 }

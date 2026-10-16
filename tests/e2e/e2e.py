@@ -154,12 +154,11 @@ status, _, body = save_piece(conductor, "new", {
     "orchestra_library_title": "Pirates of the Caribbean",
     "orchestra_library_description": "Arrangement for wind orchestra",
     "orchestra_library_composer": "Klaus Badelt",
-    "orchestra_new_parts[0][name]": "Horn 1", "orchestra_new_parts[0][position]": "1",
-    "orchestra_new_parts[1][name]": " Horn  2 ", "orchestra_new_parts[1][position]": "2",
-    "orchestra_new_parts[2][name]": "Percussion", "orchestra_new_parts[2][position]": "3",
+    "orchestra_new_parts[0][name]": "Percussion", "orchestra_new_parts[1][name]": "Horn 1",
+    "orchestra_new_parts[2][name]": " Horn  2 ", "orchestra_part_order[]": ["new:1", "new:2", "new:0"],
 }, files=[
-    ("orchestra_new_part_file[0]", horn1),
-    ("orchestra_new_part_file[1]", horn2),
+    ("orchestra_new_part_file[1]", horn1),
+    ("orchestra_new_part_file[2]", horn2),
     ("orchestra_piece_files[]", score),
 ])
 piece_id = int(wp_eval('echo (new WP_Query(["post_type" => "orchestra_piece", "title" => "Pirates of the Caribbean",'
@@ -170,7 +169,7 @@ check("The piece has been saved." in body.decode() and f'name="piece" value="{pi
       "the editor of the new piece opens after saving")
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 1", "horn1.pdf"), ("Horn 2", "horn2.pdf"), ("Percussion", None)],
-      f"parts and sheet music stored: {parts}")
+      f"parts and sheet music stored in the order of the rows: {parts}")
 check(wp_eval(f'echo get_post_meta({piece_id}, "orchestra_library_composer", true);') == "Klaus Badelt", "composer stored")
 directory = storage_dir()
 stored = [f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]
@@ -195,14 +194,16 @@ check(len(parts_of(piece_id)) == 3, "no part changed after validation error")
 data = {"orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt"}
 for p in parts:
     data[f"orchestra_parts[{p['id']}][name]"] = p["name"]
-    data[f"orchestra_parts[{p['id']}][position]"] = str(p["position"])
 data[f"orchestra_parts[{by_name['Horn 2']}][name]"] = "Horn 2 in F"
-data[f"orchestra_parts[{by_name['Horn 2']}][position]"] = "0"
+data["orchestra_part_order[]"] = [str(by_name[n]) for n in ("Horn 2", "Horn 1", "Percussion")] + ["new:0"]
 data[f"orchestra_parts[{by_name['Percussion']}][delete]"] = "1"
 save_piece(conductor, piece_id, data, files=[(f"orchestra_part_file[{by_name['Horn 1']}]", horn1b)])
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 2 in F", "horn2.pdf"), ("Horn 1", "horn1b.pdf")],
       f"rename, reorder, replace and delete applied: {parts}")
+page, _ = piece_form(conductor, piece_id)
+check("data-orchestra-sortable" in page and page.count("data-orchestra-drag-handle") >= 3
+      and '[position]' not in page, "parts are reordered by dragging, without order numbers")
 check(len([f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]) == 3,
       "replaced file was removed from storage")
 

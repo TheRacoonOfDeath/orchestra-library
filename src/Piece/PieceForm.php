@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Orchestra\Library\Piece;
 
+use Orchestra\Core\Ui\Form;
 use Orchestra\Core\Ui\Html;
 use Orchestra\Library\Capabilities;
 use Orchestra\Library\Download\DownloadController;
@@ -25,6 +26,9 @@ final class PieceForm
     public const FIELD_ARCHIVED = 'orchestra_library_archived';
     public const FIELD_PARTS = 'orchestra_parts';
     public const FIELD_NEW_PARTS = 'orchestra_new_parts';
+    /** The keys of the part rows in display order: part IDs, or "new:INDEX" for new rows. */
+    public const FIELD_PART_ORDER = 'orchestra_part_order';
+    public const NEW_PART_KEY_PREFIX = 'new:';
     public const FIELD_PART_FILE = 'orchestra_part_file';
     public const FIELD_NEW_PART_FILE = 'orchestra_new_part_file';
     public const FIELD_PIECE_FILES = 'orchestra_piece_files';
@@ -59,10 +63,9 @@ final class PieceForm
         $parts = $pieceId > 0 ? $this->parts->forPiece($pieceId) : [];
         $sheetMusic = $this->files->forParts(\array_map(static fn (Part $part): int => $part->id, $parts));
         $canManageFiles = \current_user_can(Capabilities::SHEET_MUSIC_MANAGE);
-        $next = self::nextPosition($parts);
 
         $headings = [
-            \__('Order', 'orchestra-library'),
+            '',
             \__('Name', 'orchestra-library'),
             \__('Description', 'orchestra-library'),
             \__('Sheet music', 'orchestra-library'),
@@ -72,7 +75,7 @@ final class PieceForm
         foreach ($headings as $heading) {
             $html .= '<th scope="col">' . \esc_html($heading) . '</th>';
         }
-        $html .= '</tr></thead><tbody id="orchestra-library-part-rows">';
+        $html .= '</tr></thead><tbody id="orchestra-library-part-rows" data-orchestra-sortable>';
 
         foreach ($parts as $part) {
             $field = self::FIELD_PARTS . '[' . $part->id . ']';
@@ -95,7 +98,7 @@ final class PieceForm
 
             $html .= $this->row(
                 $headings,
-                self::numberInput($field . '[position]', $part->position),
+                self::dragHandle((string) $part->id, $part->name),
                 '<input type="text" name="' . \esc_attr($field) . '[name]" required maxlength="' . PartNames::MAX_LENGTH
                     . '" value="' . \esc_attr($part->name) . '" aria-label="'
                     . \esc_attr__('Part name', 'orchestra-library') . '">',
@@ -109,16 +112,17 @@ final class PieceForm
             );
         }
 
-        $html .= $this->newRow($headings, '0', $next, $canManageFiles) . '</tbody></table></div>';
+        $html .= $this->newRow($headings, '0', $canManageFiles) . '</tbody></table></div>';
         $html .= '<template id="orchestra-library-new-part">'
-            . $this->newRow($headings, '__INDEX__', $next, $canManageFiles) . '</template>';
+            . $this->newRow($headings, '__INDEX__', $canManageFiles) . '</template>';
 
         return $html
             . '<div class="orchestra-actions"><button type="button" class="orchestra-button orchestra-button--small"'
             . ' data-orchestra-add-row="orchestra-library-new-part"'
             . ' data-orchestra-target="orchestra-library-part-rows">'
             . \esc_html__('+ Add part', 'orchestra-library') . '</button><span class="orchestra-muted">' . \esc_html__(
-                'Every part has one sheet music file; uploading a new file replaces the old one.',
+                'Drag the parts by their handle to change the order. Every part has one sheet music file;'
+                    . ' uploading a new file replaces the old one.',
                 'orchestra-library'
             ) . '</span></div>';
     }
@@ -172,13 +176,13 @@ final class PieceForm
     /**
      * @param list<string> $headings
      */
-    private function newRow(array $headings, string $key, int $position, bool $canManageFiles): string
+    private function newRow(array $headings, string $key, bool $canManageFiles): string
     {
         $field = self::FIELD_NEW_PARTS . '[' . $key . ']';
 
         return $this->row(
             $headings,
-            self::numberInput($field . '[position]', $position),
+            self::dragHandle(self::NEW_PART_KEY_PREFIX . $key, \__('New part', 'orchestra-library')),
             '<input type="text" name="' . \esc_attr($field) . '[name]" maxlength="' . PartNames::MAX_LENGTH
                 . '" placeholder="'
                 . \esc_attr__('New part, e.g. Horn 1', 'orchestra-library') . '" aria-label="'
@@ -189,7 +193,8 @@ final class PieceForm
                 ? self::fileInput(self::FIELD_NEW_PART_FILE . '[' . $key
                     . ']', \__('Upload sheet music', 'orchestra-library'))
                 : '',
-            ''
+            '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
+                . \esc_html__('Remove', 'orchestra-library') . '</button>'
         );
     }
 
@@ -207,11 +212,19 @@ final class PieceForm
         return $html . '</tr>';
     }
 
-    private static function numberInput(string $name, int $value): string
+    /**
+     * The handle for dragging a row; it also submits the row's place in the order.
+     */
+    private static function dragHandle(string $key, string $name): string
     {
-        return '<input type="number" name="' . \esc_attr($name) . '" value="' . $value
-            . '" style="max-width:5em" aria-label="'
-            . \esc_attr__('Order', 'orchestra-library') . '">';
+        /* translators: %s: part name */
+        $move = \sprintf(\__('Move "%s"', 'orchestra-library'), $name);
+
+        return Form::hidden(self::FIELD_PART_ORDER . '[]', $key)
+            . '<button type="button" class="orchestra-drag-handle" data-orchestra-drag-handle aria-label="'
+            . \esc_attr($move) . '" title="'
+            . \esc_attr__('Drag to change the order, or use the arrow keys', 'orchestra-library') . '">'
+            . '<span aria-hidden="true">&#8801;</span></button>';
     }
 
     private static function fileInput(string $name, string $label): string

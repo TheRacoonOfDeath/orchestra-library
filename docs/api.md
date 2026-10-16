@@ -28,10 +28,13 @@ Only call it from `plugins_loaded` or later, and only if orchestra-library is ac
 
 Download URLs check the permissions of the user who opens them, so they can be shown to anyone.
 
-Example: "Download my sheet music" for a project in orchestra-projects:
+Example: the sheet music of a member's parts in orchestra-projects, one link per part and one zip
+for all of them:
 
 ```php
-$url = $library->bundleDownloadUrl($assignedPartIds, $project->name);
+$file = $library->sheetMusic($partId);
+$url = $file === null ? null : $library->downloadUrl($file);
+$zipUrl = $library->bundleDownloadUrl($assignedPartIds, $project->title);
 ```
 
 Archived pieces must not be added to new programs; check `$piece->archived`.
