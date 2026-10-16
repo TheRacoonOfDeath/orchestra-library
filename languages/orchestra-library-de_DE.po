@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 16:01+0200\n"
+"POT-Creation-Date: 2026-10-16 18:20+0200\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -109,7 +109,7 @@ msgstr "Archivierte ausblenden"
 msgid "Show archived"
 msgstr "Archivierte anzeigen"
 
-#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:173
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:178
 msgid "New piece"
 msgstr "Neues Stück"
 
@@ -117,56 +117,56 @@ msgstr "Neues Stück"
 msgid "No pieces found."
 msgstr "Keine Stücke gefunden."
 
-#: src/Frontend/LibraryShortcode.php:124
+#: src/Frontend/LibraryShortcode.php:126
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/Frontend/LibraryShortcode.php:136
+#: src/Frontend/LibraryShortcode.php:140
 msgid "Piece files:"
 msgstr "Dateien zum Stück:"
 
-#: src/Frontend/LibraryShortcode.php:143
+#: src/Frontend/LibraryShortcode.php:147
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/Frontend/LibraryShortcode.php:154
+#: src/Frontend/LibraryShortcode.php:158
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 "Es werden nur die ersten Ergebnisse angezeigt. Verfeinere deine Suche, um "
 "weitere Stücke zu finden."
 
-#: src/Frontend/LibraryShortcode.php:166 src/Piece/PiecePostType.php:29
+#: src/Frontend/LibraryShortcode.php:171 src/Piece/PiecePostType.php:29
 #: src/Piece/PiecePostType.php:31 src/Plugin.php:155
 msgid "Library"
 msgstr "Notenbibliothek"
 
-#: src/Frontend/LibraryShortcode.php:169
+#: src/Frontend/LibraryShortcode.php:174
 msgid "The piece does not exist."
 msgstr "Das Stück existiert nicht."
 
-#: src/Frontend/LibraryShortcode.php:185
+#: src/Frontend/LibraryShortcode.php:190
 msgid "Title"
 msgstr "Titel"
 
-#: src/Frontend/LibraryShortcode.php:193 src/Piece/PieceForm.php:70
+#: src/Frontend/LibraryShortcode.php:198 src/Piece/PieceForm.php:70
 #: src/Piece/PieceForm.php:107 src/Piece/PieceForm.php:191
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/Frontend/LibraryShortcode.php:199
+#: src/Frontend/LibraryShortcode.php:204
 msgid "Parts and sheet music"
 msgstr "Stimmen und Noten"
 
-#: src/Frontend/LibraryShortcode.php:202
+#: src/Frontend/LibraryShortcode.php:207
 msgid "Piece files"
 msgstr "Dateien zum Stück"
 
-#: src/Frontend/LibraryShortcode.php:204
+#: src/Frontend/LibraryShortcode.php:209
 msgid "Save"
 msgstr "Speichern"
 
-#: src/Frontend/LibraryShortcode.php:205
+#: src/Frontend/LibraryShortcode.php:210
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -256,7 +256,9 @@ msgstr "+ Stimme hinzufügen"
 msgid ""
 "Drag the parts by their handle to change the order. Every part has one sheet "
 "music file; uploading a new file replaces the old one."
-msgstr "Ziehe die Stimmen an ihrem Griff, um die Reihenfolge zu ändern. Jede Stimme hat eine Notendatei; eine neu hochgeladene Datei ersetzt die alte."
+msgstr ""
+"Ziehe die Stimmen an ihrem Griff, um die Reihenfolge zu ändern. Jede Stimme "
+"hat eine Notendatei; eine neu hochgeladene Datei ersetzt die alte."
 
 #: src/Piece/PieceForm.php:136
 msgid "Files for the whole piece, e.g. the full score or performance notes."

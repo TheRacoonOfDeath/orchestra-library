@@ -121,7 +121,11 @@ final class LibraryShortcode
                 foreach ($parts as $part) {
                     $file = $sheetMusic[$part->id] ?? null;
                     $download = $canDownload && $file !== null
-                        ? self::downloadLink($file, \__('Download', 'orchestra-library'))
+                        ? Form::link(
+                            DownloadController::fileUrl($file->id),
+                            \__('Download', 'orchestra-library'),
+                            'small'
+                        )
                         : '';
                     $html .= '<li><span>' . \esc_html($part->name) . '</span>' . $download . '</li>';
                 }
@@ -163,7 +167,8 @@ final class LibraryShortcode
     {
         $piece = $pieceId > 0 ? $this->pieces->find($pieceId) : null;
         $base = self::baseUrl();
-        $back = '<p><a href="' . \esc_url($base) . '">&larr; ' . \esc_html__('Library', 'orchestra-library')
+        $back = '<p class="orchestra-back"><a href="' . \esc_url($base) . '">&larr; '
+            . \esc_html__('Library', 'orchestra-library')
             . '</a></p>';
         if ($pieceId > 0 && ($piece === null || !\current_user_can('edit_post', $pieceId))) {
             return $back . Html::empty(\__('The piece does not exist.', 'orchestra-library'));
