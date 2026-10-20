@@ -57,6 +57,10 @@ The files themselves are stored in a private directory, see [security.md](securi
 - **Deleting a piece** (administrators only) deletes its parts, file metadata and stored files.
   It is refused while other plugins report blockers (see [api.md](api.md)).
 - **Deleting a part** deletes its sheet music. It is refused while other plugins report blockers.
+  In the piece editor, deleting works with buttons that act right away after a confirmation, and
+  the other changes of the form are saved with them: a part (`orchestra_delete_part` = part ID),
+  the sheet music of a part (`orchestra_remove_part_file` = part ID) and a piece file
+  (`orchestra_delete_piece_file` = file ID).
 - **Deactivating** the plugin keeps all data.
 - **Deleting** the plugin (`uninstall.php`) removes the pieces, both tables, all stored files, the
   storage directory and the options.

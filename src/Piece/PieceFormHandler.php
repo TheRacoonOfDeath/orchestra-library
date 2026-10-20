@@ -76,14 +76,19 @@ final class PieceFormHandler
         $names = [];
         $toDelete = [];
         $toUpdate = [];
+        $deleteButton = self::string($input, PieceForm::FIELD_DELETE_PART);
+        $removeFileButton = self::string($input, PieceForm::FIELD_REMOVE_PART_FILE);
         foreach ($existing as $part) {
             $row = $submitted[$part->id] ?? null;
-            if (!\is_array($row)) {
+            $delete = $deleteButton === (string) $part->id || (\is_array($row) && !empty($row['delete']));
+            $removeFile = $removeFileButton === (string) $part->id || (\is_array($row) && !empty($row['remove_file']));
+            if (!\is_array($row) && !$delete && !$removeFile) {
                 $names[] = PartNames::normalize($part->name);
                 continue;
             }
+            $row = \is_array($row) ? $row : ['name' => $part->name, 'description' => $part->description];
 
-            if (!empty($row['delete'])) {
+            if ($delete) {
                 $blockers = $this->partService->partDeleteBlockers($part->id);
                 if ($blockers === []) {
                     $toDelete[] = $part;
@@ -104,7 +109,7 @@ final class PieceFormHandler
                     \sanitize_text_field(self::string($row, 'description')),
                     $order === [] ? $part->position : $position((string) $part->id),
                 ),
-                'removeFile' => !empty($row['remove_file']),
+                'removeFile' => $removeFile,
             ];
         }
 
@@ -191,6 +196,8 @@ final class PieceFormHandler
         $toDelete = \is_array($input[PieceForm::FIELD_DELETE_PIECE_FILES] ?? null)
             ? self::ids($input[PieceForm::FIELD_DELETE_PIECE_FILES])
             : [];
+        // The delete button of a single file.
+        $toDelete[] = \absint(self::string($input, PieceForm::FIELD_DELETE_PIECE_FILE));
         foreach ($this->files->pieceFiles($pieceId) as $file) {
             if (\in_array($file->id, $toDelete, true)) {
                 $this->fileService->delete($file);

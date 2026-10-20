@@ -25,6 +25,8 @@ final class PieceForm
     public const FIELD_COMPOSER = 'orchestra_library_composer';
     public const FIELD_ARCHIVED = 'orchestra_library_archived';
     public const FIELD_PARTS = 'orchestra_parts';
+    /** The delete button of a part submits the form with the part's ID in this field. */
+    public const FIELD_DELETE_PART = 'orchestra_delete_part';
     public const FIELD_NEW_PARTS = 'orchestra_new_parts';
     /** The keys of the part rows in display order: part IDs, or "new:INDEX" for new rows. */
     public const FIELD_PART_ORDER = 'orchestra_part_order';
@@ -33,6 +35,10 @@ final class PieceForm
     public const FIELD_NEW_PART_FILE = 'orchestra_new_part_file';
     public const FIELD_PIECE_FILES = 'orchestra_piece_files';
     public const FIELD_DELETE_PIECE_FILES = 'orchestra_delete_piece_files';
+    /** The remove button of a part's sheet music submits the part's ID in this field. */
+    public const FIELD_REMOVE_PART_FILE = 'orchestra_remove_part_file';
+    /** The delete button of a piece file submits the file's ID in this field. */
+    public const FIELD_DELETE_PIECE_FILE = 'orchestra_delete_piece_file';
 
     public function __construct(
         private readonly PartRepository $parts,
@@ -84,9 +90,14 @@ final class PieceForm
             if ($file !== null) {
                 $fileCell .= '<span>' . self::fileLink($file) . '</span>';
                 if ($canManageFiles) {
-                    $fileCell .= '<label class="orchestra-checkbox"><input type="checkbox" value="1" name="'
-                        . \esc_attr($field) . '[remove_file]"> <span>' . \esc_html__('Remove', 'orchestra-library')
-                        . '</span></label>';
+                    /* translators: %s: part name */
+                    $confirm = \__('Remove the sheet music of "%s"?', 'orchestra-library');
+                    $fileCell .= self::immediateButton(
+                        self::FIELD_REMOVE_PART_FILE,
+                        $part->id,
+                        \__('Remove', 'orchestra-library'),
+                        \sprintf($confirm, $part->name)
+                    );
                 }
             }
             if ($canManageFiles) {
@@ -106,9 +117,7 @@ final class PieceForm
                     . \esc_attr($part->description)
                     . '" aria-label="' . \esc_attr__('Description', 'orchestra-library') . '">',
                 $fileCell,
-                '<label class="orchestra-checkbox"><input type="checkbox" name="' . \esc_attr($field)
-                    . '[delete]" value="1"> <span>'
-                    . \esc_html__('Delete part', 'orchestra-library') . '</span></label>'
+                self::deleteButton($part)
             );
         }
 
@@ -127,6 +136,34 @@ final class PieceForm
             ) . '</span></div>';
     }
 
+    /**
+     * Deletes the part right away, after a confirmation; the other changes in the form are saved
+     * with it.
+     */
+    private static function deleteButton(Part $part): string
+    {
+        /* translators: %s: part name */
+        $confirm = \__('Delete the part "%s" and its sheet music?', 'orchestra-library');
+
+        return self::immediateButton(
+            self::FIELD_DELETE_PART,
+            $part->id,
+            \__('Delete part', 'orchestra-library'),
+            \sprintf($confirm, $part->name)
+        );
+    }
+
+    /**
+     * A button that deletes or removes something right away, after a confirmation. It submits the
+     * whole form, so the other changes are saved with it.
+     */
+    private static function immediateButton(string $field, int $id, string $label, string $confirm): string
+    {
+        return '<button type="submit" class="orchestra-button orchestra-button--small orchestra-button--danger"'
+            . ' name="' . \esc_attr($field) . '" value="' . $id . '" formnovalidate'
+            . ' data-orchestra-confirm="' . \esc_attr($confirm) . '">' . \esc_html($label) . '</button>';
+    }
+
     public function pieceFiles(int $pieceId): string
     {
         $files = $pieceId > 0 ? $this->files->pieceFiles($pieceId) : [];
@@ -141,10 +178,14 @@ final class PieceForm
             foreach ($files as $file) {
                 $html .= '<li><span>' . self::fileLink($file) . '</span>';
                 if ($canManageFiles) {
-                    $html .= '<label class="orchestra-checkbox"><input type="checkbox" name="'
-                        . self::FIELD_DELETE_PIECE_FILES
-                        . '[]" value="' . $file->id . '"> <span>' . \esc_html__('Delete', 'orchestra-library')
-                        . '</span></label>';
+                    /* translators: %s: file name */
+                    $confirm = \__('Delete the file "%s"?', 'orchestra-library');
+                    $html .= self::immediateButton(
+                        self::FIELD_DELETE_PIECE_FILE,
+                        $file->id,
+                        \__('Delete', 'orchestra-library'),
+                        \sprintf($confirm, $file->originalName)
+                    );
                 }
                 $html .= '</li>';
             }

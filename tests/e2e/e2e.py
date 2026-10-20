@@ -199,7 +199,8 @@ for p in parts:
     data[f"orchestra_parts[{p['id']}][name]"] = p["name"]
 data[f"orchestra_parts[{by_name['Horn 2']}][name]"] = "Horn 2 in F"
 data["orchestra_part_order[]"] = [str(by_name[n]) for n in ("Horn 2", "Horn 1", "Percussion")] + ["new:0"]
-data[f"orchestra_parts[{by_name['Percussion']}][delete]"] = "1"
+# The delete button of the part submits its ID; the other changes are saved with it.
+data["orchestra_delete_part"] = str(by_name["Percussion"])
 save_piece(conductor, piece_id, data, files=[(f"orchestra_part_file[{by_name['Horn 1']}]", horn1b)])
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 2 in F", "horn2.pdf"), ("Horn 1", "horn1b.pdf")],
@@ -207,6 +208,8 @@ check([(p["name"], p["file"]) for p in parts] == [("Horn 2 in F", "horn2.pdf"), 
 page, _ = piece_form(conductor, piece_id)
 check("data-orchestra-sortable" in page and page.count("data-orchestra-drag-handle") >= 3
       and '[position]' not in page, "parts are reordered by dragging, without order numbers")
+check('name="orchestra_delete_part"' in page and "[delete]" not in page and "orchestra-default-submit" in page,
+      "parts are deleted with a button, not a checkbox, and Enter still saves")
 check(len([f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]) == 3,
       "replaced file was removed from storage")
 
@@ -319,9 +322,25 @@ check(status == 409 and "Assigned in Spring Concert 2027." in body.decode(), "tr
 check(wp_eval(f'echo get_post_status({piece_id});') == "publish", "piece is still published")
 _, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
                                               f"orchestra_parts[{by_name['Horn 1']}][name]": "Horn 1",
-                                              f"orchestra_parts[{by_name['Horn 1']}][delete]": "1"})
+                                              "orchestra_delete_part": str(by_name["Horn 1"])})
 check("cannot be deleted" in body.decode() and len(parts_of(piece_id)) == 2, "deleting a referenced part is blocked")
 os.remove(os.path.join(mu, "blocker.php"))
+
+# Removing sheet music and deleting piece files with their buttons
+page, _ = piece_form(conductor, piece_id)
+check('name="orchestra_remove_part_file"' in page and 'name="orchestra_delete_piece_file"' in page
+      and "[remove_file]" not in page and "orchestra_delete_piece_files[]" not in page,
+      "sheet music and piece files are removed with buttons, not checkboxes")
+current = {p["name"]: p for p in parts_of(piece_id)}
+save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                 "orchestra_remove_part_file": str(current["Horn 1"]["id"])})
+check(parts_of(piece_id)[1]["file"] is None and parts_of(piece_id)[0]["file"] == "horn2.pdf",
+      "the remove button removes the sheet music of its part only")
+score_id = wp_eval(f'foreach (Orchestra\\Library\\Plugin::instance()->library()->pieceFiles({piece_id}) as $f) {{ echo $f->id; }}')
+save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                 "orchestra_delete_piece_file": score_id})
+check(wp_eval(f'echo count(Orchestra\\Library\\Plugin::instance()->library()->pieceFiles({piece_id}));') == "0",
+      "the delete button deletes the piece file")
 
 wp_eval(f'wp_delete_post({piece_id}, true);')
 check(parts_of(piece_id) == [], "deleting a piece deletes its parts")

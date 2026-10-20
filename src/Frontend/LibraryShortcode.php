@@ -186,6 +186,9 @@ final class LibraryShortcode
                 ['class' => 'orchestra-form orchestra-form--wide'],
                 true
             )
+            // Enter in a text field saves instead of pressing the first delete button.
+            . '<button type="submit" class="orchestra-default-submit" tabindex="-1" aria-hidden="true">'
+            . \esc_html__('Save', 'orchestra-library') . '</button>'
             . '<div class="orchestra-card orchestra-stack">'
             . Html::field(
                 'orchestra-library-title',
