@@ -167,6 +167,9 @@ check(status == 200 and piece_id > 0 and wp_eval(f"echo get_post_status({piece_i
       "conductor creates a published piece")
 check("The piece has been saved." in body.decode() and f'name="piece" value="{piece_id}"' in body.decode(),
       "the editor of the new piece opens after saving")
+_, _, body = conductor.request(LIBRARY)
+check(f'orchestra_piece={piece_id}">Pirates of the Caribbean</a>' in body.decode() and ">Edit<" not in body.decode(),
+      "conductors open the editor by clicking the title of a piece")
 parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 1", "horn1.pdf"), ("Horn 2", "horn2.pdf"), ("Percussion", None)],
       f"parts and sheet music stored in the order of the rows: {parts}")
@@ -232,6 +235,8 @@ _, _, body = member.request(f"/?page_id={library_page}")
 page = body.decode()
 check("Pirates of the Caribbean" in page and "Horn 2 in F" in page and "Klaus Badelt" in page, "member sees the library")
 check("Partitur" in page, "member sees the piece file")
+check("Pirates of the Caribbean</h3>" in page and f"orchestra_piece={piece_id}" not in page,
+      "members see the title without a link to the editor")
 _, _, body = member.request(f"/?page_id={library_page}&orchestra_q=Badelt")
 check("Pirates of the Caribbean" in body.decode(), "search by composer")
 _, _, body = member.request(f"/?page_id={library_page}&orchestra_q=Mozart")

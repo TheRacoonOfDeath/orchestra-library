@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 18:20+0200\n"
+"POT-Creation-Date: 2026-10-20 11:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "Parts"
 msgstr ""
 
-#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:113
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:119
 #: src/Piece/PieceForm.php:54
 msgid "Archived"
 msgstr ""
@@ -113,7 +113,7 @@ msgstr ""
 msgid "Show archived"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:178
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:175
 msgid "New piece"
 msgstr ""
 
@@ -121,54 +121,50 @@ msgstr ""
 msgid "No pieces found."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:126
+#: src/Frontend/LibraryShortcode.php:132
 msgid "Download"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:140
+#: src/Frontend/LibraryShortcode.php:146
 msgid "Piece files:"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:147
-msgid "Edit"
-msgstr ""
-
-#: src/Frontend/LibraryShortcode.php:158
+#: src/Frontend/LibraryShortcode.php:155
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:171 src/Piece/PiecePostType.php:29
+#: src/Frontend/LibraryShortcode.php:168 src/Piece/PiecePostType.php:29
 #: src/Piece/PiecePostType.php:31 src/Plugin.php:155
 msgid "Library"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:174
+#: src/Frontend/LibraryShortcode.php:171
 msgid "The piece does not exist."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:190
+#: src/Frontend/LibraryShortcode.php:187
 msgid "Title"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:198 src/Piece/PieceForm.php:70
+#: src/Frontend/LibraryShortcode.php:195 src/Piece/PieceForm.php:70
 #: src/Piece/PieceForm.php:107 src/Piece/PieceForm.php:191
 msgid "Description"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:204
+#: src/Frontend/LibraryShortcode.php:201
 msgid "Parts and sheet music"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:207
+#: src/Frontend/LibraryShortcode.php:204
 msgid "Piece files"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:209
+#: src/Frontend/LibraryShortcode.php:206
 msgid "Save"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:210
+#: src/Frontend/LibraryShortcode.php:207
 msgid "Cancel"
 msgstr ""
 

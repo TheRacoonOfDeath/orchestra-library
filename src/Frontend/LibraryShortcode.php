@@ -108,8 +108,14 @@ final class LibraryShortcode
 
         $html .= '<div class="orchestra-cards">';
         foreach ($pieces as $piece) {
+            // Conductors open the editor by clicking the title.
+            $title = \esc_html($piece->title);
+            if ($canEdit && \current_user_can('edit_post', $piece->id)) {
+                $title = '<a href="' . \esc_url(\add_query_arg(self::PIECE_PARAMETER, $piece->id, $base)) . '">'
+                    . $title . '</a>';
+            }
             $html .= '<article class="orchestra-card"><div class="orchestra-toolbar"><h3 class="orchestra-card__title">'
-                . \esc_html($piece->title) . '</h3>'
+                . $title . '</h3>'
                 . ($piece->archived ? Html::badge(\__('Archived', 'orchestra-library'), 'warning') : '') . '</div>';
             if ($piece->composer !== '') {
                 $html .= '<div class="orchestra-card__meta">' . \esc_html($piece->composer) . '</div>';
@@ -139,15 +145,6 @@ final class LibraryShortcode
                 );
                 $html .= '<p class="orchestra-muted">' . \esc_html__('Piece files:', 'orchestra-library') . ' '
                     . \implode(', ', $links) . '</p>';
-            }
-            if ($canEdit && \current_user_can('edit_post', $piece->id)) {
-                $html .= '<div class="orchestra-card__actions">'
-                    . Form::link(
-                        \add_query_arg(self::PIECE_PARAMETER, $piece->id, $base),
-                        \__('Edit', 'orchestra-library'),
-                        'small'
-                    )
-                    . '</div>';
             }
             $html .= '</article>';
         }

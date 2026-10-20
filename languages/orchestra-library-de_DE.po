@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-16 18:20+0200\n"
+"POT-Creation-Date: 2026-10-20 11:15+0200\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -33,7 +33,7 @@ msgstr "Komponist"
 msgid "Parts"
 msgstr "Stimmen"
 
-#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:113
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:119
 #: src/Piece/PieceForm.php:54
 msgid "Archived"
 msgstr "Archiviert"
@@ -109,7 +109,7 @@ msgstr "Archivierte ausblenden"
 msgid "Show archived"
 msgstr "Archivierte anzeigen"
 
-#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:178
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:175
 msgid "New piece"
 msgstr "Neues Stück"
 
@@ -117,56 +117,52 @@ msgstr "Neues Stück"
 msgid "No pieces found."
 msgstr "Keine Stücke gefunden."
 
-#: src/Frontend/LibraryShortcode.php:126
+#: src/Frontend/LibraryShortcode.php:132
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/Frontend/LibraryShortcode.php:140
+#: src/Frontend/LibraryShortcode.php:146
 msgid "Piece files:"
 msgstr "Dateien zum Stück:"
 
-#: src/Frontend/LibraryShortcode.php:147
-msgid "Edit"
-msgstr "Bearbeiten"
-
-#: src/Frontend/LibraryShortcode.php:158
+#: src/Frontend/LibraryShortcode.php:155
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 "Es werden nur die ersten Ergebnisse angezeigt. Verfeinere deine Suche, um "
 "weitere Stücke zu finden."
 
-#: src/Frontend/LibraryShortcode.php:171 src/Piece/PiecePostType.php:29
+#: src/Frontend/LibraryShortcode.php:168 src/Piece/PiecePostType.php:29
 #: src/Piece/PiecePostType.php:31 src/Plugin.php:155
 msgid "Library"
 msgstr "Notenbibliothek"
 
-#: src/Frontend/LibraryShortcode.php:174
+#: src/Frontend/LibraryShortcode.php:171
 msgid "The piece does not exist."
 msgstr "Das Stück existiert nicht."
 
-#: src/Frontend/LibraryShortcode.php:190
+#: src/Frontend/LibraryShortcode.php:187
 msgid "Title"
 msgstr "Titel"
 
-#: src/Frontend/LibraryShortcode.php:198 src/Piece/PieceForm.php:70
+#: src/Frontend/LibraryShortcode.php:195 src/Piece/PieceForm.php:70
 #: src/Piece/PieceForm.php:107 src/Piece/PieceForm.php:191
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/Frontend/LibraryShortcode.php:204
+#: src/Frontend/LibraryShortcode.php:201
 msgid "Parts and sheet music"
 msgstr "Stimmen und Noten"
 
-#: src/Frontend/LibraryShortcode.php:207
+#: src/Frontend/LibraryShortcode.php:204
 msgid "Piece files"
 msgstr "Dateien zum Stück"
 
-#: src/Frontend/LibraryShortcode.php:209
+#: src/Frontend/LibraryShortcode.php:206
 msgid "Save"
 msgstr "Speichern"
 
-#: src/Frontend/LibraryShortcode.php:210
+#: src/Frontend/LibraryShortcode.php:207
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -344,6 +340,9 @@ msgstr "Stücke und Noten."
 #: src/Plugin.php:168
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
+
+#~ msgid "Edit"
+#~ msgstr "Bearbeiten"
 
 #~ msgid ""
 #~ "Every part has one sheet music file; uploading a new file replaces the "
