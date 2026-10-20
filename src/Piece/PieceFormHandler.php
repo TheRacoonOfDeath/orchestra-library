@@ -86,7 +86,7 @@ final class PieceFormHandler
                 $names[] = PartNames::normalize($part->name);
                 continue;
             }
-            $row = \is_array($row) ? $row : ['name' => $part->name, 'description' => $part->description];
+            $row = \is_array($row) ? $row : ['name' => $part->name];
 
             if ($delete) {
                 $blockers = $this->partService->partDeleteBlockers($part->id);
@@ -106,7 +106,8 @@ final class PieceFormHandler
                     $part->id,
                     $pieceId,
                     $name,
-                    \sanitize_text_field(self::string($row, 'description')),
+                    // Parts have no description in the editor any more; a stored one is kept.
+                    $part->description,
                     $order === [] ? $part->position : $position((string) $part->id),
                 ),
                 'removeFile' => $removeFile,
@@ -126,7 +127,7 @@ final class PieceFormHandler
             $names[] = $name;
             $toInsert[$key] = [
                 'name' => $name,
-                'description' => \sanitize_text_field(self::string($row, 'description')),
+                'description' => '',
                 'position' => $order === [] ? $nextPosition++ : $position(PieceForm::NEW_PART_KEY_PREFIX . $key),
             ];
         }

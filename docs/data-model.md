@@ -24,7 +24,7 @@ Table `{prefix}orchestra_library_parts`
 | `id` | bigint unsigned | primary key |
 | `piece_id` | bigint unsigned | ID of the piece post |
 | `name` | varchar(191) | unique per piece, case-insensitive |
-| `description` | text | |
+| `description` | text | no longer edited (removed from the piece editor in 0.4.5); stored descriptions are kept, new parts have none |
 | `position` | int | display order within the piece |
 
 ## Files

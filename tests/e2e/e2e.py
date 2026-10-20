@@ -210,6 +210,7 @@ check("data-orchestra-sortable" in page and page.count("data-orchestra-drag-hand
       and '[position]' not in page, "parts are reordered by dragging, without order numbers")
 check('name="orchestra_delete_part"' in page and "[delete]" not in page and "orchestra-default-submit" in page,
       "parts are deleted with a button, not a checkbox, and Enter still saves")
+check("[description]" not in page, "parts have no description field")
 check(len([f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]) == 3,
       "replaced file was removed from storage")
 

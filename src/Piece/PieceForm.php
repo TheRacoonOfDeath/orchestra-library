@@ -73,7 +73,6 @@ final class PieceForm
         $headings = [
             '',
             \__('Name', 'orchestra-library'),
-            \__('Description', 'orchestra-library'),
             \__('Sheet music', 'orchestra-library'),
             \__('Delete', 'orchestra-library'),
         ];
@@ -88,7 +87,8 @@ final class PieceForm
             $file = $sheetMusic[$part->id] ?? null;
             $fileCell = '';
             if ($file !== null) {
-                $fileCell .= '<span>' . self::fileLink($file) . '</span>';
+                // The file and its remove button on one line.
+                $fileCell .= '<div class="orchestra-actions"><span>' . self::fileLink($file) . '</span>';
                 if ($canManageFiles) {
                     /* translators: %s: part name */
                     $confirm = \__('Remove the sheet music of "%s"?', 'orchestra-library');
@@ -99,6 +99,7 @@ final class PieceForm
                         \sprintf($confirm, $part->name)
                     );
                 }
+                $fileCell .= '</div>';
             }
             if ($canManageFiles) {
                 $label = $file === null
@@ -113,9 +114,6 @@ final class PieceForm
                 '<input type="text" name="' . \esc_attr($field) . '[name]" required maxlength="' . PartNames::MAX_LENGTH
                     . '" value="' . \esc_attr($part->name) . '" aria-label="'
                     . \esc_attr__('Part name', 'orchestra-library') . '">',
-                '<input type="text" name="' . \esc_attr($field) . '[description]" value="'
-                    . \esc_attr($part->description)
-                    . '" aria-label="' . \esc_attr__('Description', 'orchestra-library') . '">',
                 $fileCell,
                 self::deleteButton($part)
             );
@@ -228,8 +226,6 @@ final class PieceForm
                 . '" placeholder="'
                 . \esc_attr__('New part, e.g. Horn 1', 'orchestra-library') . '" aria-label="'
                 . \esc_attr__('Name of the new part', 'orchestra-library') . '">',
-            '<input type="text" name="' . \esc_attr($field) . '[description]" aria-label="'
-                . \esc_attr__('Description', 'orchestra-library') . '">',
             $canManageFiles
                 ? self::fileInput(self::FIELD_NEW_PART_FILE . '[' . $key
                     . ']', \__('Upload sheet music', 'orchestra-library'))

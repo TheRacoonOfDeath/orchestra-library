@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 23:26+0200\n"
+"POT-Creation-Date: 2026-10-20 23:32+0200\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -157,8 +157,7 @@ msgstr "Speichern"
 msgid "Title"
 msgstr "Titel"
 
-#: src/Frontend/LibraryShortcode.php:203 src/Piece/PieceForm.php:76
-#: src/Piece/PieceForm.php:118 src/Piece/PieceForm.php:232
+#: src/Frontend/LibraryShortcode.php:203
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -224,11 +223,11 @@ msgstr ""
 msgid "Name"
 msgstr "Name"
 
-#: src/Piece/PieceForm.php:77
+#: src/Piece/PieceForm.php:76
 msgid "Sheet music"
 msgstr "Noten"
 
-#: src/Piece/PieceForm.php:78 src/Piece/PieceForm.php:186
+#: src/Piece/PieceForm.php:77 src/Piece/PieceForm.php:184
 msgid "Delete"
 msgstr "Löschen"
 
@@ -238,27 +237,27 @@ msgstr "Löschen"
 msgid "Remove the sheet music of \"%s\"?"
 msgstr "Die Noten von „%s“ entfernen?"
 
-#: src/Piece/PieceForm.php:98 src/Piece/PieceForm.php:238
+#: src/Piece/PieceForm.php:98 src/Piece/PieceForm.php:234
 msgid "Remove"
 msgstr "Entfernen"
 
-#: src/Piece/PieceForm.php:105 src/Piece/PieceForm.php:235
+#: src/Piece/PieceForm.php:106 src/Piece/PieceForm.php:231
 msgid "Upload sheet music"
 msgstr "Noten hochladen"
 
-#: src/Piece/PieceForm.php:106
+#: src/Piece/PieceForm.php:107
 msgid "Replace sheet music"
 msgstr "Noten ersetzen"
 
-#: src/Piece/PieceForm.php:115
+#: src/Piece/PieceForm.php:116
 msgid "Part name"
 msgstr "Stimmname"
 
-#: src/Piece/PieceForm.php:132
+#: src/Piece/PieceForm.php:130
 msgid "+ Add part"
 msgstr "+ Stimme hinzufügen"
 
-#: src/Piece/PieceForm.php:133
+#: src/Piece/PieceForm.php:131
 msgid ""
 "Drag the parts by their handle to change the order. Every part has one sheet "
 "music file; uploading a new file replaces the old one."
@@ -267,63 +266,63 @@ msgstr ""
 "hat eine Notendatei; eine neu hochgeladene Datei ersetzt die alte."
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:146
+#: src/Piece/PieceForm.php:144
 #, php-format
 msgid "Delete the part \"%s\" and its sheet music?"
 msgstr "Die Stimme „%s“ mit ihren Noten löschen?"
 
-#: src/Piece/PieceForm.php:151
+#: src/Piece/PieceForm.php:149
 msgid "Delete part"
 msgstr "Stimme löschen"
 
-#: src/Piece/PieceForm.php:173
+#: src/Piece/PieceForm.php:171
 msgid "Files for the whole piece, e.g. the full score or performance notes."
 msgstr ""
 "Dateien für das ganze Stück, z. B. die Partitur oder Aufführungshinweise."
 
 #. translators: %s: file name
-#: src/Piece/PieceForm.php:182
+#: src/Piece/PieceForm.php:180
 #, php-format
 msgid "Delete the file \"%s\"?"
 msgstr "Die Datei „%s“ löschen?"
 
-#: src/Piece/PieceForm.php:197
+#: src/Piece/PieceForm.php:195
 msgid "Upload piece files"
 msgstr "Dateien zum Stück hochladen"
 
-#: src/Piece/PieceForm.php:226
+#: src/Piece/PieceForm.php:224
 msgid "New part"
 msgstr "Neue Stimme"
 
-#: src/Piece/PieceForm.php:229
+#: src/Piece/PieceForm.php:227
 msgid "New part, e.g. Horn 1"
 msgstr "Neue Stimme, z. B. Horn 1"
 
-#: src/Piece/PieceForm.php:230
+#: src/Piece/PieceForm.php:228
 msgid "Name of the new part"
 msgstr "Name der neuen Stimme"
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:262
+#: src/Piece/PieceForm.php:258
 #, php-format
 msgid "Move \"%s\""
 msgstr "„%s“ verschieben"
 
-#: src/Piece/PieceForm.php:267
+#: src/Piece/PieceForm.php:263
 msgid "Drag to change the order, or use the arrow keys"
 msgstr "Ziehen, um die Reihenfolge zu ändern, oder die Pfeiltasten verwenden"
 
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:96
+#: src/Piece/PieceFormHandler.php:98
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr "Die Stimme „%1$s“ kann nicht gelöscht werden: %2$s"
 
-#: src/Piece/PieceFormHandler.php:135
+#: src/Piece/PieceFormHandler.php:137
 msgid "The parts were not saved."
 msgstr "Die Stimmen wurden nicht gespeichert."
 
-#: src/Piece/PieceFormHandler.php:161
+#: src/Piece/PieceFormHandler.php:163
 msgid "The parts could not be saved completely."
 msgstr "Die Stimmen konnten nicht vollständig gespeichert werden."
 
