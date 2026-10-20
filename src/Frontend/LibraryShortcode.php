@@ -103,7 +103,12 @@ final class LibraryShortcode
         $html .= '</div>';
 
         if ($pieces === []) {
-            return $html . Html::empty(\__('No pieces found.', 'orchestra-library'));
+            return $html . Html::empty($query !== ''
+                ? \__('No pieces found. Try another title or composer.', 'orchestra-library')
+                : \__(
+                    'The library is still empty. Pieces appear here once the conductors have added them.',
+                    'orchestra-library'
+                ));
         }
 
         $html .= '<div class="orchestra-cards">';

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 11:15+0200\n"
+"POT-Creation-Date: 2026-10-20 14:35+0200\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -33,7 +33,7 @@ msgstr "Komponist"
 msgid "Parts"
 msgstr "Stimmen"
 
-#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:119
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:124
 #: src/Piece/PieceForm.php:54
 msgid "Archived"
 msgstr "Archiviert"
@@ -83,7 +83,7 @@ msgstr "„%s“ konnte nicht hochgeladen werden."
 
 #: src/Frontend/LibraryShortcode.php:52
 msgid "Please log in to see the library."
-msgstr "Bitte melde dich an, um die Notenbibliothek zu sehen."
+msgstr "Bitte logge dich ein, um die Notenbibliothek zu sehen."
 
 #: src/Frontend/LibraryShortcode.php:55
 msgid "You are not allowed to see the library."
@@ -109,60 +109,66 @@ msgstr "Archivierte ausblenden"
 msgid "Show archived"
 msgstr "Archivierte anzeigen"
 
-#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:175
+#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:180
 msgid "New piece"
 msgstr "Neues Stück"
 
-#: src/Frontend/LibraryShortcode.php:106 src/Piece/PiecePostType.php:38
-msgid "No pieces found."
-msgstr "Keine Stücke gefunden."
+#: src/Frontend/LibraryShortcode.php:107
+msgid "No pieces found. Try another title or composer."
+msgstr "Keine Stücke gefunden. Versuche einen anderen Titel oder Komponisten."
 
-#: src/Frontend/LibraryShortcode.php:132
+#: src/Frontend/LibraryShortcode.php:109
+msgid ""
+"The library is still empty. Pieces appear here once the conductors have "
+"added them."
+msgstr "Die Notenbibliothek ist noch leer. Stücke erscheinen hier, sobald die Dirigenten sie angelegt haben."
+
+#: src/Frontend/LibraryShortcode.php:137
 msgid "Download"
 msgstr "Herunterladen"
 
-#: src/Frontend/LibraryShortcode.php:146
+#: src/Frontend/LibraryShortcode.php:151
 msgid "Piece files:"
 msgstr "Dateien zum Stück:"
 
-#: src/Frontend/LibraryShortcode.php:155
+#: src/Frontend/LibraryShortcode.php:160
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 "Es werden nur die ersten Ergebnisse angezeigt. Verfeinere deine Suche, um "
 "weitere Stücke zu finden."
 
-#: src/Frontend/LibraryShortcode.php:168 src/Piece/PiecePostType.php:29
+#: src/Frontend/LibraryShortcode.php:173 src/Piece/PiecePostType.php:29
 #: src/Piece/PiecePostType.php:31 src/Plugin.php:155
 msgid "Library"
 msgstr "Notenbibliothek"
 
-#: src/Frontend/LibraryShortcode.php:171
+#: src/Frontend/LibraryShortcode.php:176
 msgid "The piece does not exist."
 msgstr "Das Stück existiert nicht."
 
-#: src/Frontend/LibraryShortcode.php:187
+#: src/Frontend/LibraryShortcode.php:192
 msgid "Title"
 msgstr "Titel"
 
-#: src/Frontend/LibraryShortcode.php:195 src/Piece/PieceForm.php:70
+#: src/Frontend/LibraryShortcode.php:200 src/Piece/PieceForm.php:70
 #: src/Piece/PieceForm.php:107 src/Piece/PieceForm.php:191
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/Frontend/LibraryShortcode.php:201
+#: src/Frontend/LibraryShortcode.php:206
 msgid "Parts and sheet music"
 msgstr "Stimmen und Noten"
 
-#: src/Frontend/LibraryShortcode.php:204
+#: src/Frontend/LibraryShortcode.php:209
 msgid "Piece files"
 msgstr "Dateien zum Stück"
 
-#: src/Frontend/LibraryShortcode.php:206
+#: src/Frontend/LibraryShortcode.php:211
 msgid "Save"
 msgstr "Speichern"
 
-#: src/Frontend/LibraryShortcode.php:207
+#: src/Frontend/LibraryShortcode.php:212
 msgid "Cancel"
 msgstr "Abbrechen"
 
@@ -329,15 +335,23 @@ msgstr "Neues Stück"
 msgid "Search Pieces"
 msgstr "Stücke suchen"
 
+#: src/Piece/PiecePostType.php:38
+msgid "No pieces found."
+msgstr "Keine Stücke gefunden."
+
 #: src/Piece/PiecePostType.php:39
 msgid "No pieces found in Trash."
 msgstr "Keine Stücke im Papierkorb gefunden."
 
-#: src/Plugin.php:156
+#: src/Plugin.php:158
+msgid "Pieces and sheet music; add and edit pieces."
+msgstr "Stücke und Noten; Stücke anlegen und bearbeiten."
+
+#: src/Plugin.php:159
 msgid "Pieces and sheet music."
 msgstr "Stücke und Noten."
 
-#: src/Plugin.php:168
+#: src/Plugin.php:171
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 

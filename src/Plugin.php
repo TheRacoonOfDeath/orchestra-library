@@ -153,7 +153,10 @@ final class Plugin
         $menu->add(new MenuItem(
             LibraryShortcode::TAG,
             \__('Library', 'orchestra-library'),
-            \__('Pieces and sheet music.', 'orchestra-library'),
+            // The menu is built for the current user.
+            \current_user_can(Capabilities::PIECE_EDIT)
+                ? \__('Pieces and sheet music; add and edit pieces.', 'orchestra-library')
+                : \__('Pieces and sheet music.', 'orchestra-library'),
             static fn (int $userId): bool => \user_can($userId, Capabilities::PIECE_READ),
             30
         ));
