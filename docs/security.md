@@ -53,7 +53,8 @@ Changing the directory later requires moving the existing files.
 Downloads go through `wp-admin/admin-post.php?action=orchestra_library_download&file=<id>` and
 `…?action=orchestra_library_download_bundle&parts=<ids>&name=<name>`.
 
-- Logged-out users are redirected to the login page.
+- Logged-out users are redirected to the Orchestra login page (`LoginPageRedirect::requireLogin()`
+  of orchestra-core) and come back to the download after logging in.
 - The user needs `orchestra_library_sheet_music_download` and must be allowed to read the piece,
   so sheet music of draft pieces is only available to conductors and administrators.
 - Unknown files and missing permissions both answer 404, so file IDs cannot be probed.

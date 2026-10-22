@@ -271,8 +271,26 @@ check("Spring" in headers.get("content-disposition", "") and ".zip" in headers.g
 
 # 7. Access control
 anonymous = Session()
-status, headers, _ = anonymous.request(f"/wp-admin/admin-post.php?action=orchestra_library_download&file={file_ids['Horn 1']}", follow=False)
-check(status == 302 and "wp-login.php" in headers.get("location", ""), "logged-out download redirects to login")
+download = f"/wp-admin/admin-post.php?action=orchestra_library_download&file={file_ids['Horn 1']}"
+status, headers, _ = anonymous.request(download, follow=False)
+location = headers.get("location", "")
+check(status == 302 and "wp-login.php" in location and "reauth" not in location, f"logged-out download redirects to login: {location}")
+# Without a login page, the start page with its login form is used, and the login returns to the download.
+portal_page = int(wp_eval('echo wp_insert_post(["post_type" => "page", "post_status" => "publish", "post_title" => "Orchestra", "post_content" => "[orchestra_portal]"]);'))
+status, headers, _ = anonymous.request(download, follow=False)
+location = headers.get("location", "")
+check(status == 302 and f"page_id={portal_page}" in location and "redirect_to=" in location,
+      f"logged-out download leads to the start page: {location}")
+_, _, body = anonymous.request(location.replace(BASE, ""))
+form = body.decode()
+redirect = re.search(r'name="redirect_to" value="([^"]*)"', form)
+redirect = html.unescape(redirect.group(1)) if redirect else ""
+check('name="log"' in form and redirect == BASE + download, f"the login form returns to the download: {redirect}")
+status, headers, _ = anonymous.request("/wp-login.php", data={
+    "log": "member", "pwd": "pass", "wp-submit": "Log In", "testcookie": "1", "redirect_to": redirect,
+}, cookie="wordpress_test_cookie=WP%20Cookie%20check", output=target)
+check(status == 200 and "attachment" in headers.get("content-disposition", ""), "after logging in, the download starts")
+open(anonymous.jar, "w").close()  # logged out again
 _, _, body = anonymous.request(f"/?page_id={library_page}")
 check("Please log in" in body.decode() and "Pirates" not in body.decode(), "logged-out visitors do not see the library")
 subscriber = Session("sub")

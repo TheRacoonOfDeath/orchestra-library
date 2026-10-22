@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Orchestra\Library\Download;
 
+use Orchestra\Core\Ui\LoginPageRedirect;
 use Orchestra\Library\Capabilities;
 use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\FileService;
@@ -56,8 +57,8 @@ final class DownloadController
     {
         \add_action('admin_post_' . self::FILE_ACTION, [$this, 'downloadFile']);
         \add_action('admin_post_' . self::BUNDLE_ACTION, [$this, 'downloadBundle']);
-        \add_action('admin_post_nopriv_' . self::FILE_ACTION, 'auth_redirect');
-        \add_action('admin_post_nopriv_' . self::BUNDLE_ACTION, 'auth_redirect');
+        \add_action('admin_post_nopriv_' . self::FILE_ACTION, [LoginPageRedirect::class, 'requireLogin']);
+        \add_action('admin_post_nopriv_' . self::BUNDLE_ACTION, [LoginPageRedirect::class, 'requireLogin']);
     }
 
     /**
