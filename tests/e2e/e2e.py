@@ -239,6 +239,16 @@ _, _, body = save_piece(conductor, voices_id, {
     "orchestra_new_parts[0][instrument]": instrument["Bass"], "orchestra_new_parts[0][number]": "2",
 })
 check("used more than once" in body.decode() and len(parts_of(voices_id)) == 2, "the same voice twice is rejected")
+first, second = parts_of(voices_id)
+_, _, body = save_piece(conductor, voices_id, {
+    "orchestra_library_title": "Voices",
+    f"orchestra_parts[{first['id']}][instrument]": instrument["Bass"], f"orchestra_parts[{first['id']}][number]": "2",
+    f"orchestra_parts[{second['id']}][instrument]": instrument["Gitarre"], f"orchestra_parts[{second['id']}][solo]": "1",
+    f"orchestra_parts[{second['id']}][number]": "1", f"orchestra_parts[{second['id']}][note]": "tief",
+})
+check("Duplicate entry" not in body.decode() and "could not be saved" not in body.decode()
+      and [p["name"] for p in parts_of(voices_id)] == ["Bass 2", "Solo Gitarre 1 (tief)"],
+      f"two parts swap their voices: {parts_of(voices_id)}")
 
 _, _, body = conductor.request(LIBRARY)
 check("orchestra_library_view=instruments" in body.decode(), "the library links to the instruments for conductors")
@@ -257,7 +267,7 @@ listed = json.loads(wp_eval('echo json_encode(array_map(fn($i) => $i->name,'
 check("The instruments have been saved." in body.decode()
       and listed == ["Bass", "Konzertgitarre", "Mandoline", "Oktavgitarre", "Quartgitarre"],
       f"conductors add and rename instruments: {listed}")
-check(parts_of(voices_id)[0]["name"] == "Solo Konzertgitarre 1 (tief)", "renaming an instrument renames its voices")
+check("Solo Konzertgitarre 1 (tief)" in [p["name"] for p in parts_of(voices_id)], "renaming an instrument renames its voices")
 _, _, body = conductor.request("/wp-admin/admin-post.php", data={
     **instruments_form, "orchestra_delete_instrument": instrument["Bass"]})
 check("cannot be deleted" in body.decode() and "Bass" in listed, "a used instrument cannot be deleted")

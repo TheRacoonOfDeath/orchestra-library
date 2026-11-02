@@ -11,6 +11,9 @@ use wpdb;
 
 final class PartRepository
 {
+    /** Followed by the part ID while a part is renamed; part names never start with it. */
+    private const TEMPORARY_NAME = "\u{2060}renaming-";
+
     public function __construct(private readonly wpdb $wpdb, private readonly Schema $schema)
     {
     }
@@ -179,6 +182,32 @@ final class PartRepository
         );
         if ($updated === false) {
             throw new RuntimeException('Could not update part: ' . $this->wpdb->last_error);
+        }
+    }
+
+    /**
+     * Gives the parts their new names in two steps, through a temporary name, so that swapping or
+     * shifting names within a piece (e.g. "Gitarre 1" and "Gitarre 2") never meets the unique key
+     * on the way. The new names must be unique within each piece.
+     *
+     * @param array<int, string> $names part ID => new name
+     */
+    public function rename(array $names): void
+    {
+        foreach (\array_keys($names) as $partId) {
+            $this->setName($partId, self::TEMPORARY_NAME . $partId);
+        }
+        foreach ($names as $partId => $name) {
+            $this->setName($partId, $name);
+        }
+    }
+
+    private function setName(int $partId, string $name): void
+    {
+        $table = $this->schema->partsTable();
+        $updated = $this->wpdb->update($table, ['name' => $name], ['id' => $partId], ['%s'], ['%d']);
+        if ($updated === false) {
+            throw new RuntimeException('Could not rename part: ' . $this->wpdb->last_error);
         }
     }
 

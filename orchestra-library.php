@@ -4,7 +4,7 @@
  * Plugin Name:      Orchestra Library
  * Plugin URI:       https://github.com/TheRacoonOfDeath/orchestra-library
  * Description:      Pieces, parts and sheet music for the Orchestra plugin suite.
- * Version:          0.5.2
+ * Version:          0.5.3
  * Author:           Julian Nickerl (contact@julian-nickerl.de)
  * Author URI:       mailto:contact@julian-nickerl.de
  * License:          MIT

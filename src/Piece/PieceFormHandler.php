@@ -64,6 +64,10 @@ final class PieceFormHandler
     {
         $errors = [];
         $existing = $this->parts->forPiece($pieceId);
+        $existingNames = [];
+        foreach ($existing as $part) {
+            $existingNames[$part->id] = $part->name;
+        }
         $submitted = \is_array($input[PieceForm::FIELD_PARTS] ?? null) ? $input[PieceForm::FIELD_PARTS] : [];
         // Positions follow the order of the rows; rows missing from the order go after the ordered ones.
         $order = \is_array($input[PieceForm::FIELD_PART_ORDER] ?? null)
@@ -151,6 +155,14 @@ final class PieceFormHandler
             foreach ($toDelete as $part) {
                 $errors = [...$errors, ...$this->partService->deletePart($part)];
             }
+            // New names first, all at once, so that names moving between parts do not collide.
+            $renamed = [];
+            foreach ($toUpdate as ['part' => $part]) {
+                if ($part->name !== ($existingNames[$part->id] ?? null)) {
+                    $renamed[$part->id] = $part->name;
+                }
+            }
+            $this->parts->rename($renamed);
             foreach ($toUpdate as ['part' => $part, 'removeFile' => $removeFile]) {
                 $this->parts->update($part);
                 if ($canManageFiles && $removeFile) {
