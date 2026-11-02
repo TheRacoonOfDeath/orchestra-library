@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-02 20:05+0100\n"
+"POT-Creation-Date: 2026-11-02 20:58+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -104,16 +104,12 @@ msgstr ""
 msgid "The instruments have been saved."
 msgstr "Die Instrumente wurden gespeichert."
 
-#: src/Frontend/InstrumentsView.php:30 src/Frontend/InstrumentsView.php:111
+#: src/Frontend/InstrumentsView.php:29 src/Frontend/InstrumentsView.php:100
 #: src/Piece/PieceForm.php:81 src/Piece/PieceForm.php:276
 msgid "Instrument"
 msgstr "Instrument"
 
-#: src/Frontend/InstrumentsView.php:31
-msgid "Used by"
-msgstr "Verwendet von"
-
-#: src/Frontend/InstrumentsView.php:36
+#: src/Frontend/InstrumentsView.php:32
 msgid ""
 "Every voice of a piece is built from one of these instruments. They are "
 "listed alphabetically. Renaming an instrument renames its voices in all "
@@ -123,49 +119,41 @@ msgstr ""
 "alphabetisch angezeigt. Wenn du ein Instrument umbenennst, werden seine "
 "Stimmen in allen Stücken umbenannt."
 
-#: src/Frontend/InstrumentsView.php:45 src/Frontend/InstrumentsView.php:76
+#: src/Frontend/InstrumentsView.php:41 src/Frontend/InstrumentsView.php:66
 #: src/Frontend/LibraryShortcode.php:204 src/Frontend/LibraryShortcode.php:227
 msgid "Save"
 msgstr "Speichern"
 
-#. translators: %d: number of voices
-#: src/Frontend/InstrumentsView.php:62
-#, php-format
-msgid "%d voice"
-msgid_plural "%d voices"
-msgstr[0] "%d Stimme"
-msgstr[1] "%d Stimmen"
-
-#: src/Frontend/InstrumentsView.php:73
+#: src/Frontend/InstrumentsView.php:63
 msgid "+ Add instrument"
 msgstr "+ Instrument hinzufügen"
 
-#: src/Frontend/InstrumentsView.php:74
+#: src/Frontend/InstrumentsView.php:64
 msgid "Instruments that are used by a voice cannot be deleted."
 msgstr ""
 "Instrumente, die von einer Stimme verwendet werden, können nicht gelöscht "
 "werden."
 
-#: src/Frontend/InstrumentsView.php:88
+#: src/Frontend/InstrumentsView.php:78
 msgid "New instrument, e.g. Mandoline"
 msgstr "Neues Instrument, z. B. Mandoline"
 
-#: src/Frontend/InstrumentsView.php:89
+#: src/Frontend/InstrumentsView.php:79
 msgid "Name of the new instrument"
 msgstr "Name des neuen Instruments"
 
-#: src/Frontend/InstrumentsView.php:92 src/Piece/PieceForm.php:106
+#: src/Frontend/InstrumentsView.php:81 src/Piece/PieceForm.php:106
 #: src/Piece/PieceForm.php:243
 msgid "Remove"
 msgstr "Entfernen"
 
 #. translators: %s: instrument name
-#: src/Frontend/InstrumentsView.php:99
+#: src/Frontend/InstrumentsView.php:88
 #, php-format
 msgid "Delete the instrument \"%s\"?"
 msgstr "Das Instrument „%s“ löschen?"
 
-#: src/Frontend/InstrumentsView.php:104 src/Piece/PieceForm.php:85
+#: src/Frontend/InstrumentsView.php:93 src/Piece/PieceForm.php:85
 #: src/Piece/PieceForm.php:193
 msgid "Delete"
 msgstr "Löschen"
@@ -485,6 +473,12 @@ msgstr "Stücke und Noten."
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 
+#, php-format
+#~ msgid "%d voice"
+#~ msgid_plural "%d voices"
+#~ msgstr[0] "%d Stimme"
+#~ msgstr[1] "%d Stimmen"
+
 #~ msgid ""
 #~ "Drag the parts by their handle to change the order. Every part has one "
 #~ "sheet music file; uploading a new file replaces the old one."
@@ -527,3 +521,6 @@ msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 #, php-format
 #~ msgid "The part name \"%s\" is used more than once."
 #~ msgstr "Der Stimmname „%s“ wird mehrfach verwendet."
+
+#~ msgid "Used by"
+#~ msgstr "Verwendet von"

@@ -26,11 +26,7 @@ final class InstrumentsView
     public function form(): string
     {
         $usage = $this->parts->countByInstrument();
-        $headings = [
-            \__('Instrument', 'orchestra-library'),
-            \__('Used by', 'orchestra-library'),
-            '',
-        ];
+        $headings = [\__('Instrument', 'orchestra-library'), ''];
 
         $html = '<p class="orchestra-muted">' . \esc_html__(
             'Every voice of a piece is built from one of these instruments. They are listed alphabetically.'
@@ -50,19 +46,13 @@ final class InstrumentsView
         $html .= '</tr></thead><tbody id="' . self::ROWS . '">';
 
         foreach ($this->instruments->all() as $instrument) {
-            $used = $usage[$instrument->id] ?? 0;
             $html .= self::row($headings, [
                 self::nameInput(
                     InstrumentsInput::FIELD_INSTRUMENTS . '[' . $instrument->id . ']',
                     $instrument->name,
                     true
                 ),
-                \esc_html(\sprintf(
-                    /* translators: %d: number of voices */
-                    \_n('%d voice', '%d voices', $used, 'orchestra-library'),
-                    $used
-                )),
-                $used === 0 ? self::deleteButton($instrument) : '',
+                ($usage[$instrument->id] ?? 0) === 0 ? self::deleteButton($instrument) : '',
             ]);
         }
 
@@ -87,7 +77,6 @@ final class InstrumentsView
                 . '[name]" maxlength="' . Instrument::NAME_MAX_LENGTH . '" placeholder="'
                 . \esc_attr__('New instrument, e.g. Mandoline', 'orchestra-library') . '" aria-label="'
                 . \esc_attr__('Name of the new instrument', 'orchestra-library') . '">',
-            '',
             '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
                 . \esc_html__('Remove', 'orchestra-library') . '</button>',
         ]);
