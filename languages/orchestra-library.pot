@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-02 19:52+0100\n"
+"POT-Creation-Date: 2026-11-02 20:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,7 +108,7 @@ msgid "The instruments have been saved."
 msgstr ""
 
 #: src/Frontend/InstrumentsView.php:30 src/Frontend/InstrumentsView.php:111
-#: src/Piece/PieceForm.php:80 src/Piece/PieceForm.php:274
+#: src/Piece/PieceForm.php:81 src/Piece/PieceForm.php:276
 msgid "Instrument"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgid ""
 "projects."
 msgstr ""
 
-#: src/Piece/PieceForm.php:81 src/Piece/PieceForm.php:277
+#: src/Piece/PieceForm.php:80 src/Piece/PieceForm.php:275
 msgid "Solo"
 msgstr ""
 

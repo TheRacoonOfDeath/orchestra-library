@@ -77,8 +77,8 @@ final class PieceForm
 
         $headings = [
             '',
-            \__('Instrument', 'orchestra-library'),
             \__('Solo', 'orchestra-library'),
+            \__('Instrument', 'orchestra-library'),
             \__('Number', 'orchestra-library'),
             \__('Free text', 'orchestra-library'),
             \__('Sheet music', 'orchestra-library'),
@@ -246,7 +246,7 @@ final class PieceForm
     }
 
     /**
-     * The fields of a voice: instrument, solo, number and free text.
+     * The fields of a voice in the order of its label: solo, instrument, number and free text.
      *
      * @param list<Instrument> $instruments sorted by name
      * @return list<string>
@@ -271,10 +271,10 @@ final class PieceForm
         }
 
         return [
-            '<select name="' . $field . '[instrument]" aria-label="' . $label(\__('Instrument', 'orchestra-library'))
-                . '">' . $instrumentOptions . '</select>',
             '<input type="checkbox" name="' . $field . '[solo]" value="1"' . \checked($voice->solo, true, false)
                 . ' aria-label="' . $label(\__('Solo', 'orchestra-library')) . '">',
+            '<select name="' . $field . '[instrument]" aria-label="' . $label(\__('Instrument', 'orchestra-library'))
+                . '">' . $instrumentOptions . '</select>',
             '<select name="' . $field . '[number]" aria-label="' . $label(\__('Number', 'orchestra-library')) . '">'
                 . $numberOptions . '</select>',
             '<input type="text" name="' . $field . '[note]" maxlength="' . PartNames::MAX_LENGTH . '" value="'
