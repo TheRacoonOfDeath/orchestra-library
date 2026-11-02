@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Orchestra\Library\Part;
 
 /**
- * Rules for part names: required, at most 191 characters, unique within a piece (ignoring case and
- * surrounding whitespace, as the database does).
+ * Rules for part names, the labels of their voices: required, at most 191 characters, unique
+ * within a piece (ignoring case and surrounding whitespace, as the database does).
  */
 final class PartNames
 {
@@ -28,20 +28,20 @@ final class PartNames
 
         foreach ($names as $name) {
             if ($name === '') {
-                $errors[] = \__('Part names must not be empty.', 'orchestra-library');
+                $errors[] = \__('Every voice needs an instrument or a free text.', 'orchestra-library');
                 continue;
             }
             if (\mb_strlen($name) > self::MAX_LENGTH) {
-                /* translators: 1: part name, 2: maximum number of characters */
-                $message = \__('The part name "%1$s" is longer than %2$d characters.', 'orchestra-library');
+                /* translators: 1: voice, 2: maximum number of characters */
+                $message = \__('The voice "%1$s" is longer than %2$d characters.', 'orchestra-library');
                 $errors[] = \sprintf($message, $name, self::MAX_LENGTH);
                 continue;
             }
 
             $key = \mb_strtolower($name);
             if (isset($seen[$key])) {
-                /* translators: %s: part name */
-                $errors[] = \sprintf(\__('The part name "%s" is used more than once.', 'orchestra-library'), $name);
+                /* translators: %s: voice */
+                $errors[] = \sprintf(\__('The voice "%s" is used more than once.', 'orchestra-library'), $name);
             }
             $seen[$key] = true;
         }

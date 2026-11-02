@@ -92,10 +92,12 @@ def field(page, name):
 def edit_form(session, path):
     _, _, body = session.request(path)
     page = body.decode()
+    # Notices above the editor (e.g. orchestra-core's page setup) have nonces of their own.
+    post_form = page.split('id="post"', 1)[-1]
     return page, {
         "action": "editpost",
         "post_ID": field(page, "post_ID"),
-        "_wpnonce": field(page, "_wpnonce"),
+        "_wpnonce": field(post_form, "_wpnonce"),
         "user_ID": field(page, "user_ID"),
         "post_type": "orchestra_piece",
         "original_post_status": field(page, "original_post_status"),
@@ -154,8 +156,8 @@ status, _, body = save_piece(conductor, "new", {
     "orchestra_library_title": "Pirates of the Caribbean",
     "orchestra_library_description": "Arrangement for wind orchestra",
     "orchestra_library_composer": "Klaus Badelt",
-    "orchestra_new_parts[0][name]": "Percussion", "orchestra_new_parts[1][name]": "Horn 1",
-    "orchestra_new_parts[2][name]": " Horn  2 ", "orchestra_part_order[]": ["new:1", "new:2", "new:0"],
+    "orchestra_new_parts[0][note]": "Percussion", "orchestra_new_parts[1][note]": "Horn 1",
+    "orchestra_new_parts[2][note]": " Horn  2 ", "orchestra_part_order[]": ["new:1", "new:2", "new:0"],
 }, files=[
     ("orchestra_new_part_file[1]", horn1),
     ("orchestra_new_part_file[2]", horn2),
@@ -186,9 +188,9 @@ check(int(wp_eval('echo count(get_posts(["post_type" => "orchestra_piece", "numb
 by_name = {p["name"]: p["id"] for p in parts}
 _, _, body = save_piece(conductor, piece_id, {
     "orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt",
-    f"orchestra_parts[{by_name['Percussion']}][name]": "Percussion",
+    f"orchestra_parts[{by_name['Percussion']}][note]": "Percussion",
     f"orchestra_parts[{by_name['Percussion']}][delete]": "1",
-    "orchestra_new_parts[0][name]": "horn 1",
+    "orchestra_new_parts[0][note]": "horn 1",
 })
 check("used more than once" in body.decode(), "duplicate part name is reported")
 check(len(parts_of(piece_id)) == 3, "no part changed after validation error")
@@ -196,8 +198,8 @@ check(len(parts_of(piece_id)) == 3, "no part changed after validation error")
 # 3. Rename, replace a file, remove a file, delete a part, reorder
 data = {"orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt"}
 for p in parts:
-    data[f"orchestra_parts[{p['id']}][name]"] = p["name"]
-data[f"orchestra_parts[{by_name['Horn 2']}][name]"] = "Horn 2 in F"
+    data[f"orchestra_parts[{p['id']}][note]"] = p["name"]
+data[f"orchestra_parts[{by_name['Horn 2']}][note]"] = "Horn 2 in F"
 data["orchestra_part_order[]"] = [str(by_name[n]) for n in ("Horn 2", "Horn 1", "Percussion")] + ["new:0"]
 # The delete button of the part submits its ID; the other changes are saved with it.
 data["orchestra_delete_part"] = str(by_name["Percussion"])
@@ -214,6 +216,77 @@ check("[description]" not in page, "parts have no description field")
 check(len([f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]) == 3,
       "replaced file was removed from storage")
 
+# 3b. Voices are built from an instrument, solo, a number and a free text
+page, _ = piece_form(conductor, "new")
+options = re.findall(r'<option value="([1-9]\d*)"[^>]*>([^<]+)</option>', page.split('[instrument]', 1)[1].split("</select>", 1)[0])
+check([name for _, name in options] == ["Bass", "Gitarre", "Oktavgitarre", "Quartgitarre"],
+      f"the instruments are offered alphabetically: {options}")
+check("[number]" in page and "[solo]" in page and "[note]" in page, "voices have number, solo and free-text fields")
+instrument = {name: value for value, name in options}
+save_piece(conductor, "new", {
+    "orchestra_library_title": "Voices",
+    "orchestra_new_parts[0][instrument]": instrument["Gitarre"], "orchestra_new_parts[0][solo]": "1",
+    "orchestra_new_parts[0][number]": "1", "orchestra_new_parts[0][note]": "tief",
+    "orchestra_new_parts[1][instrument]": instrument["Bass"], "orchestra_new_parts[1][number]": "2",
+    "orchestra_new_parts[2][instrument]": "0", "orchestra_new_parts[2][number]": "3",
+})
+voices_id = int(wp_eval('echo (new WP_Query(["post_type" => "orchestra_piece", "title" => "Voices",'
+                        ' "fields" => "ids"]))->posts[0] ?? 0;') or 0)
+check([p["name"] for p in parts_of(voices_id)] == ["Solo Gitarre 1 (tief)", "Bass 2"],
+      f"voice labels; a row without instrument and free text is skipped: {parts_of(voices_id)}")
+_, _, body = save_piece(conductor, voices_id, {
+    "orchestra_library_title": "Voices",
+    "orchestra_new_parts[0][instrument]": instrument["Bass"], "orchestra_new_parts[0][number]": "2",
+})
+check("used more than once" in body.decode() and len(parts_of(voices_id)) == 2, "the same voice twice is rejected")
+
+_, _, body = conductor.request(LIBRARY)
+check("orchestra_library_view=instruments" in body.decode(), "the library links to the instruments for conductors")
+_, _, body = conductor.request(f"{LIBRARY}&orchestra_library_view=instruments")
+page = body.decode()
+instruments_form = {key: field(page, key) for key in ["action", "_wpnonce", "redirect_to"]}
+check(instruments_form["action"] == "orchestra_library_save_instruments", "conductors see the instruments form")
+check(page.count('name="orchestra_delete_instrument"') == 2, "only unused instruments have a delete button")
+names = {f"orchestra_instruments[{value}]": name for name, value in instrument.items()}
+_, _, body = conductor.request("/wp-admin/admin-post.php", data={
+    **instruments_form, **names, f"orchestra_instruments[{instrument['Gitarre']}]": "Konzertgitarre",
+    "orchestra_new_instruments[0][name]": "Mandoline",
+})
+listed = json.loads(wp_eval('echo json_encode(array_map(fn($i) => $i->name,'
+                            ' Orchestra\\Library\\Plugin::instance()->library()->instruments()));'))
+check("The instruments have been saved." in body.decode()
+      and listed == ["Bass", "Konzertgitarre", "Mandoline", "Oktavgitarre", "Quartgitarre"],
+      f"conductors add and rename instruments: {listed}")
+check(parts_of(voices_id)[0]["name"] == "Solo Konzertgitarre 1 (tief)", "renaming an instrument renames its voices")
+_, _, body = conductor.request("/wp-admin/admin-post.php", data={
+    **instruments_form, "orchestra_delete_instrument": instrument["Bass"]})
+check("cannot be deleted" in body.decode() and "Bass" in listed, "a used instrument cannot be deleted")
+mandoline = wp_eval('foreach (Orchestra\\Library\\Plugin::instance()->library()->instruments() as $i)'
+                    ' { if ($i->name === "Mandoline") echo $i->id; }')
+conductor.request("/wp-admin/admin-post.php", data={**instruments_form, "orchestra_delete_instrument": mandoline})
+check("Mandoline" not in wp_eval('echo json_encode(array_map(fn($i) => $i->name,'
+                                 ' Orchestra\\Library\\Plugin::instance()->library()->instruments()));'),
+      "an unused instrument is deleted")
+member_session = Session("member")
+_, _, body = member_session.request(f"{LIBRARY}&orchestra_library_view=instruments")
+check("orchestra_library_save_instruments" not in body.decode(), "members do not see the instruments form")
+status, _, _ = member_session.request("/wp-admin/admin-post.php", data={
+    "action": "orchestra_library_save_instruments", "_wpnonce": instruments_form["_wpnonce"]})
+check(status == 403, "members cannot change the instruments")
+wp_eval(f"wp_delete_post({voices_id}, true);")
+
+# 3c. Free-text part names of versions before 0.5 are turned into voices
+wp_eval('global $wpdb; $t = $wpdb->prefix . "orchestra_library_parts";'
+        ' foreach (["Solo Bass 2 (tief)", "oktavgitarre 3", "Kazoo"] as $i => $n)'
+        ' { $wpdb->insert($t, ["piece_id" => 999999, "name" => $n, "description" => "", "position" => $i + 1]); }'
+        ' update_option("orchestra_library_schema_version", 1);')
+migrated = json.loads(wp_eval(
+    'echo json_encode(array_map(fn($p) => [$p->name, $p->instrumentId > 0, $p->solo, $p->number, $p->note],'
+    ' Orchestra\\Library\\Plugin::instance()->library()->parts(999999)));'))
+check(migrated == [["Solo Bass 2 (tief)", True, True, 2, "tief"], ["Oktavgitarre 3", True, False, 3, ""],
+                   ["Kazoo", False, False, 0, "Kazoo"]], f"old part names become voices: {migrated}")
+wp_eval('global $wpdb; $wpdb->delete($wpdb->prefix . "orchestra_library_parts", ["piece_id" => 999999]);')
+
 # 4. Disguised files are rejected with a notice
 _, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
                                               "orchestra_library_composer": "Klaus Badelt"},
@@ -227,7 +300,7 @@ check('enctype="multipart/form-data"' in page and "Parts and Sheet Music" in pag
 admin_piece = int(form["post_ID"])
 admin.request("/wp-admin/post.php", data={
     **form, "post_title": "Admin Piece", "publish": "Publish", "orchestra_library_composer": "Admin",
-    "orchestra_new_parts[0][name]": "Tuba",
+    "orchestra_new_parts[0][note]": "Tuba",
 }, files=[("orchestra_new_part_file[0]", horn2)])
 check([(p["name"], p["file"]) for p in parts_of(admin_piece)] == [("Tuba", "horn2.pdf")],
       "the wp-admin editor saves parts and files")
@@ -312,7 +385,7 @@ print(f"INFO direct URL to a stored file returns {direct_status}. PHP's built-in
 page, form = edit_form(admin, "/wp-admin/post-new.php?post_type=orchestra_piece")
 draft_id = int(form["post_ID"])
 admin.request("/wp-admin/post.php", data={**form, "post_title": "Secret Draft", "save": "Save Draft",
-                                         "orchestra_new_parts[0][name]": "Flute"},
+                                         "orchestra_new_parts[0][note]": "Flute"},
               files=[("orchestra_new_part_file[0]", horn2)])
 draft_file = wp_eval(f'$l = Orchestra\\Library\\Plugin::instance()->library(); echo $l->sheetMusic($l->parts({draft_id})[0]->id)->id;')
 status, _, _ = member.request(f"/wp-admin/admin-post.php?action=orchestra_library_download&file={draft_file}", output=target)
@@ -340,7 +413,7 @@ status, _, body = admin.request(trash_link.replace(BASE, ""), follow=False)
 check(status == 409 and "Assigned in Spring Concert 2027." in body.decode(), "trashing a referenced piece is blocked")
 check(wp_eval(f'echo get_post_status({piece_id});') == "publish", "piece is still published")
 _, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
-                                              f"orchestra_parts[{by_name['Horn 1']}][name]": "Horn 1",
+                                              f"orchestra_parts[{by_name['Horn 1']}][note]": "Horn 1",
                                               "orchestra_delete_part": str(by_name["Horn 1"])})
 check("cannot be deleted" in body.decode() and len(parts_of(piece_id)) == 2, "deleting a referenced part is blocked")
 os.remove(os.path.join(mu, "blocker.php"))
@@ -374,7 +447,7 @@ check(tables == "[]", f"uninstall drops tables: {tables}")
 check(not os.path.exists(directory), "uninstall removes the storage directory")
 check(wp_eval('echo count(get_posts(["post_type" => "orchestra_piece", "post_status" => "any", "numberposts" => -1]));') == "0",
       "uninstall deletes pieces")
-check(wp_eval('echo json_encode([get_option("orchestra_library_schema_version"), get_option("orchestra_library_storage_suffix")]);') == "[false,false]",
+check(wp_eval('echo json_encode([get_option("orchestra_library_schema_version"), get_option("orchestra_library_storage_suffix"), get_option("orchestra_library_instruments")]);') == "[false,false,false]",
       "uninstall deletes options")
 
 print(f"\n{len(failures)} failure(s)")

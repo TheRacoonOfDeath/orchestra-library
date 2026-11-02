@@ -101,27 +101,80 @@ final class PartRepository
         return \is_numeric($count) ? (int) $count : 0;
     }
 
-    public function insert(int $pieceId, string $name, string $description, int $position): Part
+    /**
+     * Every part of every piece. Only for migrations.
+     *
+     * @return list<Part>
+     */
+    public function all(): array
+    {
+        $rows = Row::all(
+            $this->wpdb->get_results("SELECT * FROM {$this->schema->partsTable()} ORDER BY id", ARRAY_A)
+        );
+
+        return \array_map(self::hydrate(...), $rows);
+    }
+
+    /**
+     * @return list<Part>
+     */
+    public function forInstrument(int $instrumentId): array
+    {
+        $rows = Row::all($this->wpdb->get_results(
+            $this->wpdb->prepare(
+                'SELECT * FROM %i WHERE instrument_id = %d',
+                $this->schema->partsTable(),
+                $instrumentId
+            ),
+            ARRAY_A
+        ));
+
+        return \array_map(self::hydrate(...), $rows);
+    }
+
+    /**
+     * @return array<int, int> instrument ID => number of parts; unused instruments are missing
+     */
+    public function countByInstrument(): array
+    {
+        $rows = Row::all($this->wpdb->get_results(
+            "SELECT instrument_id, COUNT(*) AS parts FROM {$this->schema->partsTable()}"
+            . ' WHERE instrument_id > 0 GROUP BY instrument_id',
+            ARRAY_A
+        ));
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[Row::int($row, 'instrument_id')] = Row::int($row, 'parts');
+        }
+
+        return $counts;
+    }
+
+    public function insert(int $pieceId, Voice $voice, string $name, string $description, int $position): Part
     {
         $inserted = $this->wpdb->insert(
             $this->schema->partsTable(),
-            ['piece_id' => $pieceId, 'name' => $name, 'description' => $description, 'position' => $position],
-            ['%d', '%s', '%s', '%d']
+            ['piece_id' => $pieceId, 'name' => $name, 'description' => $description, 'position' => $position]
+                + self::voiceColumns($voice),
+            ['%d', '%s', '%s', '%d', '%d', '%d', '%d', '%s']
         );
         if ($inserted === false) {
             throw new RuntimeException('Could not create part: ' . $this->wpdb->last_error);
         }
 
-        return new Part((int) $this->wpdb->insert_id, $pieceId, $name, $description, $position);
+        return (new Part((int) $this->wpdb->insert_id, $pieceId, $name, $description, $position))
+            ->withVoice($voice, $name, $position);
     }
 
     public function update(Part $part): void
     {
         $updated = $this->wpdb->update(
             $this->schema->partsTable(),
-            ['name' => $part->name, 'description' => $part->description, 'position' => $part->position],
+            ['name' => $part->name, 'description' => $part->description, 'position' => $part->position]
+                + self::voiceColumns($part->voice()),
             ['id' => $part->id],
-            ['%s', '%s', '%d'],
+            ['%s', '%s', '%d', '%d', '%d', '%d', '%s'],
             ['%d']
         );
         if ($updated === false) {
@@ -135,6 +188,19 @@ final class PartRepository
     }
 
     /**
+     * @return array{instrument_id: int, solo: int, number: int, note: string}
+     */
+    private static function voiceColumns(Voice $voice): array
+    {
+        return [
+            'instrument_id' => $voice->instrumentId,
+            'solo' => $voice->solo ? 1 : 0,
+            'number' => $voice->number,
+            'note' => $voice->note,
+        ];
+    }
+
+    /**
      * @param array<mixed> $row
      */
     private static function hydrate(array $row): Part
@@ -145,6 +211,10 @@ final class PartRepository
             Row::string($row, 'name'),
             Row::string($row, 'description'),
             Row::int($row, 'position'),
+            Row::int($row, 'instrument_id'),
+            Row::int($row, 'solo') === 1,
+            Row::int($row, 'number'),
+            Row::string($row, 'note'),
         );
     }
 }

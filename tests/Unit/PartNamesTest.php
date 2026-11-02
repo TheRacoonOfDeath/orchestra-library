@@ -21,13 +21,13 @@ final class PartNamesTest extends TestCase
 
     public function testRejectsEmptyNames(): void
     {
-        $this->assertSame(['Part names must not be empty.'], PartNames::validate(['Horn 1', '']));
+        $this->assertSame(['Every voice needs an instrument or a free text.'], PartNames::validate(['Horn 1', '']));
     }
 
     public function testRejectsDuplicatesIgnoringCase(): void
     {
         $this->assertSame(
-            ['The part name "horn 1" is used more than once.'],
+            ['The voice "horn 1" is used more than once.'],
             PartNames::validate(['Horn 1', 'horn 1'])
         );
     }

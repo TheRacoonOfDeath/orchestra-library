@@ -9,10 +9,13 @@ use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\FileService;
 use Orchestra\Library\File\UploadRejected;
 use Orchestra\Library\File\UploadValidator;
+use Orchestra\Library\Part\Instrument;
+use Orchestra\Library\Part\Instruments;
 use Orchestra\Library\Part\Part;
 use Orchestra\Library\Part\PartNames;
 use Orchestra\Library\Part\PartRepository;
 use Orchestra\Library\Part\PartService;
+use Orchestra\Library\Part\Voice;
 use RuntimeException;
 
 /**
@@ -28,6 +31,7 @@ final class PieceFormHandler
         private readonly FileRepository $files,
         private readonly FileService $fileService,
         private readonly UploadValidator $uploads,
+        private readonly Instruments $instruments,
     ) {
     }
 
@@ -72,8 +76,13 @@ final class PieceFormHandler
             return ($index === false ? $unordered++ : $index) + 1;
         };
         $nextPosition = PieceForm::nextPosition($existing);
+        $instruments = [];
+        foreach ($this->instruments->all() as $instrument) {
+            $instruments[$instrument->id] = $instrument;
+        }
 
         $names = [];
+        $voiceErrors = [];
         $toDelete = [];
         $toUpdate = [];
         $deleteButton = self::string($input, PieceForm::FIELD_DELETE_PART);
@@ -86,7 +95,6 @@ final class PieceFormHandler
                 $names[] = PartNames::normalize($part->name);
                 continue;
             }
-            $row = \is_array($row) ? $row : ['name' => $part->name];
 
             if ($delete) {
                 $blockers = $this->partService->partDeleteBlockers($part->id);
@@ -99,16 +107,15 @@ final class PieceFormHandler
                 $errors[] = \sprintf($message, $part->name, \implode(' ', $blockers));
             }
 
-            $name = PartNames::normalize(self::string($row, 'name'));
+            $voice = \is_array($row) ? self::voice($row, $instruments, $voiceErrors) : $part->voice();
+            $name = $voice->label($instruments[$voice->instrumentId] ?? null);
             $names[] = $name;
             $toUpdate[] = [
-                'part' => new Part(
-                    $part->id,
-                    $pieceId,
+                // Parts have no description in the editor any more; a stored one is kept.
+                'part' => $part->withVoice(
+                    $voice,
                     $name,
-                    // Parts have no description in the editor any more; a stored one is kept.
-                    $part->description,
-                    $order === [] ? $part->position : $position((string) $part->id),
+                    $order === [] ? $part->position : $position((string) $part->id)
                 ),
                 'removeFile' => $removeFile,
             ];
@@ -120,19 +127,21 @@ final class PieceFormHandler
             if (!\is_array($row)) {
                 continue;
             }
-            $name = PartNames::normalize(self::string($row, 'name'));
-            if ($name === '') {
+            $voice = self::voice($row, $instruments, $voiceErrors);
+            if ($voice->instrumentId === 0 && $voice->note === '') {
                 continue;
             }
+            $name = $voice->label($instruments[$voice->instrumentId] ?? null);
             $names[] = $name;
             $toInsert[$key] = [
+                'voice' => $voice,
                 'name' => $name,
                 'description' => '',
                 'position' => $order === [] ? $nextPosition++ : $position(PieceForm::NEW_PART_KEY_PREFIX . $key),
             ];
         }
 
-        $nameErrors = PartNames::validate($names);
+        $nameErrors = [...\array_values(\array_unique($voiceErrors)), ...PartNames::validate($names)];
         if ($nameErrors !== []) {
             return [...$errors, \__('The parts were not saved.', 'orchestra-library'), ...$nameErrors];
         }
@@ -153,7 +162,13 @@ final class PieceFormHandler
                 }
             }
             foreach ($toInsert as $key => $data) {
-                $part = $this->parts->insert($pieceId, $data['name'], $data['description'], $data['position']);
+                $part = $this->parts->insert(
+                    $pieceId,
+                    $data['voice'],
+                    $data['name'],
+                    $data['description'],
+                    $data['position']
+                );
                 if ($canManageFiles) {
                     $upload = UploadValidator::extract($uploads, PieceForm::FIELD_NEW_PART_FILE, $key);
                     $errors = [...$errors, ...$this->attach($part, $upload)];
@@ -165,6 +180,33 @@ final class PieceFormHandler
         }
 
         return $errors;
+    }
+
+    /**
+     * The voice of a submitted part row. An unknown instrument or number adds an error.
+     *
+     * @param array<mixed> $row
+     * @param array<int, Instrument> $instruments
+     * @param list<string> $errors
+     */
+    private static function voice(array $row, array $instruments, array &$errors): Voice
+    {
+        $instrumentId = \absint(self::string($row, 'instrument'));
+        if ($instrumentId > 0 && !isset($instruments[$instrumentId])) {
+            $errors[] = \__('An instrument no longer exists. Please choose another one.', 'orchestra-library');
+            $instrumentId = 0;
+        }
+        $number = \absint(self::string($row, 'number'));
+        if ($number > Voice::MAX_NUMBER) {
+            $number = 0;
+        }
+
+        return new Voice(
+            $instrumentId,
+            !empty($row['solo']),
+            $number,
+            PartNames::normalize(\sanitize_text_field(self::string($row, 'note')))
+        );
     }
 
     /**

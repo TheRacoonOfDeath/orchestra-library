@@ -7,6 +7,9 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 
 - Pieces with composer, description and archived status (**Library** menu in wp-admin)
 - Parts per piece, each with exactly one sheet music file, ordered by dragging
+- Each part is a voice: an instrument, solo, a number and a free text, e.g. "Solo Gitarre 1 (tief)"
+- Conductors maintain the instruments (alphabetical list; Bass, Gitarre, Oktavgitarre and
+  Quartgitarre to start with) under **Instruments** on the library page or in wp-admin
 - Additional files for the whole piece, e.g. the full score
 - Private file storage and permission-checked downloads, including zip downloads of several parts
 - The library page `[orchestra_library]`: members search and download; conductors create and edit

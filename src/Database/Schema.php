@@ -12,7 +12,7 @@ use wpdb;
 final class Schema
 {
     /** Increase whenever a table definition changes; dbDelta() applies the difference. */
-    public const VERSION = 1;
+    public const VERSION = 2;
 
     public const OPTION_VERSION = 'orchestra_library_schema_version';
 
@@ -37,14 +37,20 @@ final class Schema
         return $this->wpdb->get_var($this->wpdb->prepare('SHOW TABLES LIKE %s', $table)) === $table;
     }
 
-    public function migrateIfOutdated(): void
+    /**
+     * @return int|null The version the tables had before, or null if they were up to date
+     */
+    public function migrateIfOutdated(): ?int
     {
         $installed = \get_option(self::OPTION_VERSION, 0);
-        if (\is_numeric($installed) && (int) $installed >= self::VERSION) {
-            return;
+        $installed = \is_numeric($installed) ? (int) $installed : 0;
+        if ($installed >= self::VERSION) {
+            return null;
         }
 
         $this->migrate();
+
+        return $installed;
     }
 
     /**
@@ -70,9 +76,14 @@ final class Schema
   name varchar(191) NOT NULL,
   description text NOT NULL,
   position int(11) NOT NULL DEFAULT 0,
+  instrument_id int(10) unsigned NOT NULL DEFAULT 0,
+  solo tinyint(1) unsigned NOT NULL DEFAULT 0,
+  number tinyint(3) unsigned NOT NULL DEFAULT 0,
+  note varchar(191) NOT NULL DEFAULT '',
   PRIMARY KEY  (id),
   UNIQUE KEY piece_name (piece_id,name),
-  KEY piece_id (piece_id)
+  KEY piece_id (piece_id),
+  KEY instrument_id (instrument_id)
 ) {$charsetCollate};");
 
         // part_id is NULL for piece files; a part has at most one file.

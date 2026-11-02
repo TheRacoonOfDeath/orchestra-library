@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-20 23:32+0200\n"
+"POT-Creation-Date: 2026-11-02 19:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: src/Admin/InstrumentsPage.php:35 src/Admin/InstrumentsPage.php:36
+#: src/Admin/InstrumentsPage.php:48 src/Frontend/LibraryShortcode.php:66
+#: src/Frontend/LibraryShortcode.php:113
+msgid "Instruments"
+msgstr ""
 
 #: src/Admin/PieceEditor.php:54
 msgid "Details"
@@ -29,7 +36,7 @@ msgstr ""
 msgid "Piece Files"
 msgstr ""
 
-#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:54
+#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:58
 msgid "Composer"
 msgstr ""
 
@@ -37,8 +44,8 @@ msgstr ""
 msgid "Parts"
 msgstr ""
 
-#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:124
-#: src/Piece/PieceForm.php:60
+#: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:137
+#: src/Piece/PieceForm.php:64
 msgid "Archived"
 msgstr ""
 
@@ -46,11 +53,11 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/Download/DownloadController.php:155
+#: src/Download/DownloadController.php:156
 msgid "The file does not exist or you are not allowed to download it."
 msgstr ""
 
-#: src/Download/DownloadController.php:156
+#: src/Download/DownloadController.php:157
 msgid "File not found"
 msgstr ""
 
@@ -85,91 +92,164 @@ msgstr ""
 msgid "\"%s\" could not be uploaded."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:52
+#: src/Frontend/InstrumentsController.php:39
+msgid "You are not allowed to change the instruments."
+msgstr ""
+
+#: src/Frontend/InstrumentsController.php:60
+#, php-format
+msgid ""
+"The voice \"%s\" could not be renamed, because the piece has a voice with "
+"the new name."
+msgstr ""
+
+#: src/Frontend/InstrumentsController.php:70
+msgid "The instruments have been saved."
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:30 src/Frontend/InstrumentsView.php:111
+#: src/Piece/PieceForm.php:80 src/Piece/PieceForm.php:274
+msgid "Instrument"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:31
+msgid "Used by"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:36
+msgid ""
+"Every voice of a piece is built from one of these instruments. They are "
+"listed alphabetically. Renaming an instrument renames its voices in all "
+"pieces."
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:45 src/Frontend/InstrumentsView.php:76
+#: src/Frontend/LibraryShortcode.php:204 src/Frontend/LibraryShortcode.php:227
+msgid "Save"
+msgstr ""
+
+#. translators: %d: number of voices
+#: src/Frontend/InstrumentsView.php:62
+#, php-format
+msgid "%d voice"
+msgid_plural "%d voices"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Frontend/InstrumentsView.php:73
+msgid "+ Add instrument"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:74
+msgid "Instruments that are used by a voice cannot be deleted."
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:88
+msgid "New instrument, e.g. Mandoline"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:89
+msgid "Name of the new instrument"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:92 src/Piece/PieceForm.php:106
+#: src/Piece/PieceForm.php:243
+msgid "Remove"
+msgstr ""
+
+#. translators: %s: instrument name
+#: src/Frontend/InstrumentsView.php:99
+#, php-format
+msgid "Delete the instrument \"%s\"?"
+msgstr ""
+
+#: src/Frontend/InstrumentsView.php:104 src/Piece/PieceForm.php:85
+#: src/Piece/PieceForm.php:193
+msgid "Delete"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:56
 msgid "Please log in to see the library."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:55
+#: src/Frontend/LibraryShortcode.php:59
 msgid "You are not allowed to see the library."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:88
+#: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:186
+#: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
+#: src/Plugin.php:170
+msgid "Library"
+msgstr ""
+
+#: src/Frontend/LibraryShortcode.php:99
 msgid "Search pieces"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:90
+#: src/Frontend/LibraryShortcode.php:101
 msgid "Title or composer"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:93
+#: src/Frontend/LibraryShortcode.php:104
 msgid "Search"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:96
+#: src/Frontend/LibraryShortcode.php:107
 msgid "Hide archived"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:97
+#: src/Frontend/LibraryShortcode.php:108
 msgid "Show archived"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:101 src/Frontend/LibraryShortcode.php:180
+#: src/Frontend/LibraryShortcode.php:114 src/Frontend/LibraryShortcode.php:193
 msgid "New piece"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:107
+#: src/Frontend/LibraryShortcode.php:120
 msgid "No pieces found. Try another title or composer."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:109
+#: src/Frontend/LibraryShortcode.php:122
 msgid ""
 "The library is still empty. Pieces appear here once the conductors have "
 "added them."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:137
+#: src/Frontend/LibraryShortcode.php:150
 msgid "Download"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:151
+#: src/Frontend/LibraryShortcode.php:164
 msgid "Piece files:"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:160
+#: src/Frontend/LibraryShortcode.php:173
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:173 src/Piece/PiecePostType.php:29
-#: src/Piece/PiecePostType.php:31 src/Plugin.php:155
-msgid "Library"
-msgstr ""
-
-#: src/Frontend/LibraryShortcode.php:176
+#: src/Frontend/LibraryShortcode.php:189
 msgid "The piece does not exist."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:191 src/Frontend/LibraryShortcode.php:214
-msgid "Save"
-msgstr ""
-
-#: src/Frontend/LibraryShortcode.php:195
+#: src/Frontend/LibraryShortcode.php:208
 msgid "Title"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:203
+#: src/Frontend/LibraryShortcode.php:216
 msgid "Description"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:209
+#: src/Frontend/LibraryShortcode.php:222
 msgid "Parts and sheet music"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:212
+#: src/Frontend/LibraryShortcode.php:225
 msgid "Piece files"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:215
+#: src/Frontend/LibraryShortcode.php:228
 msgid "Cancel"
 msgstr ""
 
@@ -185,20 +265,43 @@ msgstr ""
 msgid "The piece has been saved."
 msgstr ""
 
-#: src/Part/PartNames.php:31
-msgid "Part names must not be empty."
+#: src/Part/InstrumentsInput.php:54
+#, php-format
+msgid "The instrument \"%1$s\" cannot be deleted: %2$d voice uses it."
+msgid_plural "The instrument \"%1$s\" cannot be deleted: %2$d voices use it."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Part/InstrumentsInput.php:82
+msgid "Instrument names must not be empty."
 msgstr ""
 
-#. translators: 1: part name, 2: maximum number of characters
+#. translators: 1: instrument name, 2: maximum number of characters
+#: src/Part/InstrumentsInput.php:87
+#, php-format
+msgid "The instrument name \"%1$s\" is longer than %2$d characters."
+msgstr ""
+
+#. translators: %s: instrument name
+#: src/Part/InstrumentsInput.php:93
+#, php-format
+msgid "The instrument \"%s\" exists more than once."
+msgstr ""
+
+#: src/Part/PartNames.php:31
+msgid "Every voice needs an instrument or a free text."
+msgstr ""
+
+#. translators: 1: voice, 2: maximum number of characters
 #: src/Part/PartNames.php:36
 #, php-format
-msgid "The part name \"%1$s\" is longer than %2$d characters."
+msgid "The voice \"%1$s\" is longer than %2$d characters."
 msgstr ""
 
-#. translators: %s: part name
+#. translators: %s: voice
 #: src/Part/PartNames.php:44
 #, php-format
-msgid "The part name \"%s\" is used more than once."
+msgid "The voice \"%s\" is used more than once."
 msgstr ""
 
 #. translators: %s: piece title
@@ -211,114 +314,113 @@ msgstr ""
 msgid "Archive the piece instead."
 msgstr ""
 
-#: src/Piece/PieceForm.php:62
+#: src/Piece/PieceForm.php:66
 msgid ""
 "Archived pieces are hidden in the library and cannot be added to new "
 "projects."
 msgstr ""
 
-#: src/Piece/PieceForm.php:75
-msgid "Name"
+#: src/Piece/PieceForm.php:81 src/Piece/PieceForm.php:277
+msgid "Solo"
 msgstr ""
 
-#: src/Piece/PieceForm.php:76
+#: src/Piece/PieceForm.php:82 src/Piece/PieceForm.php:278
+msgid "Number"
+msgstr ""
+
+#: src/Piece/PieceForm.php:83 src/Piece/PieceForm.php:281
+msgid "Free text"
+msgstr ""
+
+#: src/Piece/PieceForm.php:84
 msgid "Sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:77 src/Piece/PieceForm.php:184
-msgid "Delete"
-msgstr ""
-
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:94
+#: src/Piece/PieceForm.php:102
 #, php-format
 msgid "Remove the sheet music of \"%s\"?"
 msgstr ""
 
-#: src/Piece/PieceForm.php:98 src/Piece/PieceForm.php:234
-msgid "Remove"
-msgstr ""
-
-#: src/Piece/PieceForm.php:106 src/Piece/PieceForm.php:231
+#: src/Piece/PieceForm.php:114 src/Piece/PieceForm.php:240
 msgid "Upload sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:107
+#: src/Piece/PieceForm.php:115
 msgid "Replace sheet music"
 msgstr ""
 
-#: src/Piece/PieceForm.php:116
-msgid "Part name"
-msgstr ""
-
-#: src/Piece/PieceForm.php:130
+#: src/Piece/PieceForm.php:138
 msgid "+ Add part"
 msgstr ""
 
-#: src/Piece/PieceForm.php:131
+#: src/Piece/PieceForm.php:139
 msgid ""
 "Drag the parts by their handle to change the order. Every part has one sheet "
-"music file; uploading a new file replaces the old one."
+"music file; uploading a new file replaces the old one. Missing instruments "
+"are added under \"Instruments\" in the library."
 msgstr ""
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:144
+#: src/Piece/PieceForm.php:153
 #, php-format
 msgid "Delete the part \"%s\" and its sheet music?"
 msgstr ""
 
-#: src/Piece/PieceForm.php:149
+#: src/Piece/PieceForm.php:158
 msgid "Delete part"
 msgstr ""
 
-#: src/Piece/PieceForm.php:171
+#: src/Piece/PieceForm.php:180
 msgid "Files for the whole piece, e.g. the full score or performance notes."
 msgstr ""
 
 #. translators: %s: file name
-#: src/Piece/PieceForm.php:180
+#: src/Piece/PieceForm.php:189
 #, php-format
 msgid "Delete the file \"%s\"?"
 msgstr ""
 
-#: src/Piece/PieceForm.php:195
+#: src/Piece/PieceForm.php:204
 msgid "Upload piece files"
 msgstr ""
 
-#: src/Piece/PieceForm.php:224
+#: src/Piece/PieceForm.php:231
 msgid "New part"
 msgstr ""
 
-#: src/Piece/PieceForm.php:227
-msgid "New part, e.g. Horn 1"
-msgstr ""
-
-#: src/Piece/PieceForm.php:228
-msgid "Name of the new part"
+#. translators: 1: field, e.g. "Instrument", 2: part name
+#: src/Piece/PieceForm.php:258
+#, php-format
+msgid "%1$s of %2$s"
 msgstr ""
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:258
+#: src/Piece/PieceForm.php:305
 #, php-format
 msgid "Move \"%s\""
 msgstr ""
 
-#: src/Piece/PieceForm.php:263
+#: src/Piece/PieceForm.php:310
 msgid "Drag to change the order, or use the arrow keys"
 msgstr ""
 
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:98
+#: src/Piece/PieceFormHandler.php:106
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:137
+#: src/Piece/PieceFormHandler.php:146
 msgid "The parts were not saved."
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:163
+#: src/Piece/PieceFormHandler.php:178
 msgid "The parts could not be saved completely."
+msgstr ""
+
+#: src/Piece/PieceFormHandler.php:196
+msgid "An instrument no longer exists. Please choose another one."
 msgstr ""
 
 #: src/Piece/PiecePostType.php:30
@@ -357,14 +459,14 @@ msgstr ""
 msgid "No pieces found in Trash."
 msgstr ""
 
-#: src/Plugin.php:158
+#: src/Plugin.php:173
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr ""
 
-#: src/Plugin.php:159
+#: src/Plugin.php:174
 msgid "Pieces and sheet music."
 msgstr ""
 
-#: src/Plugin.php:171
+#: src/Plugin.php:186
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr ""

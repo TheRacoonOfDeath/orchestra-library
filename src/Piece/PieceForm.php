@@ -11,9 +11,12 @@ use Orchestra\Library\Download\DownloadController;
 use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\LibraryFile;
 use Orchestra\Library\File\UploadValidator;
+use Orchestra\Library\Part\Instrument;
+use Orchestra\Library\Part\Instruments;
 use Orchestra\Library\Part\Part;
 use Orchestra\Library\Part\PartNames;
 use Orchestra\Library\Part\PartRepository;
+use Orchestra\Library\Part\Voice;
 
 /**
  * The fields for editing a piece: details, parts with sheet music, and piece files. Rendered in the
@@ -43,6 +46,7 @@ final class PieceForm
     public function __construct(
         private readonly PartRepository $parts,
         private readonly FileRepository $files,
+        private readonly Instruments $instruments,
     ) {
     }
 
@@ -69,10 +73,14 @@ final class PieceForm
         $parts = $pieceId > 0 ? $this->parts->forPiece($pieceId) : [];
         $sheetMusic = $this->files->forParts(\array_map(static fn (Part $part): int => $part->id, $parts));
         $canManageFiles = \current_user_can(Capabilities::SHEET_MUSIC_MANAGE);
+        $instruments = $this->instruments->all();
 
         $headings = [
             '',
-            \__('Name', 'orchestra-library'),
+            \__('Instrument', 'orchestra-library'),
+            \__('Solo', 'orchestra-library'),
+            \__('Number', 'orchestra-library'),
+            \__('Free text', 'orchestra-library'),
             \__('Sheet music', 'orchestra-library'),
             \__('Delete', 'orchestra-library'),
         ];
@@ -111,17 +119,17 @@ final class PieceForm
             $html .= $this->row(
                 $headings,
                 self::dragHandle((string) $part->id, $part->name),
-                '<input type="text" name="' . \esc_attr($field) . '[name]" required maxlength="' . PartNames::MAX_LENGTH
-                    . '" value="' . \esc_attr($part->name) . '" aria-label="'
-                    . \esc_attr__('Part name', 'orchestra-library') . '">',
-                $fileCell,
-                self::deleteButton($part)
+                ...[
+                    ...self::voiceCells($field, $part->voice(), $instruments, $part->name),
+                    $fileCell,
+                    self::deleteButton($part),
+                ]
             );
         }
 
-        $html .= $this->newRow($headings, '0', $canManageFiles) . '</tbody></table></div>';
+        $html .= $this->newRow($headings, '0', $canManageFiles, $instruments) . '</tbody></table></div>';
         $html .= '<template id="orchestra-library-new-part">'
-            . $this->newRow($headings, '__INDEX__', $canManageFiles) . '</template>';
+            . $this->newRow($headings, '__INDEX__', $canManageFiles, $instruments) . '</template>';
 
         return $html
             . '<div class="orchestra-actions"><button type="button" class="orchestra-button orchestra-button--small"'
@@ -129,7 +137,8 @@ final class PieceForm
             . ' data-orchestra-target="orchestra-library-part-rows">'
             . \esc_html__('+ Add part', 'orchestra-library') . '</button><span class="orchestra-muted">' . \esc_html__(
                 'Drag the parts by their handle to change the order. Every part has one sheet music file;'
-                    . ' uploading a new file replaces the old one.',
+                    . ' uploading a new file replaces the old one. Missing instruments are added under'
+                    . ' "Instruments" in the library.',
                 'orchestra-library'
             ) . '</span></div>';
     }
@@ -214,25 +223,63 @@ final class PieceForm
 
     /**
      * @param list<string> $headings
+     * @param list<Instrument> $instruments
      */
-    private function newRow(array $headings, string $key, bool $canManageFiles): string
+    private function newRow(array $headings, string $key, bool $canManageFiles, array $instruments): string
     {
         $field = self::FIELD_NEW_PARTS . '[' . $key . ']';
+        $name = \__('New part', 'orchestra-library');
 
         return $this->row(
             $headings,
-            self::dragHandle(self::NEW_PART_KEY_PREFIX . $key, \__('New part', 'orchestra-library')),
-            '<input type="text" name="' . \esc_attr($field) . '[name]" maxlength="' . PartNames::MAX_LENGTH
-                . '" placeholder="'
-                . \esc_attr__('New part, e.g. Horn 1', 'orchestra-library') . '" aria-label="'
-                . \esc_attr__('Name of the new part', 'orchestra-library') . '">',
-            $canManageFiles
-                ? self::fileInput(self::FIELD_NEW_PART_FILE . '[' . $key
-                    . ']', \__('Upload sheet music', 'orchestra-library'))
-                : '',
-            '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
-                . \esc_html__('Remove', 'orchestra-library') . '</button>'
+            self::dragHandle(self::NEW_PART_KEY_PREFIX . $key, $name),
+            ...[
+                ...self::voiceCells($field, new Voice(0, false, 0, ''), $instruments, $name),
+                $canManageFiles
+                    ? self::fileInput(self::FIELD_NEW_PART_FILE . '[' . $key
+                        . ']', \__('Upload sheet music', 'orchestra-library'))
+                    : '',
+                '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
+                    . \esc_html__('Remove', 'orchestra-library') . '</button>',
+            ]
         );
+    }
+
+    /**
+     * The fields of a voice: instrument, solo, number and free text.
+     *
+     * @param list<Instrument> $instruments sorted by name
+     * @return list<string>
+     */
+    private static function voiceCells(string $field, Voice $voice, array $instruments, string $partName): array
+    {
+        $field = \esc_attr($field);
+        /* translators: 1: field, e.g. "Instrument", 2: part name */
+        $of = \__('%1$s of %2$s', 'orchestra-library');
+        $label = static fn (string $what): string => \esc_attr(\sprintf($of, $what, $partName));
+
+        $instrumentOptions = '<option value="0">–</option>';
+        foreach ($instruments as $instrument) {
+            $instrumentOptions .= '<option value="' . $instrument->id . '"'
+                . \selected($voice->instrumentId, $instrument->id, false) . '>' . \esc_html($instrument->name)
+                . '</option>';
+        }
+        $numberOptions = '<option value="0"></option>';
+        for ($number = 1; $number <= Voice::MAX_NUMBER; $number++) {
+            $numberOptions .= '<option value="' . $number . '"' . \selected($voice->number, $number, false) . '>'
+                . $number . '</option>';
+        }
+
+        return [
+            '<select name="' . $field . '[instrument]" aria-label="' . $label(\__('Instrument', 'orchestra-library'))
+                . '">' . $instrumentOptions . '</select>',
+            '<input type="checkbox" name="' . $field . '[solo]" value="1"' . \checked($voice->solo, true, false)
+                . ' aria-label="' . $label(\__('Solo', 'orchestra-library')) . '">',
+            '<select name="' . $field . '[number]" aria-label="' . $label(\__('Number', 'orchestra-library')) . '">'
+                . $numberOptions . '</select>',
+            '<input type="text" name="' . $field . '[note]" maxlength="' . PartNames::MAX_LENGTH . '" value="'
+                . \esc_attr($voice->note) . '" aria-label="' . $label(\__('Free text', 'orchestra-library')) . '">',
+        ];
     }
 
     /**

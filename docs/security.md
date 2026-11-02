@@ -7,7 +7,7 @@ Registered with orchestra-core (see its `docs/capabilities.md`).
 | Capability | Granted to | Used for |
 |-----------|------------|----------|
 | `orchestra_library_piece_read` | members, conductors, organizers | library page |
-| `orchestra_library_piece_edit` | conductors | creating, editing and archiving pieces and parts |
+| `orchestra_library_piece_edit` | conductors | creating, editing and archiving pieces and parts; maintaining the instruments |
 | `orchestra_library_piece_delete` | administrators | deleting pieces |
 | `orchestra_library_sheet_music_download` | members, conductors, organizers | downloads |
 | `orchestra_library_sheet_music_manage` | conductors | uploading, replacing and deleting files |

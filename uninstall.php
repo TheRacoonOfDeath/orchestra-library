@@ -11,6 +11,7 @@ declare(strict_types=1);
 use Orchestra\Library\Database\Schema;
 use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\FileStorage;
+use Orchestra\Library\Part\Instruments;
 use Orchestra\Library\Piece\PiecePostType;
 
 if (! defined('WP_UNINSTALL_PLUGIN')) {
@@ -46,3 +47,4 @@ foreach ($orchestraLibraryPieceIds as $orchestraLibraryPieceId) {
 }
 
 delete_option(FileStorage::OPTION_DIRECTORY_SUFFIX);
+delete_option(Instruments::OPTION);

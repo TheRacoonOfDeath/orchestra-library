@@ -38,14 +38,16 @@ Examples:
 
 Each piece can contain a custom set of parts.
 
-Examples:
+A part is a voice: an instrument, optionally "Solo", a number (1 to 20) and a free text, shown
+as e.g. "Solo Gitarre 1 (tief)". Examples:
 
-- Horn 1
-- Horn 2
-- Solo Flute
-- Percussion
+- Gitarre 1
+- Gitarre 2
+- Solo Oktavgitarre
+- Bass (tief)
 
-Part names are not restricted to predefined values.
+The instruments come from a list that the conductors maintain ("Instruments" on the library page
+and in wp-admin). See [data-model.md](data-model.md#voices).
 
 ### Sheet Music Management
 
@@ -126,11 +128,11 @@ download links (including one zip per project), and filters for preventing delet
 |-----------|----------------|
 | `Orchestra\Library` | `Plugin` (wiring), `Capabilities`, `LibraryService` (public API) |
 | `…\Piece` | Post type, repository, deletion guard |
-| `…\Part` | Part repository, name rules, deletion with blockers |
+| `…\Part` | Part repository, voices and their labels, instruments, name rules, deletion with blockers |
 | `…\File` | File metadata, private storage, upload validation |
 | `…\Download` | Download endpoint, zip bundles, `Content-Disposition` |
-| `…\Admin` | Piece edit screen, list columns, notices |
-| `…\Frontend` | `[orchestra_library]` shortcode |
+| `…\Admin` | Piece edit screen, list columns, Library → Instruments |
+| `…\Frontend` | `[orchestra_library]` shortcode, piece and instruments forms |
 | `…\Database` | Table schema and migrations, row helpers |
 
 ---
@@ -141,11 +143,11 @@ download links (including one zip per project), and filters for preventing delet
 
 All information is organized around pieces.
 
-### Flexible Parts
+### Structured Parts
 
-Part names are defined per piece.
-
-No global catalogue of parts exists.
+Parts are defined per piece; no global catalogue of parts exists. Each part is built from an
+instrument of a shared list, solo, a number and a free text, so that the same voice is always
+written the same way.
 
 ### Library Owns Content
 

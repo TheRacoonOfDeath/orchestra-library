@@ -61,3 +61,8 @@ function wp_check_filetype_and_ext(string $file, string $filename, ?array $mimes
 
     return ['ext' => false, 'type' => false, 'proper_filename' => false];
 }
+
+function _n(string $single, string $plural, int $number, string $domain = 'default'): string
+{
+    return $number === 1 ? $single : $plural;
+}

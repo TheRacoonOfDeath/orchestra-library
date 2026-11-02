@@ -7,6 +7,8 @@ namespace Orchestra\Library;
 use Orchestra\Library\Download\DownloadController;
 use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\LibraryFile;
+use Orchestra\Library\Part\Instrument;
+use Orchestra\Library\Part\Instruments;
 use Orchestra\Library\Part\Part;
 use Orchestra\Library\Part\PartRepository;
 use Orchestra\Library\Piece\Piece;
@@ -25,6 +27,7 @@ final class LibraryService
         private readonly PieceRepository $pieces,
         private readonly PartRepository $parts,
         private readonly FileRepository $files,
+        private readonly Instruments $instruments,
     ) {
     }
 
@@ -63,6 +66,16 @@ final class LibraryService
     public function parts(int $pieceId): array
     {
         return $this->parts->forPiece($pieceId);
+    }
+
+    /**
+     * The instruments that voices are built from.
+     *
+     * @return list<Instrument> sorted by name
+     */
+    public function instruments(): array
+    {
+        return $this->instruments->all();
     }
 
     public function sheetMusic(int $partId): ?LibraryFile

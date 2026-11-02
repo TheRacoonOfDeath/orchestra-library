@@ -9,6 +9,7 @@ use Orchestra\Core\Authorization\CapabilityRegistry;
 use Orchestra\Core\Ui\Html;
 use Orchestra\Core\Ui\Menu;
 use Orchestra\Core\Ui\MenuItem;
+use Orchestra\Library\Admin\InstrumentsPage;
 use Orchestra\Library\Admin\PieceEditor;
 use Orchestra\Library\Admin\PieceListColumns;
 use Orchestra\Library\Database\Schema;
@@ -18,10 +19,14 @@ use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\FileService;
 use Orchestra\Library\File\FileStorage;
 use Orchestra\Library\File\UploadValidator;
+use Orchestra\Library\Frontend\InstrumentsController;
+use Orchestra\Library\Frontend\InstrumentsView;
 use Orchestra\Library\Frontend\LibraryShortcode;
 use Orchestra\Library\Frontend\PieceController;
+use Orchestra\Library\Part\Instruments;
 use Orchestra\Library\Part\PartRepository;
 use Orchestra\Library\Part\PartService;
+use Orchestra\Library\Part\VoiceMigration;
 use Orchestra\Library\Piece\DeletionGuard;
 use Orchestra\Library\Piece\PieceForm;
 use Orchestra\Library\Piece\PieceFormHandler;
@@ -45,6 +50,7 @@ final class Plugin
     private readonly Schema $schema;
     private readonly PieceRepository $pieces;
     private readonly PartRepository $parts;
+    private readonly Instruments $instruments;
     private readonly FileRepository $files;
     private readonly FileService $fileService;
     private readonly PartService $partService;
@@ -55,10 +61,11 @@ final class Plugin
         $this->schema = new Schema($wpdb);
         $this->pieces = new PieceRepository();
         $this->parts = new PartRepository($wpdb, $this->schema);
+        $this->instruments = new Instruments();
         $this->files = new FileRepository($wpdb, $this->schema);
         $this->fileService = new FileService($this->files, FileStorage::fromWordPress());
         $this->partService = new PartService($this->parts, $this->fileService);
-        $this->library = new LibraryService($this->pieces, $this->parts, $this->files);
+        $this->library = new LibraryService($this->pieces, $this->parts, $this->files, $this->instruments);
     }
 
     public static function boot(string $pluginFile): self
@@ -118,7 +125,11 @@ final class Plugin
             return;
         }
 
-        $this->schema->migrateIfOutdated();
+        $previousVersion = $this->schema->migrateIfOutdated();
+        // Version 2 turned the free-text part names into voices.
+        if ($previousVersion !== null && $previousVersion < 2) {
+            (new VoiceMigration($this->parts, $this->instruments))->run();
+        }
 
         \add_action('orchestra_core_register_capabilities', [Capabilities::class, 'register']);
         \add_action('init', [PiecePostType::class, 'register']);
@@ -126,22 +137,26 @@ final class Plugin
         (new DeletionGuard($this->partService))->register();
         (new DownloadController($this->files, $this->fileService, $this->parts, $this->pieces, new ZipBundler()))
             ->register();
-        $form = new PieceForm($this->parts, $this->files);
+        $form = new PieceForm($this->parts, $this->files, $this->instruments);
         $handler = new PieceFormHandler(
             $this->pieces,
             $this->parts,
             $this->partService,
             $this->files,
             $this->fileService,
-            new UploadValidator()
+            new UploadValidator(),
+            $this->instruments
         );
-        (new LibraryShortcode($this->pieces, $this->parts, $this->files, $form))->register();
+        $instrumentsView = new InstrumentsView($this->instruments, $this->parts);
+        (new LibraryShortcode($this->pieces, $this->parts, $this->files, $form, $instrumentsView))->register();
         (new PieceController($handler))->register();
+        (new InstrumentsController($this->instruments, $this->parts))->register();
         \add_action(Menu::REGISTER_ACTION, [self::class, 'registerMenuItem']);
 
         if (\is_admin()) {
             (new PieceEditor($this->pieces, $form, $handler))->register();
             (new PieceListColumns($this->pieces, $this->parts))->register();
+            (new InstrumentsPage($instrumentsView))->register();
         }
     }
 

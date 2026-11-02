@@ -18,9 +18,10 @@ Only call it from `plugins_loaded` or later, and only if orchestra-library is ac
 |--------|---------|
 | `piece(int $pieceId)` | `?Piece`: `id`, `title`, `composer`, `description`, `archived`, `published` |
 | `searchPieces(string $query = '', bool $includeArchived = false, int $limit = 100)` | `list<Piece>`: published pieces matching title, description or composer, ordered by title |
-| `part(int $partId)` | `?Part`: `id`, `pieceId`, `name`, `description`, `position` |
+| `part(int $partId)` | `?Part`: `id`, `pieceId`, `name` (the label of the voice, e.g. "Solo Gitarre 1 (tief)"), `description`, `position`, and since 0.5 `instrumentId` (0 for none), `solo`, `number` (0 for none), `note` |
 | `parts(int $pieceId)` | `list<Part>` ordered by position |
 | `partsByIds(list<int> $partIds)` | `list<Part>` in the given order |
+| `instruments()` | `list<Instrument>` (`id`, `name`) sorted by name (since 0.5) |
 | `sheetMusic(int $partId)` | `?LibraryFile` of the part |
 | `pieceFiles(int $pieceId)` | `list<LibraryFile>` of the piece itself (score, notes, …) |
 | `downloadUrl(LibraryFile $file)` | URL that downloads the file |

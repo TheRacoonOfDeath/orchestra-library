@@ -19,12 +19,15 @@ use Orchestra\Library\Piece\PieceRepository;
 
 /**
  * `[orchestra_library]`: search the library and download sheet music. Conductors also create and
- * edit pieces, parts and files here (`?orchestra_piece=ID` or `new`).
+ * edit pieces, parts and files here (`?orchestra_piece=ID` or `new`) and maintain the instruments
+ * (`?orchestra_library_view=instruments`).
  */
 final class LibraryShortcode
 {
     public const TAG = 'orchestra_library';
     public const PIECE_PARAMETER = 'orchestra_piece';
+    public const VIEW_PARAMETER = 'orchestra_library_view';
+    public const VIEW_INSTRUMENTS = 'instruments';
 
     private const QUERY_PARAMETER = 'orchestra_q';
     private const ARCHIVED_PARAMETER = 'orchestra_archived';
@@ -35,6 +38,7 @@ final class LibraryShortcode
         private readonly PartRepository $parts,
         private readonly FileRepository $files,
         private readonly PieceForm $form,
+        private readonly InstrumentsView $instruments,
     ) {
     }
 
@@ -55,8 +59,15 @@ final class LibraryShortcode
             return Html::notAllowed(\__('You are not allowed to see the library.', 'orchestra-library'));
         }
 
+        $canEdit = \current_user_can(Capabilities::PIECE_EDIT);
+        if ($canEdit && ($_GET[self::VIEW_PARAMETER] ?? '') === self::VIEW_INSTRUMENTS) {
+            return Html::page('<p class="orchestra-back"><a href="' . \esc_url(self::baseUrl()) . '">&larr; '
+                . \esc_html__('Library', 'orchestra-library') . '</a></p><h2>'
+                . \esc_html__('Instruments', 'orchestra-library') . '</h2>' . $this->instruments->form());
+        }
+
         $requested = \is_string($_GET[self::PIECE_PARAMETER] ?? null) ? $_GET[self::PIECE_PARAMETER] : '';
-        if ($requested !== '' && \current_user_can(Capabilities::PIECE_EDIT)) {
+        if ($requested !== '' && $canEdit) {
             return Html::page($this->editor($requested === 'new' ? 0 : \absint($requested)));
         }
 
@@ -97,7 +108,9 @@ final class LibraryShortcode
                 : \__('Show archived', 'orchestra-library');
             $archivedUrl = \add_query_arg(self::ARCHIVED_PARAMETER, $withArchived ? '0' : '1', $base);
             $newUrl = \add_query_arg(self::PIECE_PARAMETER, 'new', $base);
+            $instrumentsUrl = \add_query_arg(self::VIEW_PARAMETER, self::VIEW_INSTRUMENTS, $base);
             $html .= '<div class="orchestra-actions">' . Form::link($archivedUrl, $archivedLabel, 'link')
+                . Form::link($instrumentsUrl, \__('Instruments', 'orchestra-library'), 'link')
                 . Form::link($newUrl, \__('New piece', 'orchestra-library'), 'primary') . '</div>';
         }
         $html .= '</div>';
@@ -220,7 +233,7 @@ final class LibraryShortcode
     private static function baseUrl(): string
     {
         return \remove_query_arg(
-            [self::PIECE_PARAMETER, self::QUERY_PARAMETER, self::ARCHIVED_PARAMETER],
+            [self::PIECE_PARAMETER, self::QUERY_PARAMETER, self::ARCHIVED_PARAMETER, self::VIEW_PARAMETER],
             Redirect::currentUrl()
         );
     }
