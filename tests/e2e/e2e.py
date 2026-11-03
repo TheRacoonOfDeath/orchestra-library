@@ -11,6 +11,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 import zipfile
 
 BASE = os.environ["E2E_BASE_URL"]
@@ -448,6 +449,34 @@ wp_eval(f'wp_delete_post({piece_id}, true);')
 check(parts_of(piece_id) == [], "deleting a piece deletes its parts")
 remaining = [f for f in os.listdir(directory) if re.fullmatch(r"[0-9a-f-]{36}", f)]
 check(len(remaining) == 1, f"deleting a piece deletes its files (remaining: {len(remaining)}, the draft's)")
+
+# 9b. The private directory is checked (orchestra-core 0.13); PHP's web server ignores .htaccess like nginx
+if wp_eval('echo class_exists("Orchestra\\\\Core\\\\Files\\\\PrivateDirectoryCheck") ? "yes" : "no";') == "yes":
+    def site_health():
+        return json.loads(wp_eval(
+            'echo json_encode(Orchestra\\Core\\Files\\PrivateDirectoryCheck::siteHealthResult());'
+        ))
+
+    result = site_health()
+    check(result["status"] == "critical" and "Sheet music" in result["description"]
+          and "ORCHESTRA_LIBRARY_STORAGE_DIR" in result["description"],
+          "Site Health reports a sheet music folder that can be downloaded")
+    check(not [n for n in os.listdir(directory) if n.startswith("orchestra-check-")], "the test file is removed")
+    page = admin.request("/wp-admin/")[2].decode(errors="replace")
+    check("Private files can be downloaded without logging in" in page, "administrators see a notice")
+    page = conductor.request(LIBRARY)[2].decode(errors="replace")
+    check("Private files can be downloaded" not in page, "nobody else sees it")
+
+    outside = os.path.join(WORK, "private-sheet-music")
+    subprocess.run([WPC, "config", "set", "ORCHESTRA_LIBRARY_STORAGE_DIR", outside], capture_output=True, check=True)
+    time.sleep(3)  # opcache of the web server revalidates wp-config.php every 2 seconds
+    page = admin.request("/wp-admin/")[2].decode(errors="replace")
+    check("Private files can be downloaded" not in page, "the notice disappears once the folder is moved")
+    check(site_health()["status"] == "good", "a folder outside the web root is private")
+    subprocess.run([WPC, "config", "delete", "ORCHESTRA_LIBRARY_STORAGE_DIR"], capture_output=True, check=True)
+    time.sleep(3)
+else:
+    print("SKIP the private directory check needs orchestra-core 0.13")
 
 # 10. Uninstall removes everything
 subprocess.run([WPC, "plugin", "deactivate", "orchestra-library"], capture_output=True)

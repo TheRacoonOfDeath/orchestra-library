@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-02 20:58+0100\n"
+"POT-Creation-Date: 2026-11-03 18:15+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -168,7 +168,7 @@ msgstr "Du darfst die Notenbibliothek nicht sehen."
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:186
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:170
+#: src/Plugin.php:194
 msgid "Library"
 msgstr "Notenbibliothek"
 
@@ -408,20 +408,20 @@ msgid "Drag to change the order, or use the arrow keys"
 msgstr "Ziehen, um die Reihenfolge zu ändern, oder die Pfeiltasten verwenden"
 
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:106
+#: src/Piece/PieceFormHandler.php:110
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr "Die Stimme „%1$s“ kann nicht gelöscht werden: %2$s"
 
-#: src/Piece/PieceFormHandler.php:146
+#: src/Piece/PieceFormHandler.php:150
 msgid "The parts were not saved."
 msgstr "Die Stimmen wurden nicht gespeichert."
 
-#: src/Piece/PieceFormHandler.php:178
+#: src/Piece/PieceFormHandler.php:190
 msgid "The parts could not be saved completely."
 msgstr "Die Stimmen konnten nicht vollständig gespeichert werden."
 
-#: src/Piece/PieceFormHandler.php:196
+#: src/Piece/PieceFormHandler.php:208
 msgid "An instrument no longer exists. Please choose another one."
 msgstr "Ein Instrument gibt es nicht mehr. Bitte wähle ein anderes."
 
@@ -461,15 +461,19 @@ msgstr "Keine Stücke gefunden."
 msgid "No pieces found in Trash."
 msgstr "Keine Stücke im Papierkorb gefunden."
 
-#: src/Plugin.php:173
+#: src/Plugin.php:177
+msgid "Sheet music and piece files"
+msgstr "Noten und Dateien zu Stücken"
+
+#: src/Plugin.php:197
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr "Stücke und Noten; Stücke anlegen und bearbeiten."
 
-#: src/Plugin.php:174
+#: src/Plugin.php:198
 msgid "Pieces and sheet music."
 msgstr "Stücke und Noten."
 
-#: src/Plugin.php:186
+#: src/Plugin.php:210
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 

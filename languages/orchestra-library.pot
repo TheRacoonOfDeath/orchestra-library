@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-02 20:58+0100\n"
+"POT-Creation-Date: 2026-11-03 18:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:186
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:170
+#: src/Plugin.php:194
 msgid "Library"
 msgstr ""
 
@@ -394,20 +394,20 @@ msgid "Drag to change the order, or use the arrow keys"
 msgstr ""
 
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:106
+#: src/Piece/PieceFormHandler.php:110
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:146
+#: src/Piece/PieceFormHandler.php:150
 msgid "The parts were not saved."
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:178
+#: src/Piece/PieceFormHandler.php:190
 msgid "The parts could not be saved completely."
 msgstr ""
 
-#: src/Piece/PieceFormHandler.php:196
+#: src/Piece/PieceFormHandler.php:208
 msgid "An instrument no longer exists. Please choose another one."
 msgstr ""
 
@@ -447,14 +447,18 @@ msgstr ""
 msgid "No pieces found in Trash."
 msgstr ""
 
-#: src/Plugin.php:173
+#: src/Plugin.php:177
+msgid "Sheet music and piece files"
+msgstr ""
+
+#: src/Plugin.php:197
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr ""
 
-#: src/Plugin.php:174
+#: src/Plugin.php:198
 msgid "Pieces and sheet music."
 msgstr ""
 
-#: src/Plugin.php:186
+#: src/Plugin.php:210
 msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
 msgstr ""

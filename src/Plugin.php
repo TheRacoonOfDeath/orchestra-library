@@ -6,6 +6,7 @@ namespace Orchestra\Library;
 
 use LogicException;
 use Orchestra\Core\Authorization\CapabilityRegistry;
+use Orchestra\Core\Files\PrivateDirectoryCheck;
 use Orchestra\Core\Ui\Html;
 use Orchestra\Core\Ui\Menu;
 use Orchestra\Core\Ui\MenuItem;
@@ -52,6 +53,7 @@ final class Plugin
     private readonly PartRepository $parts;
     private readonly Instruments $instruments;
     private readonly FileRepository $files;
+    private readonly FileStorage $storage;
     private readonly FileService $fileService;
     private readonly PartService $partService;
     private readonly LibraryService $library;
@@ -63,7 +65,8 @@ final class Plugin
         $this->parts = new PartRepository($wpdb, $this->schema);
         $this->instruments = new Instruments();
         $this->files = new FileRepository($wpdb, $this->schema);
-        $this->fileService = new FileService($this->files, FileStorage::fromWordPress());
+        $this->storage = FileStorage::fromWordPress();
+        $this->fileService = new FileService($this->files, $this->storage);
         $this->partService = new PartService($this->parts, $this->fileService);
         $this->library = new LibraryService($this->pieces, $this->parts, $this->files, $this->instruments);
     }
@@ -152,12 +155,33 @@ final class Plugin
         (new PieceController($handler))->register();
         (new InstrumentsController($this->instruments, $this->parts))->register();
         \add_action(Menu::REGISTER_ACTION, [self::class, 'registerMenuItem']);
+        // The check of private directories exists since orchestra-core 0.13.
+        if (\class_exists(PrivateDirectoryCheck::class)) {
+            \add_action(PrivateDirectoryCheck::REGISTER_ACTION, [$this, 'registerPrivateDirectory']);
+        }
 
         if (\is_admin()) {
             (new PieceEditor($this->pieces, $form, $handler))->register();
             (new PieceListColumns($this->pieces, $this->parts))->register();
             (new InstrumentsPage($instrumentsView))->register();
         }
+    }
+
+    /**
+     * @internal Hooked to `orchestra_core_register_private_directories`.
+     */
+    public function registerPrivateDirectory(PrivateDirectoryCheck $check): void
+    {
+        $check->add(
+            'orchestra_library',
+            \__('Sheet music and piece files', 'orchestra-library'),
+            'ORCHESTRA_LIBRARY_STORAGE_DIR',
+            function (): string {
+                $this->storage->ensureDirectory();
+
+                return $this->storage->directory();
+            }
+        );
     }
 
     /**

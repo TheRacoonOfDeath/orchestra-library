@@ -41,6 +41,10 @@ location ~ ^/wp-content/uploads/orchestra-library- {
 
 Changing the directory later requires moving the existing files.
 
+Since orchestra-core 0.13, the directory is checked: **Tools → Site Health** reports a critical
+issue, and administrators see a notice in wp-admin, if a test file in it can be downloaded (see
+orchestra-core's `docs/persistence.md`).
+
 ## Uploads
 
 - Only users with `orchestra_library_sheet_music_manage`, on the piece edit screen, with a valid nonce.
