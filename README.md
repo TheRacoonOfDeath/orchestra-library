@@ -13,7 +13,8 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 - Additional files for the whole piece, e.g. the full score
 - Private file storage and permission-checked downloads, including zip downloads of several parts
 - The library page `[orchestra_library]`: members search and download; conductors create and edit
-  pieces, parts and files there as well (or in **Library** in wp-admin)
+  pieces, parts and files there as well (or in **Library** in wp-admin). Every part and every file
+  of a piece has its own "Download" button; parts without a file say "No sheet music"
 - An API for the other Orchestra plugins
 
 ## Installation

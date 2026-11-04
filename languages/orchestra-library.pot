@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 18:15+0100\n"
+"POT-Creation-Date: 2026-11-03 22:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,7 +120,7 @@ msgid ""
 msgstr ""
 
 #: src/Frontend/InstrumentsView.php:41 src/Frontend/InstrumentsView.php:66
-#: src/Frontend/LibraryShortcode.php:204 src/Frontend/LibraryShortcode.php:227
+#: src/Frontend/LibraryShortcode.php:207 src/Frontend/LibraryShortcode.php:230
 msgid "Save"
 msgstr ""
 
@@ -164,7 +164,7 @@ msgstr ""
 msgid "You are not allowed to see the library."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:186
+#: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
 #: src/Plugin.php:194
 msgid "Library"
@@ -190,7 +190,7 @@ msgstr ""
 msgid "Show archived"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:114 src/Frontend/LibraryShortcode.php:193
+#: src/Frontend/LibraryShortcode.php:114 src/Frontend/LibraryShortcode.php:196
 msgid "New piece"
 msgstr ""
 
@@ -204,41 +204,41 @@ msgid ""
 "added them."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:150
-msgid "Download"
+#: src/Frontend/LibraryShortcode.php:151
+msgid "No sheet music"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:164
-msgid "Piece files:"
+#: src/Frontend/LibraryShortcode.php:162 src/Frontend/LibraryShortcode.php:228
+msgid "Piece files"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:173
+#: src/Frontend/LibraryShortcode.php:176
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:189
+#: src/Frontend/LibraryShortcode.php:192
 msgid "The piece does not exist."
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:208
+#: src/Frontend/LibraryShortcode.php:211
 msgid "Title"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:216
+#: src/Frontend/LibraryShortcode.php:219
 msgid "Description"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:222
+#: src/Frontend/LibraryShortcode.php:225
 msgid "Parts and sheet music"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:225
-msgid "Piece files"
+#: src/Frontend/LibraryShortcode.php:231
+msgid "Cancel"
 msgstr ""
 
-#: src/Frontend/LibraryShortcode.php:228
-msgid "Cancel"
+#: src/Frontend/LibraryShortcode.php:246
+msgid "Download"
 msgstr ""
 
 #: src/Frontend/PieceController.php:47

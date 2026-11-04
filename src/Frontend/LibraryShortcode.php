@@ -109,8 +109,8 @@ final class LibraryShortcode
             $archivedUrl = \add_query_arg(self::ARCHIVED_PARAMETER, $withArchived ? '0' : '1', $base);
             $newUrl = \add_query_arg(self::PIECE_PARAMETER, 'new', $base);
             $instrumentsUrl = \add_query_arg(self::VIEW_PARAMETER, self::VIEW_INSTRUMENTS, $base);
-            $html .= '<div class="orchestra-actions">' . Form::link($archivedUrl, $archivedLabel, 'link')
-                . Form::link($instrumentsUrl, \__('Instruments', 'orchestra-library'), 'link')
+            $html .= '<div class="orchestra-actions">' . Form::link($archivedUrl, $archivedLabel)
+                . Form::link($instrumentsUrl, \__('Instruments', 'orchestra-library'))
                 . Form::link($newUrl, \__('New piece', 'orchestra-library'), 'primary') . '</div>';
         }
         $html .= '</div>';
@@ -144,25 +144,28 @@ final class LibraryShortcode
                 $html .= '<ul class="orchestra-list">';
                 foreach ($parts as $part) {
                     $file = $sheetMusic[$part->id] ?? null;
-                    $download = $canDownload && $file !== null
-                        ? Form::link(
-                            DownloadController::fileUrl($file->id),
-                            \__('Download', 'orchestra-library'),
-                            'small'
-                        )
-                        : '';
+                    $download = '';
+                    if ($canDownload) {
+                        // A part without a file says so, instead of looking like a missing button.
+                        $download = $file === null
+                            ? '<span class="orchestra-muted">' . \esc_html__('No sheet music', 'orchestra-library')
+                                . '</span>'
+                            : self::downloadButton($file);
+                    }
                     $html .= '<li><span>' . \esc_html($part->name) . '</span>' . $download . '</li>';
                 }
                 $html .= '</ul>';
             }
 
+            // The files of the whole piece, listed like the parts.
             if ($canDownload && ($pieceFiles[$piece->id] ?? []) !== []) {
-                $links = \array_map(
-                    static fn (LibraryFile $file): string => self::downloadLink($file, $file->originalName),
-                    $pieceFiles[$piece->id]
-                );
-                $html .= '<p class="orchestra-muted">' . \esc_html__('Piece files:', 'orchestra-library') . ' '
-                    . \implode(', ', $links) . '</p>';
+                $html .= '<p class="orchestra-muted">' . \esc_html__('Piece files', 'orchestra-library')
+                    . '</p><ul class="orchestra-list">';
+                foreach ($pieceFiles[$piece->id] as $file) {
+                    $html .= '<li><span class="orchestra-ellipsis" title="' . \esc_attr($file->originalName) . '">'
+                        . \esc_html($file->originalName) . '</span>' . self::downloadButton($file) . '</li>';
+                }
+                $html .= '</ul>';
             }
             $html .= '</article>';
         }
@@ -238,9 +241,9 @@ final class LibraryShortcode
         );
     }
 
-    private static function downloadLink(LibraryFile $file, string $label): string
+    private static function downloadButton(LibraryFile $file): string
     {
-        return '<a href="' . \esc_url(DownloadController::fileUrl($file->id)) . '">' . \esc_html($label) . '</a>';
+        return Form::link(DownloadController::fileUrl($file->id), \__('Download', 'orchestra-library'), 'small');
     }
 
     /**

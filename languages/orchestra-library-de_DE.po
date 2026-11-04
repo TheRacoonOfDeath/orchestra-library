@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 18:15+0100\n"
+"POT-Creation-Date: 2026-11-03 22:08+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -120,7 +120,7 @@ msgstr ""
 "Stimmen in allen Stücken umbenannt."
 
 #: src/Frontend/InstrumentsView.php:41 src/Frontend/InstrumentsView.php:66
-#: src/Frontend/LibraryShortcode.php:204 src/Frontend/LibraryShortcode.php:227
+#: src/Frontend/LibraryShortcode.php:207 src/Frontend/LibraryShortcode.php:230
 msgid "Save"
 msgstr "Speichern"
 
@@ -166,7 +166,7 @@ msgstr "Bitte logge dich ein, um die Notenbibliothek zu sehen."
 msgid "You are not allowed to see the library."
 msgstr "Du darfst die Notenbibliothek nicht sehen."
 
-#: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:186
+#: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
 #: src/Plugin.php:194
 msgid "Library"
@@ -192,7 +192,7 @@ msgstr "Archivierte ausblenden"
 msgid "Show archived"
 msgstr "Archivierte anzeigen"
 
-#: src/Frontend/LibraryShortcode.php:114 src/Frontend/LibraryShortcode.php:193
+#: src/Frontend/LibraryShortcode.php:114 src/Frontend/LibraryShortcode.php:196
 msgid "New piece"
 msgstr "Neues Stück"
 
@@ -208,44 +208,44 @@ msgstr ""
 "Die Notenbibliothek ist noch leer. Stücke erscheinen hier, sobald die "
 "Dirigenten sie angelegt haben."
 
-#: src/Frontend/LibraryShortcode.php:150
-msgid "Download"
-msgstr "Herunterladen"
+#: src/Frontend/LibraryShortcode.php:151
+msgid "No sheet music"
+msgstr "Keine Noten"
 
-#: src/Frontend/LibraryShortcode.php:164
-msgid "Piece files:"
-msgstr "Dateien zum Stück:"
+#: src/Frontend/LibraryShortcode.php:162 src/Frontend/LibraryShortcode.php:228
+msgid "Piece files"
+msgstr "Dateien zum Stück"
 
-#: src/Frontend/LibraryShortcode.php:173
+#: src/Frontend/LibraryShortcode.php:176
 msgid ""
 "Only the first results are shown. Refine your search to find more pieces."
 msgstr ""
 "Es werden nur die ersten Ergebnisse angezeigt. Verfeinere deine Suche, um "
 "weitere Stücke zu finden."
 
-#: src/Frontend/LibraryShortcode.php:189
+#: src/Frontend/LibraryShortcode.php:192
 msgid "The piece does not exist."
 msgstr "Das Stück existiert nicht."
 
-#: src/Frontend/LibraryShortcode.php:208
+#: src/Frontend/LibraryShortcode.php:211
 msgid "Title"
 msgstr "Titel"
 
-#: src/Frontend/LibraryShortcode.php:216
+#: src/Frontend/LibraryShortcode.php:219
 msgid "Description"
 msgstr "Beschreibung"
 
-#: src/Frontend/LibraryShortcode.php:222
+#: src/Frontend/LibraryShortcode.php:225
 msgid "Parts and sheet music"
 msgstr "Stimmen und Noten"
 
-#: src/Frontend/LibraryShortcode.php:225
-msgid "Piece files"
-msgstr "Dateien zum Stück"
-
-#: src/Frontend/LibraryShortcode.php:228
+#: src/Frontend/LibraryShortcode.php:231
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: src/Frontend/LibraryShortcode.php:246
+msgid "Download"
+msgstr "Herunterladen"
 
 #: src/Frontend/PieceController.php:47
 msgid "You are not allowed to edit this piece."
@@ -517,6 +517,9 @@ msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 
 #~ msgid "Part names must not be empty."
 #~ msgstr "Stimmnamen dürfen nicht leer sein."
+
+#~ msgid "Piece files:"
+#~ msgstr "Dateien zum Stück:"
 
 #, php-format
 #~ msgid "The part name \"%1$s\" is longer than %2$d characters."
