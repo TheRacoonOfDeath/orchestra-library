@@ -6,6 +6,7 @@ namespace Orchestra\Library;
 
 use LogicException;
 use Orchestra\Core\Authorization\CapabilityRegistry;
+use Orchestra\Core\Authorization\Roles;
 use Orchestra\Core\Files\PrivateDirectoryCheck;
 use Orchestra\Core\Ui\Html;
 use Orchestra\Core\Ui\Menu;
@@ -122,8 +123,12 @@ final class Plugin
      */
     public function registerFeatures(): void
     {
-        // The shared UI exists since orchestra-core 0.4.
-        if (!\class_exists(CapabilityRegistry::class) || !\class_exists(Html::class)) {
+        // The shared UI exists since orchestra-core 0.4, the librarian role since 0.17.
+        if (
+            !\class_exists(CapabilityRegistry::class)
+            || !\class_exists(Html::class)
+            || !\defined(Roles::class . '::LIBRARIAN')
+        ) {
             \add_action('admin_notices', [$this, 'renderMissingCoreNotice']);
             return;
         }
@@ -207,7 +212,7 @@ final class Plugin
     public function renderMissingCoreNotice(): void
     {
         echo '<div class="notice notice-error"><p>'
-            . \esc_html__('Orchestra Library requires Orchestra Core 0.4 or later to be active.', 'orchestra-library')
+            . \esc_html__('Orchestra Library requires Orchestra Core 0.17 or later to be active.', 'orchestra-library')
             . '</p></div>';
     }
 

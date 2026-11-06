@@ -82,6 +82,7 @@ MU
 "$WP" plugin activate orchestra-core orchestra-library
 "$WP" user create conductor conductor@example.com --role=orchestra_conductor --user_pass=pass --quiet
 "$WP" user create member member@example.com --role=orchestra_member --user_pass=pass --quiet
+"$WP" user create librarian librarian@example.com --role=orchestra_librarian --user_pass=pass --quiet
 "$WP" user create sub sub@example.com --role=subscriber --user_pass=pass --quiet
 
 # Web server

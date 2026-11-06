@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 22:08+0100\n"
+"POT-Creation-Date: 2026-11-06 10:55+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -168,7 +168,7 @@ msgstr "Du darfst die Notenbibliothek nicht sehen."
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:194
+#: src/Plugin.php:199
 msgid "Library"
 msgstr "Notenbibliothek"
 
@@ -461,21 +461,21 @@ msgstr "Keine Stücke gefunden."
 msgid "No pieces found in Trash."
 msgstr "Keine Stücke im Papierkorb gefunden."
 
-#: src/Plugin.php:177
+#: src/Plugin.php:182
 msgid "Sheet music and piece files"
 msgstr "Noten und Dateien zu Stücken"
 
-#: src/Plugin.php:197
+#: src/Plugin.php:202
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr "Stücke und Noten; Stücke anlegen und bearbeiten."
 
-#: src/Plugin.php:198
+#: src/Plugin.php:203
 msgid "Pieces and sheet music."
 msgstr "Stücke und Noten."
 
-#: src/Plugin.php:210
-msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
-msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
+#: src/Plugin.php:215
+msgid "Orchestra Library requires Orchestra Core 0.17 or later to be active."
+msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.17."
 
 #, php-format
 #~ msgid "%d voice"
@@ -508,6 +508,10 @@ msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 
 #~ msgid "New part, e.g. Horn 1"
 #~ msgstr "Neue Stimme, z. B. Horn 1"
+
+#~ msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
+#~ msgstr ""
+#~ "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.4."
 
 #~ msgid "Order"
 #~ msgstr "Reihenfolge"

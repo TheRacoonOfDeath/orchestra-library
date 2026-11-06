@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 22:08+0100\n"
+"POT-Creation-Date: 2026-11-06 10:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:194
+#: src/Plugin.php:199
 msgid "Library"
 msgstr ""
 
@@ -447,18 +447,18 @@ msgstr ""
 msgid "No pieces found in Trash."
 msgstr ""
 
-#: src/Plugin.php:177
+#: src/Plugin.php:182
 msgid "Sheet music and piece files"
 msgstr ""
 
-#: src/Plugin.php:197
+#: src/Plugin.php:202
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr ""
 
-#: src/Plugin.php:198
+#: src/Plugin.php:203
 msgid "Pieces and sheet music."
 msgstr ""
 
-#: src/Plugin.php:210
-msgid "Orchestra Library requires Orchestra Core 0.4 or later to be active."
+#: src/Plugin.php:215
+msgid "Orchestra Library requires Orchestra Core 0.17 or later to be active."
 msgstr ""

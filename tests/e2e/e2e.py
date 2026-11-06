@@ -170,6 +170,24 @@ check(status == 200 and piece_id > 0 and wp_eval(f"echo get_post_status({piece_i
       "conductor creates a published piece")
 check("The piece has been saved." in body.decode() and f'name="piece" value="{piece_id}"' in body.decode(),
       "the editor of the new piece opens after saving")
+
+# 1b. A librarian (a member who maintains the library) does the same
+librarian = Session("librarian")
+_, final, _ = (lambda r: (r[0], r[1].get("location", ""), r[2]))(librarian.request("/wp-admin/", follow=False))
+check("wp-admin" not in final, "librarians are kept out of wp-admin")
+page, form = piece_form(librarian, "new")
+check(form["action"] == "orchestra_library_save_piece_page", "the library page has a piece editor for librarians")
+save_piece(librarian, "new", {
+    "orchestra_library_title": "Librarian Test Piece",
+    "orchestra_new_parts[0][note]": "Flute", "orchestra_part_order[]": ["new:0"],
+}, files=[("orchestra_new_part_file[0]", horn1)])
+librarian_piece = int(wp_eval('echo (new WP_Query(["post_type" => "orchestra_piece", "title" => "Librarian Test Piece",'
+                              ' "fields" => "ids"]))->posts[0] ?? 0;') or 0)
+check(librarian_piece > 0 and len(parts_of(librarian_piece)) == 1 and parts_of(librarian_piece)[0]["file"],
+      "librarian creates a piece and uploads sheet music")
+check(wp_eval('echo json_encode(get_role("orchestra_librarian")->has_cap("orchestra_library_piece_delete"));') == "false",
+      "librarians cannot delete pieces")
+wp_eval(f"wp_delete_post({librarian_piece}, true);")
 _, _, body = conductor.request(LIBRARY)
 check(f'orchestra_piece={piece_id}">Pirates of the Caribbean</a>' in body.decode() and ">Edit<" not in body.decode(),
       "conductors open the editor by clicking the title of a piece")

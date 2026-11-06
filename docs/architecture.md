@@ -26,7 +26,7 @@ The plugin does not manage:
 
 ### Piece Management
 
-Conductors can create and maintain musical pieces.
+Conductors and librarians (orchestra-core 0.17) can create and maintain musical pieces.
 
 Examples:
 
