@@ -138,6 +138,10 @@ final class Plugin
         if ($previousVersion !== null && $previousVersion < 2) {
             (new VoiceMigration($this->parts, $this->instruments))->run();
         }
+        // Version 3 added display names for piece files.
+        if ($previousVersion !== null && $previousVersion < 3) {
+            $this->files->fillDisplayNames();
+        }
 
         \add_action('orchestra_core_register_capabilities', [Capabilities::class, 'register']);
         \add_action('init', [PiecePostType::class, 'register']);

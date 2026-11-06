@@ -61,13 +61,22 @@ Table `{prefix}orchestra_library_files` holds the metadata of part sheet music a
 | `piece_id` | bigint unsigned | |
 | `part_id` | bigint unsigned, nullable | `NULL` for piece files; unique, so a part has at most one file |
 | `storage_name` | char(36) | UUID; the file name in the storage directory |
-| `original_name` | varchar(255) | sanitized upload name, used for downloads |
+| `original_name` | varchar(255) | sanitized upload name; downloads of sheet music use it |
+| `display_name` | varchar(191) | name of a piece file, shown instead of the file name; `''` for sheet music (schema version 3) |
 | `mime_type` | varchar(100) | detected from the content |
 | `size` | bigint unsigned | bytes |
 | `uploaded_by` | bigint unsigned | user ID |
 | `uploaded_at` | datetime | UTC |
 
 The files themselves are stored in a private directory, see [security.md](security.md).
+
+Piece files have a **display name** (since 0.9), entered next to the file in the piece editor and
+listed in the library with a "Download" button, like the parts. It is required, at most 191
+characters, and can be changed in the editor; emptying it keeps the old name. A new file without a
+name is not uploaded, and a name without a file is reported. Piece files are listed by display
+name, and download as the display name with the original extension (`LibraryFile::downloadName()`,
+e.g. "Full score.pdf"). The migration to schema version 3 gave existing piece files their file name
+without the extension.
 
 ## Options
 

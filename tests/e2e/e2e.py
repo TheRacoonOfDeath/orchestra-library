@@ -159,10 +159,11 @@ status, _, body = save_piece(conductor, "new", {
     "orchestra_library_composer": "Klaus Badelt",
     "orchestra_new_parts[0][note]": "Percussion", "orchestra_new_parts[1][note]": "Horn 1",
     "orchestra_new_parts[2][note]": " Horn  2 ", "orchestra_part_order[]": ["new:1", "new:2", "new:0"],
+    "orchestra_new_piece_files[0]": " Gesamtpartitur  Märchen ",
 }, files=[
     ("orchestra_new_part_file[1]", horn1),
     ("orchestra_new_part_file[2]", horn2),
-    ("orchestra_piece_files[]", score),
+    ("orchestra_new_piece_file[0]", score),
 ])
 piece_id = int(wp_eval('echo (new WP_Query(["post_type" => "orchestra_piece", "title" => "Pirates of the Caribbean",'
                        ' "fields" => "ids"]))->posts[0] ?? 0;') or 0)
@@ -170,6 +171,48 @@ check(status == 200 and piece_id > 0 and wp_eval(f"echo get_post_status({piece_i
       "conductor creates a published piece")
 check("The piece has been saved." in body.decode() and f'name="piece" value="{piece_id}"' in body.decode(),
       "the editor of the new piece opens after saving")
+
+# 1a. Piece files have a display name, which is required and can be changed
+def piece_files(piece):
+    return json.loads(wp_eval(
+        f'echo json_encode(array_map(fn($f) => [$f->displayName, $f->originalName],'
+        f' Orchestra\\Library\\Plugin::instance()->library()->pieceFiles({piece})));'))
+
+
+check(piece_files(piece_id) == [["Gesamtpartitur Märchen", "Partitur-Marchen.pdf"]],
+      f"piece files get their display name: {piece_files(piece_id)}")
+page, _ = piece_form(conductor, piece_id)
+check('value="Gesamtpartitur Märchen"' in page and "Partitur-Marchen.pdf" not in page and "+ Add file" in page,
+      "the editor shows the display name instead of the file name")
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              "orchestra_library_composer": "Klaus Badelt"},
+                        files=[("orchestra_new_piece_file[0]", horn2)])
+check("Enter a name for the file" in body.decode() and len(piece_files(piece_id)) == 1,
+      "a piece file without a name is not uploaded")
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              "orchestra_library_composer": "Klaus Badelt",
+                                              "orchestra_new_piece_files[0]": "Notes"})
+check('Choose a file for "Notes".' in html.unescape(body.decode()), "a name without a file asks for the file")
+score_file = wp_eval(f'foreach (Orchestra\\Library\\Plugin::instance()->library()->pieceFiles({piece_id}) as $f)'
+                     ' { echo $f->id; }')
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              "orchestra_library_composer": "Klaus Badelt",
+                                              f"orchestra_piece_file_names[{score_file}]": ""})
+check("Every piece file needs a name." in body.decode() and piece_files(piece_id)[0][0] == "Gesamtpartitur Märchen",
+      "an emptied name keeps the old one")
+save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                 "orchestra_library_composer": "Klaus Badelt",
+                                 f"orchestra_piece_file_names[{score_file}]": "Partitur"})
+check(piece_files(piece_id)[0][0] == "Partitur", "piece files are renamed in the editor")
+# Schema version 3 gives existing piece files their file name without the extension as display name.
+wp_eval(f'global $wpdb; $wpdb->update($wpdb->prefix . "orchestra_library_files", ["display_name" => ""],'
+        f' ["id" => {score_file}]); update_option("orchestra_library_schema_version", 2);')
+migrated_name = piece_files(piece_id)[0][0]
+check(migrated_name == "Partitur-Marchen",
+      f"existing piece files get a display name from the file name: {migrated_name}")
+save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                 "orchestra_library_composer": "Klaus Badelt",
+                                 f"orchestra_piece_file_names[{score_file}]": "Gesamtpartitur Märchen"})
 
 # 1b. A librarian (a member who maintains the library) does the same
 librarian = Session("librarian")
@@ -318,8 +361,9 @@ wp_eval('global $wpdb; $wpdb->delete($wpdb->prefix . "orchestra_library_parts", 
 
 # 4. Disguised files are rejected with a notice
 _, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
-                                              "orchestra_library_composer": "Klaus Badelt"},
-                        files=[("orchestra_piece_files[]", fake)])
+                                              "orchestra_library_composer": "Klaus Badelt",
+                                              "orchestra_new_piece_files[0]": "Fake"},
+                        files=[("orchestra_new_piece_file[0]", fake)])
 check("has a file type that is not allowed" in body.decode(), "PHP disguised as PDF is rejected")
 
 # 4b. Administrators use the piece editor in wp-admin, with the same fields
@@ -340,7 +384,8 @@ member = Session("member")
 _, _, body = member.request(f"/?page_id={library_page}")
 page = body.decode()
 check("Pirates of the Caribbean" in page and "Horn 2 in F" in page and "Klaus Badelt" in page, "member sees the library")
-check("Partitur" in page, "member sees the piece file")
+check("Gesamtpartitur Märchen" in page and "Partitur-Marchen.pdf" not in page,
+      "members see the display name of the piece file, not the file name")
 check("Pirates of the Caribbean</h3>" in page and f"orchestra_piece={piece_id}" not in page,
       "members see the title without a link to the editor")
 _, _, body = member.request(f"/?page_id={library_page}&orchestra_q=Badelt")
@@ -360,8 +405,8 @@ check(headers.get("content-type") == "application/pdf" and "horn1b.pdf" in heade
       f"download headers: {headers.get('content-type')} / {headers.get('content-disposition')}")
 check("no-store" in headers.get("cache-control", ""), "download is not cached")
 status, headers, _ = member.request(f"/wp-admin/admin-post.php?action=orchestra_library_download&file={file_ids['score']}", output=target)
-check("filename*=UTF-8''Partitur-M%C3%A4rchen.pdf" in headers.get("content-disposition", "")
-      or "Partitur" in headers.get("content-disposition", ""), f"non-ASCII file name: {headers.get('content-disposition')}")
+check("filename*=UTF-8''Gesamtpartitur%20M%C3%A4rchen.pdf" in headers.get("content-disposition", ""),
+      f"piece files download under their display name: {headers.get('content-disposition')}")
 
 # 6. Bundle download
 bundle_url = wp_eval(f'echo Orchestra\\Library\\Plugin::instance()->library()->bundleDownloadUrl([{by_name["Horn 1"]}, {by_name["Horn 2"]}], "Spring Concert 2027");')

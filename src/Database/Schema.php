@@ -12,7 +12,7 @@ use wpdb;
 final class Schema
 {
     /** Increase whenever a table definition changes; dbDelta() applies the difference. */
-    public const VERSION = 2;
+    public const VERSION = 3;
 
     public const OPTION_VERSION = 'orchestra_library_schema_version';
 
@@ -93,6 +93,7 @@ final class Schema
   part_id bigint(20) unsigned DEFAULT NULL,
   storage_name char(36) NOT NULL,
   original_name varchar(255) NOT NULL,
+  display_name varchar(191) NOT NULL DEFAULT '',
   mime_type varchar(100) NOT NULL,
   size bigint(20) unsigned NOT NULL,
   uploaded_by bigint(20) unsigned NOT NULL,

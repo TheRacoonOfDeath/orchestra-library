@@ -162,8 +162,8 @@ final class LibraryShortcode
                 $html .= '<p class="orchestra-muted">' . \esc_html__('Piece files', 'orchestra-library')
                     . '</p><ul class="orchestra-list">';
                 foreach ($pieceFiles[$piece->id] as $file) {
-                    $html .= '<li><span class="orchestra-ellipsis" title="' . \esc_attr($file->originalName) . '">'
-                        . \esc_html($file->originalName) . '</span>' . self::downloadButton($file) . '</li>';
+                    $html .= '<li><span>' . \esc_html($file->displayName) . '</span>' . self::downloadButton($file)
+                        . '</li>';
                 }
                 $html .= '</ul>';
             }

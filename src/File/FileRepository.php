@@ -68,7 +68,7 @@ final class FileRepository
     {
         return $this->hydrateAll($this->wpdb->get_results(
             $this->wpdb->prepare(
-                'SELECT * FROM %i WHERE piece_id = %d AND part_id IS NULL ORDER BY original_name, id',
+                'SELECT * FROM %i WHERE piece_id = %d AND part_id IS NULL ORDER BY display_name, id',
                 $this->schema->filesTable(),
                 $pieceId
             ),
@@ -88,7 +88,7 @@ final class FileRepository
 
         $rows = Row::all($this->wpdb->get_results(
             "SELECT * FROM {$this->schema->filesTable()} WHERE piece_id IN (" . Row::idList($pieceIds) . ')'
-            . ' AND part_id IS NULL ORDER BY original_name, id',
+            . ' AND part_id IS NULL ORDER BY display_name, id',
             ARRAY_A
         ));
 
@@ -128,6 +128,7 @@ final class FileRepository
         string $mimeType,
         int $size,
         int $uploadedBy,
+        string $displayName = '',
     ): LibraryFile {
         $uploadedAt = \current_time('mysql', true);
         $data = [
@@ -138,8 +139,9 @@ final class FileRepository
             'size' => $size,
             'uploaded_by' => $uploadedBy,
             'uploaded_at' => $uploadedAt,
+            'display_name' => $displayName,
         ];
-        $formats = ['%d', '%s', '%s', '%s', '%d', '%d', '%s'];
+        $formats = ['%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s'];
         // $wpdb->insert() cannot write NULL with a format, so the column is left out for piece files.
         if ($partId !== null) {
             $data['part_id'] = $partId;
@@ -160,7 +162,35 @@ final class FileRepository
             $size,
             $uploadedBy,
             $uploadedAt,
+            $displayName,
         );
+    }
+
+    public function rename(int $fileId, string $displayName): void
+    {
+        $this->wpdb->update(
+            $this->schema->filesTable(),
+            ['display_name' => $displayName],
+            ['id' => $fileId],
+            ['%s'],
+            ['%d']
+        );
+    }
+
+    /**
+     * Gives piece files without a display name their file name without the extension. Schema
+     * version 3 added display names.
+     */
+    public function fillDisplayNames(): void
+    {
+        $rows = Row::all($this->wpdb->get_results(
+            "SELECT * FROM {$this->schema->filesTable()} WHERE part_id IS NULL AND display_name = ''",
+            ARRAY_A
+        ));
+        foreach ($rows as $row) {
+            $file = self::hydrate($row);
+            $this->rename($file->id, LibraryFile::defaultDisplayName($file->originalName));
+        }
     }
 
     public function delete(int $fileId): void
@@ -191,6 +221,7 @@ final class FileRepository
             Row::int($row, 'size'),
             Row::int($row, 'uploaded_by'),
             Row::string($row, 'uploaded_at'),
+            Row::string($row, 'display_name'),
         );
     }
 }

@@ -28,6 +28,7 @@ Only call it from `plugins_loaded` or later, and only if orchestra-library is ac
 | `bundleDownloadUrl(list<int> $partIds, string $archiveName)` | URL that downloads the sheet music of the parts as one zip |
 
 Download URLs check the permissions of the user who opens them, so they can be shown to anyone.
+Piece files have a `displayName` (since 0.9) to show instead of `originalName`.
 
 Example: the sheet music of a member's parts in orchestra-projects, one link per part and one zip
 for all of them:

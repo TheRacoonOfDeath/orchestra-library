@@ -7,6 +7,7 @@ namespace Orchestra\Library\Piece;
 use Orchestra\Library\Capabilities;
 use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\FileService;
+use Orchestra\Library\File\LibraryFile;
 use Orchestra\Library\File\UploadRejected;
 use Orchestra\Library\File\UploadValidator;
 use Orchestra\Library\Part\Instrument;
@@ -259,20 +260,66 @@ final class PieceFormHandler
             }
         }
 
-        foreach (UploadValidator::keys($uploads, PieceForm::FIELD_PIECE_FILES) as $key) {
-            $upload = UploadValidator::extract($uploads, PieceForm::FIELD_PIECE_FILES, $key);
+        $names = \is_array($input[PieceForm::FIELD_PIECE_FILE_NAMES] ?? null)
+            ? $input[PieceForm::FIELD_PIECE_FILE_NAMES]
+            : [];
+        foreach ($this->files->pieceFiles($pieceId) as $file) {
+            if (\in_array($file->id, $toDelete, true) || !\is_string($names[$file->id] ?? null)) {
+                continue;
+            }
+            $name = self::displayName($names[$file->id]);
+            if ($name === '') {
+                /* translators: %s: name of a piece file */
+                $message = \__('Every piece file needs a name. "%s" keeps its name.', 'orchestra-library');
+                $errors[] = \sprintf($message, $file->displayName);
+            } elseif ($name !== $file->displayName) {
+                $this->files->rename($file->id, $name);
+            }
+        }
+
+        $newNames = \is_array($input[PieceForm::FIELD_NEW_PIECE_FILES] ?? null)
+            ? $input[PieceForm::FIELD_NEW_PIECE_FILES]
+            : [];
+        $keys = \array_unique([
+            ...\array_keys($newNames),
+            ...UploadValidator::keys($uploads, PieceForm::FIELD_NEW_PIECE_FILE),
+        ]);
+        foreach ($keys as $key) {
+            $name = self::displayName(\is_string($newNames[$key] ?? null) ? $newNames[$key] : '');
+            $upload = UploadValidator::extract($uploads, PieceForm::FIELD_NEW_PIECE_FILE, $key);
             if ($upload === null) {
+                if ($name !== '') {
+                    /* translators: %s: name of a piece file */
+                    $errors[] = \sprintf(\__('Choose a file for "%s".', 'orchestra-library'), $name);
+                }
+                continue;
+            }
+            if ($name === '') {
+                $fileName = \is_string($upload['name']) ? $upload['name'] : '';
+                /* translators: %s: file name */
+                $message = \__('Enter a name for the file "%s". It was not uploaded.', 'orchestra-library');
+                $errors[] = \sprintf($message, \sanitize_file_name($fileName));
                 continue;
             }
 
             try {
-                $this->fileService->attachToPiece($pieceId, $this->uploads->validate($upload), \get_current_user_id());
+                $this->fileService->attachToPiece(
+                    $pieceId,
+                    $this->uploads->validate($upload),
+                    \get_current_user_id(),
+                    $name
+                );
             } catch (UploadRejected | RuntimeException $exception) {
                 $errors[] = $exception->getMessage();
             }
         }
 
         return $errors;
+    }
+
+    private static function displayName(string $name): string
+    {
+        return \mb_substr(PartNames::normalize(\sanitize_text_field($name)), 0, LibraryFile::MAX_DISPLAY_NAME_LENGTH);
     }
 
     /**

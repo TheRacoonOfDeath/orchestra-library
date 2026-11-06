@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 10:55+0100\n"
+"POT-Creation-Date: 2026-11-06 11:25+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -31,7 +31,7 @@ msgstr "Stimmen und Noten"
 msgid "Piece Files"
 msgstr "Dateien zum Stück"
 
-#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:58
+#: src/Admin/PieceListColumns.php:37 src/Piece/PieceForm.php:62
 msgid "Composer"
 msgstr "Komponist"
 
@@ -40,7 +40,7 @@ msgid "Parts"
 msgstr "Stimmen"
 
 #: src/Admin/PieceListColumns.php:39 src/Frontend/LibraryShortcode.php:137
-#: src/Piece/PieceForm.php:64
+#: src/Piece/PieceForm.php:68
 msgid "Archived"
 msgstr "Archiviert"
 
@@ -105,7 +105,7 @@ msgid "The instruments have been saved."
 msgstr "Die Instrumente wurden gespeichert."
 
 #: src/Frontend/InstrumentsView.php:29 src/Frontend/InstrumentsView.php:100
-#: src/Piece/PieceForm.php:81 src/Piece/PieceForm.php:276
+#: src/Piece/PieceForm.php:85 src/Piece/PieceForm.php:339
 msgid "Instrument"
 msgstr "Instrument"
 
@@ -142,8 +142,8 @@ msgstr "Neues Instrument, z. B. Mandoline"
 msgid "Name of the new instrument"
 msgstr "Name des neuen Instruments"
 
-#: src/Frontend/InstrumentsView.php:81 src/Piece/PieceForm.php:106
-#: src/Piece/PieceForm.php:243
+#: src/Frontend/InstrumentsView.php:81 src/Piece/PieceForm.php:110
+#: src/Piece/PieceForm.php:258 src/Piece/PieceForm.php:306
 msgid "Remove"
 msgstr "Entfernen"
 
@@ -153,8 +153,8 @@ msgstr "Entfernen"
 msgid "Delete the instrument \"%s\"?"
 msgstr "Das Instrument „%s“ löschen?"
 
-#: src/Frontend/InstrumentsView.php:93 src/Piece/PieceForm.php:85
-#: src/Piece/PieceForm.php:193
+#: src/Frontend/InstrumentsView.php:93 src/Piece/PieceForm.php:89
+#: src/Piece/PieceForm.php:199 src/Piece/PieceForm.php:224
 msgid "Delete"
 msgstr "Löschen"
 
@@ -168,7 +168,7 @@ msgstr "Du darfst die Notenbibliothek nicht sehen."
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:199
+#: src/Plugin.php:203
 msgid "Library"
 msgstr "Notenbibliothek"
 
@@ -243,7 +243,7 @@ msgstr "Stimmen und Noten"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/Frontend/LibraryShortcode.php:246
+#: src/Frontend/LibraryShortcode.php:246 src/Piece/PieceForm.php:209
 msgid "Download"
 msgstr "Herunterladen"
 
@@ -310,7 +310,7 @@ msgstr "„%s“ kann nicht gelöscht werden"
 msgid "Archive the piece instead."
 msgstr "Archiviere das Stück stattdessen."
 
-#: src/Piece/PieceForm.php:66
+#: src/Piece/PieceForm.php:70
 msgid ""
 "Archived pieces are hidden in the library and cannot be added to new "
 "projects."
@@ -318,41 +318,41 @@ msgstr ""
 "Archivierte Stücke werden in der Notenbibliothek ausgeblendet und können "
 "nicht zu neuen Projekten hinzugefügt werden."
 
-#: src/Piece/PieceForm.php:80 src/Piece/PieceForm.php:275
+#: src/Piece/PieceForm.php:84 src/Piece/PieceForm.php:338
 msgid "Solo"
 msgstr "Solo"
 
-#: src/Piece/PieceForm.php:82 src/Piece/PieceForm.php:278
+#: src/Piece/PieceForm.php:86 src/Piece/PieceForm.php:341
 msgid "Number"
 msgstr "Nummer"
 
-#: src/Piece/PieceForm.php:83 src/Piece/PieceForm.php:281
+#: src/Piece/PieceForm.php:87 src/Piece/PieceForm.php:344
 msgid "Free text"
 msgstr "Zusatz"
 
-#: src/Piece/PieceForm.php:84
+#: src/Piece/PieceForm.php:88
 msgid "Sheet music"
 msgstr "Noten"
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:102
+#: src/Piece/PieceForm.php:106
 #, php-format
 msgid "Remove the sheet music of \"%s\"?"
 msgstr "Die Noten von „%s“ entfernen?"
 
-#: src/Piece/PieceForm.php:114 src/Piece/PieceForm.php:240
+#: src/Piece/PieceForm.php:118 src/Piece/PieceForm.php:303
 msgid "Upload sheet music"
 msgstr "Noten hochladen"
 
-#: src/Piece/PieceForm.php:115
+#: src/Piece/PieceForm.php:119
 msgid "Replace sheet music"
 msgstr "Noten ersetzen"
 
-#: src/Piece/PieceForm.php:138
+#: src/Piece/PieceForm.php:142
 msgid "+ Add part"
 msgstr "+ Stimme hinzufügen"
 
-#: src/Piece/PieceForm.php:139
+#: src/Piece/PieceForm.php:143
 msgid ""
 "Drag the parts by their handle to change the order. Every part has one sheet "
 "music file; uploading a new file replaces the old one. Missing instruments "
@@ -363,67 +363,108 @@ msgstr ""
 "Instrumente fügst du in der Bibliothek unter „Instrumente“ hinzu."
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:153
+#: src/Piece/PieceForm.php:157
 #, php-format
 msgid "Delete the part \"%s\" and its sheet music?"
 msgstr "Die Stimme „%s“ mit ihren Noten löschen?"
 
-#: src/Piece/PieceForm.php:158
+#: src/Piece/PieceForm.php:162
 msgid "Delete part"
 msgstr "Stimme löschen"
 
-#: src/Piece/PieceForm.php:180
-msgid "Files for the whole piece, e.g. the full score or performance notes."
+#: src/Piece/PieceForm.php:188
+msgid ""
+"Files for the whole piece, e.g. the full score or performance notes. The "
+"name is shown in the library instead of the file name."
 msgstr ""
-"Dateien für das ganze Stück, z. B. die Partitur oder Aufführungshinweise."
+"Dateien für das ganze Stück, z. B. die Partitur oder Aufführungshinweise. In "
+"der Bibliothek wird der Name statt des Dateinamens angezeigt."
 
-#. translators: %s: file name
-#: src/Piece/PieceForm.php:189
+#: src/Piece/PieceForm.php:197
+msgid "Name"
+msgstr "Name"
+
+#: src/Piece/PieceForm.php:198
+msgid "File"
+msgstr "Datei"
+
+#. translators: %s: name of a piece file
+#: src/Piece/PieceForm.php:216
 #, php-format
 msgid "Delete the file \"%s\"?"
 msgstr "Die Datei „%s“ löschen?"
 
-#: src/Piece/PieceForm.php:204
-msgid "Upload piece files"
-msgstr "Dateien zum Stück hochladen"
+#: src/Piece/PieceForm.php:242
+msgid "+ Add file"
+msgstr "+ Datei hinzufügen"
 
-#: src/Piece/PieceForm.php:231
+#: src/Piece/PieceForm.php:255
+msgid "Upload piece file"
+msgstr "Datei zum Stück hochladen"
+
+#: src/Piece/PieceForm.php:269
+msgid "e.g. Full score"
+msgstr "z. B. Partitur"
+
+#: src/Piece/PieceForm.php:270
+msgid "Name of the piece file"
+msgstr "Name der Datei zum Stück"
+
+#: src/Piece/PieceForm.php:294
 msgid "New part"
 msgstr "Neue Stimme"
 
 #. translators: 1: field, e.g. "Instrument", 2: part name
-#: src/Piece/PieceForm.php:258
+#: src/Piece/PieceForm.php:321
 #, php-format
 msgid "%1$s of %2$s"
 msgstr "%1$s von %2$s"
 
 #. translators: %s: part name
-#: src/Piece/PieceForm.php:305
+#: src/Piece/PieceForm.php:368
 #, php-format
 msgid "Move \"%s\""
 msgstr "„%s“ verschieben"
 
-#: src/Piece/PieceForm.php:310
+#: src/Piece/PieceForm.php:373
 msgid "Drag to change the order, or use the arrow keys"
 msgstr "Ziehen, um die Reihenfolge zu ändern, oder die Pfeiltasten verwenden"
 
 #. translators: 1: part name, 2: reasons
-#: src/Piece/PieceFormHandler.php:110
+#: src/Piece/PieceFormHandler.php:111
 #, php-format
 msgid "The part \"%1$s\" cannot be deleted: %2$s"
 msgstr "Die Stimme „%1$s“ kann nicht gelöscht werden: %2$s"
 
-#: src/Piece/PieceFormHandler.php:150
+#: src/Piece/PieceFormHandler.php:151
 msgid "The parts were not saved."
 msgstr "Die Stimmen wurden nicht gespeichert."
 
-#: src/Piece/PieceFormHandler.php:190
+#: src/Piece/PieceFormHandler.php:191
 msgid "The parts could not be saved completely."
 msgstr "Die Stimmen konnten nicht vollständig gespeichert werden."
 
-#: src/Piece/PieceFormHandler.php:208
+#: src/Piece/PieceFormHandler.php:209
 msgid "An instrument no longer exists. Please choose another one."
 msgstr "Ein Instrument gibt es nicht mehr. Bitte wähle ein anderes."
+
+#. translators: %s: name of a piece file
+#: src/Piece/PieceFormHandler.php:273
+#, php-format
+msgid "Every piece file needs a name. \"%s\" keeps its name."
+msgstr "Jede Datei zum Stück braucht einen Namen. „%s“ behält seinen Namen."
+
+#. translators: %s: name of a piece file
+#: src/Piece/PieceFormHandler.php:293
+#, php-format
+msgid "Choose a file for \"%s\"."
+msgstr "Wähle eine Datei für „%s“ aus."
+
+#. translators: %s: file name
+#: src/Piece/PieceFormHandler.php:300
+#, php-format
+msgid "Enter a name for the file \"%s\". It was not uploaded."
+msgstr "Gib einen Namen für die Datei „%s“ ein. Sie wurde nicht hochgeladen."
 
 #: src/Piece/PiecePostType.php:30
 msgid "Piece"
@@ -461,19 +502,19 @@ msgstr "Keine Stücke gefunden."
 msgid "No pieces found in Trash."
 msgstr "Keine Stücke im Papierkorb gefunden."
 
-#: src/Plugin.php:182
+#: src/Plugin.php:186
 msgid "Sheet music and piece files"
 msgstr "Noten und Dateien zu Stücken"
 
-#: src/Plugin.php:202
+#: src/Plugin.php:206
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr "Stücke und Noten; Stücke anlegen und bearbeiten."
 
-#: src/Plugin.php:203
+#: src/Plugin.php:207
 msgid "Pieces and sheet music."
 msgstr "Stücke und Noten."
 
-#: src/Plugin.php:215
+#: src/Plugin.php:219
 msgid "Orchestra Library requires Orchestra Core 0.17 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.17."
 
@@ -500,8 +541,9 @@ msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.17."
 #~ "Jede Stimme hat eine Notendatei; eine neu hochgeladene Datei ersetzt die "
 #~ "alte."
 
-#~ msgid "Name"
-#~ msgstr "Name"
+#~ msgid "Files for the whole piece, e.g. the full score or performance notes."
+#~ msgstr ""
+#~ "Dateien für das ganze Stück, z. B. die Partitur oder Aufführungshinweise."
 
 #~ msgid "Name of the new part"
 #~ msgstr "Name der neuen Stimme"
@@ -532,6 +574,9 @@ msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.17."
 #, php-format
 #~ msgid "The part name \"%s\" is used more than once."
 #~ msgstr "Der Stimmname „%s“ wird mehrfach verwendet."
+
+#~ msgid "Upload piece files"
+#~ msgstr "Dateien zum Stück hochladen"
 
 #~ msgid "Used by"
 #~ msgstr "Verwendet von"

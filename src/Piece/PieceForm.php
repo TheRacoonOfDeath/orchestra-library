@@ -36,7 +36,11 @@ final class PieceForm
     public const NEW_PART_KEY_PREFIX = 'new:';
     public const FIELD_PART_FILE = 'orchestra_part_file';
     public const FIELD_NEW_PART_FILE = 'orchestra_new_part_file';
-    public const FIELD_PIECE_FILES = 'orchestra_piece_files';
+    /** The display names of the existing piece files, by file ID. */
+    public const FIELD_PIECE_FILE_NAMES = 'orchestra_piece_file_names';
+    /** The display names of new piece files, by row key; the files are in {@see FIELD_NEW_PIECE_FILE}. */
+    public const FIELD_NEW_PIECE_FILES = 'orchestra_new_piece_files';
+    public const FIELD_NEW_PIECE_FILE = 'orchestra_new_piece_file';
     public const FIELD_DELETE_PIECE_FILES = 'orchestra_delete_piece_files';
     /** The remove button of a part's sheet music submits the part's ID in this field. */
     public const FIELD_REMOVE_PART_FILE = 'orchestra_remove_part_file';
@@ -171,40 +175,99 @@ final class PieceForm
             . ' data-orchestra-confirm="' . \esc_attr($confirm) . '">' . \esc_html($label) . '</button>';
     }
 
+    /**
+     * The files of the whole piece, each with a display name that is shown instead of the file
+     * name, like the parts with their sheet music.
+     */
     public function pieceFiles(int $pieceId): string
     {
         $files = $pieceId > 0 ? $this->files->pieceFiles($pieceId) : [];
         $canManageFiles = \current_user_can(Capabilities::SHEET_MUSIC_MANAGE);
 
         $html = '<p class="orchestra-muted">' . \esc_html__(
-            'Files for the whole piece, e.g. the full score or performance notes.',
+            'Files for the whole piece, e.g. the full score or performance notes. The name is shown in the'
+                . ' library instead of the file name.',
             'orchestra-library'
         ) . '</p>';
-        if ($files !== []) {
-            $html .= '<ul class="orchestra-list">';
-            foreach ($files as $file) {
-                $html .= '<li><span>' . self::fileLink($file) . '</span>';
-                if ($canManageFiles) {
-                    /* translators: %s: file name */
-                    $confirm = \__('Delete the file "%s"?', 'orchestra-library');
-                    $html .= self::immediateButton(
-                        self::FIELD_DELETE_PIECE_FILE,
-                        $file->id,
-                        \__('Delete', 'orchestra-library'),
-                        \sprintf($confirm, $file->originalName)
-                    );
-                }
-                $html .= '</li>';
-            }
-            $html .= '</ul>';
-        }
-        if ($canManageFiles) {
-            $html .= '<input type="file" name="' . self::FIELD_PIECE_FILES . '[]" multiple accept="'
-                . \esc_attr(UploadValidator::acceptAttribute()) . '" aria-label="'
-                . \esc_attr__('Upload piece files', 'orchestra-library') . '">';
+        if ($files === [] && !$canManageFiles) {
+            return $html;
         }
 
-        return $html;
+        $headings = [
+            \__('Name', 'orchestra-library'),
+            \__('File', 'orchestra-library'),
+            \__('Delete', 'orchestra-library'),
+        ];
+        $html .= '<div class="orchestra-table-wrap"><table class="orchestra-table orchestra-table--stacked">'
+            . '<thead><tr>';
+        foreach ($headings as $heading) {
+            $html .= '<th scope="col">' . \esc_html($heading) . '</th>';
+        }
+        $html .= '</tr></thead><tbody id="orchestra-library-piece-file-rows">';
+        foreach ($files as $file) {
+            $download = '<div class="orchestra-actions">'
+                . Form::link(DownloadController::fileUrl($file->id), \__('Download', 'orchestra-library'), 'small')
+                . '<span class="orchestra-muted">' . \esc_html(\size_format($file->size) ?: '') . '</span></div>';
+            if (!$canManageFiles) {
+                $html .= $this->row($headings, \esc_html($file->displayName), $download, '');
+                continue;
+            }
+            /* translators: %s: name of a piece file */
+            $confirm = \__('Delete the file "%s"?', 'orchestra-library');
+            $html .= $this->row(
+                $headings,
+                self::displayNameInput(self::FIELD_PIECE_FILE_NAMES . '[' . $file->id . ']', $file->displayName, true),
+                $download,
+                self::immediateButton(
+                    self::FIELD_DELETE_PIECE_FILE,
+                    $file->id,
+                    \__('Delete', 'orchestra-library'),
+                    \sprintf($confirm, $file->displayName)
+                )
+            );
+        }
+        if ($canManageFiles) {
+            $html .= $this->newPieceFileRow($headings, '0');
+        }
+        $html .= '</tbody></table></div>';
+        if (!$canManageFiles) {
+            return $html;
+        }
+
+        return $html . '<template id="orchestra-library-new-piece-file">'
+            . $this->newPieceFileRow($headings, '__INDEX__') . '</template>'
+            . '<div class="orchestra-actions"><button type="button" class="orchestra-button orchestra-button--small"'
+            . ' data-orchestra-add-row="orchestra-library-new-piece-file"'
+            . ' data-orchestra-target="orchestra-library-piece-file-rows">'
+            . \esc_html__('+ Add file', 'orchestra-library') . '</button></div>';
+    }
+
+    /**
+     * @param list<string> $headings
+     */
+    private function newPieceFileRow(array $headings, string $key): string
+    {
+        return $this->row(
+            $headings,
+            self::displayNameInput(self::FIELD_NEW_PIECE_FILES . '[' . $key . ']', '', false),
+            self::fileInput(
+                self::FIELD_NEW_PIECE_FILE . '[' . $key . ']',
+                \__('Upload piece file', 'orchestra-library')
+            ),
+            '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
+                . \esc_html__('Remove', 'orchestra-library') . '</button>'
+        );
+    }
+
+    /**
+     * New rows may stay empty, so only the names of existing files are required in the browser.
+     */
+    private static function displayNameInput(string $name, string $value, bool $required): string
+    {
+        return '<input type="text" name="' . \esc_attr($name) . '" value="' . \esc_attr($value) . '" maxlength="'
+            . LibraryFile::MAX_DISPLAY_NAME_LENGTH . '"' . ($required ? ' required' : '')
+            . ' placeholder="' . \esc_attr__('e.g. Full score', 'orchestra-library') . '" aria-label="'
+            . \esc_attr__('Name of the piece file', 'orchestra-library') . '">';
     }
 
     /**

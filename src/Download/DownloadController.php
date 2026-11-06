@@ -77,7 +77,7 @@ final class DownloadController
             self::notFound();
         }
 
-        self::send($path, $file->mimeType, $file->originalName);
+        self::send($path, $file->mimeType, $file->downloadName());
     }
 
     /**

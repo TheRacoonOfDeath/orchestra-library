@@ -44,7 +44,7 @@ final class FileService
         }
     }
 
-    public function attachToPiece(int $pieceId, UploadedFile $upload, int $uploadedBy): LibraryFile
+    public function attachToPiece(int $pieceId, UploadedFile $upload, int $uploadedBy, string $displayName): LibraryFile
     {
         $storageName = $this->storage->store($upload);
 
@@ -57,6 +57,7 @@ final class FileService
                 $upload->mimeType,
                 $upload->size,
                 $uploadedBy,
+                $displayName,
             );
         } catch (Throwable $exception) {
             $this->storage->delete($storageName);
