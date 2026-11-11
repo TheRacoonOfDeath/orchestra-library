@@ -6,6 +6,8 @@
 #   E2E_DIR          working directory (default: a new temporary directory, deleted afterwards)
 #   E2E_PORT         port for the web server (default: 8765)
 #   E2E_CORE_ZIP     orchestra-core zip (default: the latest GitHub release); needs 0.4 or later
+#   E2E_WP_VERSION   WordPress version to test (default: the latest)
+#   GITHUB_TOKEN     optional, avoids the rate limit of the GitHub API
 #
 # Requirements: php 8.3+ with pdo_sqlite, zip and fileinfo; python3; curl; unzip; composer.
 
@@ -40,7 +42,7 @@ WP="$WORK_DIR/wp"
 # Fresh WordPress with SQLite
 rm -rf "$WP_PATH"
 mkdir -p "$WP_PATH"
-"$WP" core download --quiet
+"$WP" core download --quiet ${E2E_WP_VERSION:+--version="$E2E_WP_VERSION"}
 curl -sSLo "$WORK_DIR/sqlite.zip" https://downloads.wordpress.org/plugin/sqlite-database-integration.latest-stable.zip
 unzip -q -o "$WORK_DIR/sqlite.zip" -d "$WP_PATH/wp-content/plugins"
 sed -e "s#{SQLITE_IMPLEMENTATION_FOLDER_PATH}#$WP_PATH/wp-content/plugins/sqlite-database-integration#" \
@@ -60,7 +62,11 @@ CONFIG
 CORE_ZIP="${E2E_CORE_ZIP:-}"
 if [ -z "$CORE_ZIP" ]; then
     CORE_ZIP="$WORK_DIR/orchestra-core.zip"
-    CORE_URL=$(curl -sS https://api.github.com/repos/TheRacoonOfDeath/orchestra-core/releases/latest \
+    AUTH=()
+    if [ -n "${GITHUB_TOKEN:-}" ]; then
+        AUTH=(-H "Authorization: Bearer $GITHUB_TOKEN")
+    fi
+    CORE_URL=$(curl -sS ${AUTH[@]+"${AUTH[@]}"} https://api.github.com/repos/TheRacoonOfDeath/orchestra-core/releases/latest \
         | grep -o '"browser_download_url": *"[^"]*\.zip"' | head -n 1 | sed 's/.*"\(http[^"]*\)"/\1/')
     curl -sSLo "$CORE_ZIP" "$CORE_URL"
 fi
