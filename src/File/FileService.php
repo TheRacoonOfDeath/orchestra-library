@@ -19,7 +19,7 @@ final class FileService
     /**
      * Stores the sheet music of a part, replacing an existing file.
      */
-    public function attachToPart(Part $part, UploadedFile $upload, int $uploadedBy): LibraryFile
+    public function attachToPart(Part $part, UploadedFile $upload): LibraryFile
     {
         $storageName = $this->storage->store($upload);
 
@@ -36,7 +36,6 @@ final class FileService
                 $upload->originalName,
                 $upload->mimeType,
                 $upload->size,
-                $uploadedBy,
             );
         } catch (Throwable $exception) {
             $this->storage->delete($storageName);
@@ -44,7 +43,7 @@ final class FileService
         }
     }
 
-    public function attachToPiece(int $pieceId, UploadedFile $upload, int $uploadedBy, string $displayName): LibraryFile
+    public function attachToPiece(int $pieceId, UploadedFile $upload, string $displayName): LibraryFile
     {
         $storageName = $this->storage->store($upload);
 
@@ -56,7 +55,6 @@ final class FileService
                 $upload->originalName,
                 $upload->mimeType,
                 $upload->size,
-                $uploadedBy,
                 $displayName,
             );
         } catch (Throwable $exception) {

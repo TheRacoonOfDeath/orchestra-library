@@ -19,7 +19,6 @@ final class LibraryFile
         public readonly string $originalName,
         public readonly string $mimeType,
         public readonly int $size,
-        public readonly int $uploadedBy,
         public readonly string $uploadedAt,
         /** The name shown for a piece file, entered by the uploader; '' for sheet music of parts. */
         public readonly string $displayName = '',

@@ -65,8 +65,10 @@ Table `{prefix}orchestra_library_files` holds the metadata of part sheet music a
 | `display_name` | varchar(191) | name of a piece file, shown instead of the file name; `''` for sheet music (schema version 3) |
 | `mime_type` | varchar(100) | detected from the content |
 | `size` | bigint unsigned | bytes |
-| `uploaded_by` | bigint unsigned | user ID |
 | `uploaded_at` | datetime | UTC |
+
+Schema version 4 (0.10) dropped `uploaded_by`: nothing used who uploaded a file, so it is not
+stored (data minimisation).
 
 The files themselves are stored in a private directory, see [security.md](security.md).
 
@@ -95,6 +97,8 @@ without the extension.
   the other changes of the form are saved with them: a part (`orchestra_delete_part` = part ID),
   the sheet music of a part (`orchestra_remove_part_file` = part ID) and a piece file
   (`orchestra_delete_piece_file` = file ID).
+- **Deleting a user** keeps their pieces but removes them as author (`post_author` 0); WordPress
+  would otherwise keep the deleted user's ID, since pieces have no authors of their own.
 - **Deactivating** the plugin keeps all data.
 - **Deleting** the plugin (`uninstall.php`) removes the pieces, both tables, all stored files, the
   storage directory and the options, including the instruments.

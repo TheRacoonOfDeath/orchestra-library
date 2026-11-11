@@ -48,3 +48,4 @@ foreach ($orchestraLibraryPieceIds as $orchestraLibraryPieceId) {
 
 delete_option(FileStorage::OPTION_DIRECTORY_SUFFIX);
 delete_option(Instruments::OPTION);
+delete_option('external_updates-orchestra-library');

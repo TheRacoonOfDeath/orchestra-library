@@ -233,7 +233,7 @@ final class PieceFormHandler
         }
 
         try {
-            $this->fileService->attachToPart($part, $this->uploads->validate($upload), \get_current_user_id());
+            $this->fileService->attachToPart($part, $this->uploads->validate($upload));
         } catch (UploadRejected $exception) {
             return [$exception->getMessage()];
         }
@@ -306,7 +306,6 @@ final class PieceFormHandler
                 $this->fileService->attachToPiece(
                     $pieceId,
                     $this->uploads->validate($upload),
-                    \get_current_user_id(),
                     $name
                 );
             } catch (UploadRejected | RuntimeException $exception) {

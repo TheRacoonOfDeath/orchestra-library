@@ -34,6 +34,7 @@ use Orchestra\Library\Piece\PieceForm;
 use Orchestra\Library\Piece\PieceFormHandler;
 use Orchestra\Library\Piece\PiecePostType;
 use Orchestra\Library\Piece\PieceRepository;
+use Orchestra\Library\Privacy\Privacy;
 use wpdb;
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
@@ -49,6 +50,7 @@ final class Plugin
 
     private static ?self $instance = null;
 
+    private readonly wpdb $wpdb;
     private readonly Schema $schema;
     private readonly PieceRepository $pieces;
     private readonly PartRepository $parts;
@@ -61,6 +63,7 @@ final class Plugin
 
     private function __construct(private readonly string $pluginFile, wpdb $wpdb)
     {
+        $this->wpdb = $wpdb;
         $this->schema = new Schema($wpdb);
         $this->pieces = new PieceRepository();
         $this->parts = new PartRepository($wpdb, $this->schema);
@@ -147,6 +150,7 @@ final class Plugin
         \add_action('init', [PiecePostType::class, 'register']);
 
         (new DeletionGuard($this->partService))->register();
+        (new Privacy($this->wpdb))->register();
         (new DownloadController($this->files, $this->fileService, $this->parts, $this->pieces, new ZipBundler()))
             ->register();
         $form = new PieceForm($this->parts, $this->files, $this->instruments);

@@ -65,3 +65,15 @@ Downloads go through `wp-admin/admin-post.php?action=orchestra_library_download&
 - Responses are sent with `Cache-Control: private, no-store` and `X-Content-Type-Options: nosniff`
   as attachments.
 - Downloads change nothing and therefore use no nonce.
+
+## Privacy
+
+See also the [GDPR documentation of orchestra-core](https://github.com/TheRacoonOfDeath/orchestra-core/blob/main/docs/gdpr.md).
+
+- The library stores no personal data of members: downloads are not logged, and files do not keep
+  who uploaded them (since 0.10). The only reference to a person is the WordPress author of a
+  piece, which is removed when the account is deleted, so the library needs no personal data
+  exporter or eraser.
+- File names and display names are shown to every member and are part of the download. They
+  should not contain names of people.
+- **Settings → Privacy** suggests a short text for the privacy policy.

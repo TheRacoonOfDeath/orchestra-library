@@ -16,6 +16,7 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 - The library page `[orchestra_library]`: members search and download; conductors and librarians create and edit
   pieces, parts and files there as well (or in **Library** in wp-admin). Every part and every file
   of a piece has its own "Download" button; parts without a file say "No sheet music"
+- Privacy (GDPR): no download logs and no record of who uploaded a file; a suggested text for the privacy policy in **Settings → Privacy**
 - An API for the other Orchestra plugins
 
 ## Installation

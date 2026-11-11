@@ -127,7 +127,6 @@ final class FileRepository
         string $originalName,
         string $mimeType,
         int $size,
-        int $uploadedBy,
         string $displayName = '',
     ): LibraryFile {
         $uploadedAt = \current_time('mysql', true);
@@ -137,11 +136,10 @@ final class FileRepository
             'original_name' => $originalName,
             'mime_type' => $mimeType,
             'size' => $size,
-            'uploaded_by' => $uploadedBy,
             'uploaded_at' => $uploadedAt,
             'display_name' => $displayName,
         ];
-        $formats = ['%d', '%s', '%s', '%s', '%d', '%d', '%s', '%s'];
+        $formats = ['%d', '%s', '%s', '%s', '%d', '%s', '%s'];
         // $wpdb->insert() cannot write NULL with a format, so the column is left out for piece files.
         if ($partId !== null) {
             $data['part_id'] = $partId;
@@ -160,7 +158,6 @@ final class FileRepository
             $originalName,
             $mimeType,
             $size,
-            $uploadedBy,
             $uploadedAt,
             $displayName,
         );
@@ -219,7 +216,6 @@ final class FileRepository
             Row::string($row, 'original_name'),
             Row::string($row, 'mime_type'),
             Row::int($row, 'size'),
-            Row::int($row, 'uploaded_by'),
             Row::string($row, 'uploaded_at'),
             Row::string($row, 'display_name'),
         );

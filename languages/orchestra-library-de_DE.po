@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 11:25+0100\n"
+"POT-Creation-Date: 2026-11-11 13:16+0100\n"
 "PO-Revision-Date: 2026-10-16 00:00+0000\n"
 "Last-Translator: Julian Nickerl\n"
 "Language-Team: German\n"
@@ -168,7 +168,7 @@ msgstr "Du darfst die Notenbibliothek nicht sehen."
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:203
+#: src/Plugin.php:207
 msgid "Library"
 msgstr "Notenbibliothek"
 
@@ -502,21 +502,34 @@ msgstr "Keine Stücke gefunden."
 msgid "No pieces found in Trash."
 msgstr "Keine Stücke im Papierkorb gefunden."
 
-#: src/Plugin.php:186
+#: src/Plugin.php:190
 msgid "Sheet music and piece files"
 msgstr "Noten und Dateien zu Stücken"
 
-#: src/Plugin.php:206
+#: src/Plugin.php:210
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr "Stücke und Noten; Stücke anlegen und bearbeiten."
 
-#: src/Plugin.php:207
+#: src/Plugin.php:211
 msgid "Pieces and sheet music."
 msgstr "Stücke und Noten."
 
-#: src/Plugin.php:219
+#: src/Plugin.php:223
 msgid "Orchestra Library requires Orchestra Core 0.17 or later to be active."
 msgstr "Orchestra Library benötigt ein aktives Orchestra Core ab Version 0.17."
+
+#: src/Privacy/Privacy.php:58
+msgid ""
+"The sheet music library can only be opened by members after logging in. "
+"Downloads are not logged. The files cannot be reached through a direct link."
+msgstr ""
+"Die Notenbibliothek können nur Mitglieder nach dem Einloggen öffnen. "
+"Downloads werden nicht protokolliert. Die Dateien sind nicht über einen "
+"direkten Link erreichbar."
+
+#: src/Privacy/Privacy.php:64
+msgid "Orchestra Library"
+msgstr "Orchester-Notenbibliothek"
 
 #, php-format
 #~ msgid "%d voice"

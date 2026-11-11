@@ -29,6 +29,6 @@ final class LibraryFileTest extends TestCase
 
     private static function file(string $originalName, string $displayName): LibraryFile
     {
-        return new LibraryFile(1, 2, null, 'uuid', $originalName, 'application/pdf', 10, 3, '2026-11-06', $displayName);
+        return new LibraryFile(1, 2, null, 'uuid', $originalName, 'application/pdf', 10, '2026-11-06', $displayName);
     }
 }

@@ -12,7 +12,7 @@ use wpdb;
 final class Schema
 {
     /** Increase whenever a table definition changes; dbDelta() applies the difference. */
-    public const VERSION = 3;
+    public const VERSION = 4;
 
     public const OPTION_VERSION = 'orchestra_library_schema_version';
 
@@ -49,6 +49,10 @@ final class Schema
         }
 
         $this->migrate();
+        // Version 4 no longer stores who uploaded a file: nothing used it (data minimisation).
+        if ($installed > 0) {
+            $this->dropColumnIfExists($this->filesTable(), 'uploaded_by');
+        }
 
         return $installed;
     }
@@ -96,7 +100,6 @@ final class Schema
   display_name varchar(191) NOT NULL DEFAULT '',
   mime_type varchar(100) NOT NULL,
   size bigint(20) unsigned NOT NULL,
-  uploaded_by bigint(20) unsigned NOT NULL,
   uploaded_at datetime NOT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY part_id (part_id),
@@ -104,5 +107,13 @@ final class Schema
 ) {$charsetCollate};");
 
         \update_option(self::OPTION_VERSION, self::VERSION, true);
+    }
+
+    private function dropColumnIfExists(string $table, string $column): void
+    {
+        $exists = $this->wpdb->get_var($this->wpdb->prepare('SHOW COLUMNS FROM %i LIKE %s', $table, $column));
+        if ($exists !== null) {
+            $this->wpdb->query((string) $this->wpdb->prepare('ALTER TABLE %i DROP COLUMN %i', $table, $column));
+        }
     }
 }

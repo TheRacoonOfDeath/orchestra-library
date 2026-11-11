@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: orchestra-library\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 11:25+0100\n"
+"POT-Creation-Date: 2026-11-11 13:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -166,7 +166,7 @@ msgstr ""
 
 #: src/Frontend/LibraryShortcode.php:65 src/Frontend/LibraryShortcode.php:189
 #: src/Piece/PiecePostType.php:29 src/Piece/PiecePostType.php:31
-#: src/Plugin.php:203
+#: src/Plugin.php:207
 msgid "Library"
 msgstr ""
 
@@ -487,18 +487,28 @@ msgstr ""
 msgid "No pieces found in Trash."
 msgstr ""
 
-#: src/Plugin.php:186
+#: src/Plugin.php:190
 msgid "Sheet music and piece files"
 msgstr ""
 
-#: src/Plugin.php:206
+#: src/Plugin.php:210
 msgid "Pieces and sheet music; add and edit pieces."
 msgstr ""
 
-#: src/Plugin.php:207
+#: src/Plugin.php:211
 msgid "Pieces and sheet music."
 msgstr ""
 
-#: src/Plugin.php:219
+#: src/Plugin.php:223
 msgid "Orchestra Library requires Orchestra Core 0.17 or later to be active."
+msgstr ""
+
+#: src/Privacy/Privacy.php:58
+msgid ""
+"The sheet music library can only be opened by members after logging in. "
+"Downloads are not logged. The files cannot be reached through a direct link."
+msgstr ""
+
+#: src/Privacy/Privacy.php:64
+msgid "Orchestra Library"
 msgstr ""
