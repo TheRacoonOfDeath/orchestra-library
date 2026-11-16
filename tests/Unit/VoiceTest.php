@@ -24,6 +24,16 @@ final class VoiceTest extends TestCase
         $this->assertSame('Gitarre (tief)', (new Voice(self::GITARRE, false, 0, 'tief'))->label($gitarre));
     }
 
+    public function testShortLabelUsesTheShortNameIfThereIsOne(): void
+    {
+        $gitarre = new Instrument(self::GITARRE, 'Gitarre', 'Git');
+        $bass = new Instrument(1, 'Bass');
+
+        $this->assertSame('Solo Git 1 (tief)', (new Voice(self::GITARRE, true, 1, 'tief'))->label($gitarre, true));
+        $this->assertSame('Bass 2', (new Voice(1, false, 2, ''))->label($bass, true));
+        $this->assertSame('Percussion', (new Voice(0, false, 0, 'Percussion'))->label(null, true));
+    }
+
     public function testLabelWithoutInstrumentIsTheFreeText(): void
     {
         $this->assertSame('Percussion', (new Voice(0, false, 0, 'Percussion'))->label(null));

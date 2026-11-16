@@ -122,7 +122,7 @@ final class PieceForm
 
             $html .= $this->row(
                 $headings,
-                self::dragHandle((string) $part->id, $part->name),
+                self::moveButtons((string) $part->id, $part->name),
                 ...[
                     ...self::voiceCells($field, $part->voice(), $instruments, $part->name),
                     $fileCell,
@@ -140,7 +140,7 @@ final class PieceForm
             . ' data-orchestra-add-row="orchestra-library-new-part"'
             . ' data-orchestra-target="orchestra-library-part-rows">'
             . \esc_html__('+ Add part', 'orchestra-library') . '</button><span class="orchestra-muted">' . \esc_html__(
-                'Drag the parts by their handle to change the order. Every part has one sheet music file;'
+                'Change the order with the arrow buttons. Every part has one sheet music file;'
                     . ' uploading a new file replaces the old one. Missing instruments are added under'
                     . ' "Instruments" in the library.',
                 'orchestra-library'
@@ -185,8 +185,8 @@ final class PieceForm
         $canManageFiles = \current_user_can(Capabilities::SHEET_MUSIC_MANAGE);
 
         $html = '<p class="orchestra-muted">' . \esc_html__(
-            'Files for the whole piece, e.g. the full score or performance notes. The name is shown in the'
-                . ' library instead of the file name.',
+            'Files for the whole piece, e.g. the full score, performance notes, a MIDI file or a ZIP archive.'
+                . ' The name is shown in the library instead of the file name.',
             'orchestra-library'
         ) . '</p>';
         if ($files === [] && !$canManageFiles) {
@@ -252,7 +252,8 @@ final class PieceForm
             self::displayNameInput(self::FIELD_NEW_PIECE_FILES . '[' . $key . ']', '', false),
             self::fileInput(
                 self::FIELD_NEW_PIECE_FILE . '[' . $key . ']',
-                \__('Upload piece file', 'orchestra-library')
+                \__('Upload piece file', 'orchestra-library'),
+                true
             ),
             '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
                 . \esc_html__('Remove', 'orchestra-library') . '</button>'
@@ -295,7 +296,7 @@ final class PieceForm
 
         return $this->row(
             $headings,
-            self::dragHandle(self::NEW_PART_KEY_PREFIX . $key, $name),
+            self::moveButtons(self::NEW_PART_KEY_PREFIX . $key, $name),
             ...[
                 ...self::voiceCells($field, new Voice(0, false, 0, ''), $instruments, $name),
                 $canManageFiles
@@ -360,24 +361,17 @@ final class PieceForm
     }
 
     /**
-     * The handle for dragging a row; it also submits the row's place in the order.
+     * The buttons that move a row up or down; the hidden field submits the row's place in the order.
      */
-    private static function dragHandle(string $key, string $name): string
+    private static function moveButtons(string $key, string $name): string
     {
-        /* translators: %s: part name */
-        $move = \sprintf(\__('Move "%s"', 'orchestra-library'), $name);
-
-        return Form::hidden(self::FIELD_PART_ORDER . '[]', $key)
-            . '<button type="button" class="orchestra-drag-handle" data-orchestra-drag-handle aria-label="'
-            . \esc_attr($move) . '" title="'
-            . \esc_attr__('Drag to change the order, or use the arrow keys', 'orchestra-library') . '">'
-            . '<span aria-hidden="true">&#8801;</span></button>';
+        return Form::hidden(self::FIELD_PART_ORDER . '[]', $key) . Html::moveButtons($name);
     }
 
-    private static function fileInput(string $name, string $label): string
+    private static function fileInput(string $name, string $label, bool $pieceFile = false): string
     {
         return '<input type="file" name="' . \esc_attr($name) . '" accept="'
-            . \esc_attr(UploadValidator::acceptAttribute())
+            . \esc_attr(UploadValidator::acceptAttribute($pieceFile))
             . '" aria-label="' . \esc_attr($label) . '">';
     }
 }

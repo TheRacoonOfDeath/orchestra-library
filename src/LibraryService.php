@@ -78,6 +78,21 @@ final class LibraryService
         return $this->instruments->all();
     }
 
+    /**
+     * Since 0.11: the label of the part with the short name of its instrument, e.g.
+     * "Solo Git 1 (tief)", for places with little space. It is the name if the instrument has no
+     * short name, and for parts without an instrument.
+     */
+    public function shortName(Part $part): string
+    {
+        if ($part->instrumentId === 0) {
+            return $part->name;
+        }
+        $instrument = $this->instruments->find($part->instrumentId);
+
+        return $instrument === null ? $part->name : $part->voice()->label($instrument, true);
+    }
+
     public function sheetMusic(int $partId): ?LibraryFile
     {
         return $this->files->forPart($partId);

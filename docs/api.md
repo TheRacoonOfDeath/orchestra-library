@@ -21,7 +21,8 @@ Only call it from `plugins_loaded` or later, and only if orchestra-library is ac
 | `part(int $partId)` | `?Part`: `id`, `pieceId`, `name` (the label of the voice, e.g. "Solo Gitarre 1 (tief)"), `description`, `position`, and since 0.5 `instrumentId` (0 for none), `solo`, `number` (0 for none), `note` |
 | `parts(int $pieceId)` | `list<Part>` ordered by position |
 | `partsByIds(list<int> $partIds)` | `list<Part>` in the given order |
-| `instruments()` | `list<Instrument>` (`id`, `name`) sorted by name (since 0.5) |
+| `instruments()` | `list<Instrument>` (`id`, `name`, and since 0.11 `shortName`, `''` for none) sorted by name (since 0.5) |
+| `shortName(Part $part)` | since 0.11: the label with the short name of the instrument, e.g. "Solo Git 1 (tief)"; the name if the instrument has no short name or the part has no instrument |
 | `sheetMusic(int $partId)` | `?LibraryFile` of the part |
 | `pieceFiles(int $pieceId)` | `list<LibraryFile>` of the piece itself (score, notes, …) |
 | `downloadUrl(LibraryFile $file)` | URL that downloads the file |
@@ -66,3 +67,10 @@ deleting the piece.
 Extensions and MIME types that may be uploaded, in the format of WordPress's `upload_mimes`.
 Default: `['pdf' => 'application/pdf', 'jpg|jpeg' => 'image/jpeg', 'png' => 'image/png']`.
 The type is detected from the file content, so the extension and content must match.
+
+### `orchestra_library_allowed_piece_file_types`
+
+Since 0.11: the types allowed for the files of a whole piece. Default: the types of
+`orchestra_library_allowed_file_types`, plus `'zip' => 'application/zip'` and
+`'mid|midi' => 'audio/midi'`. Sheet music of a part stays limited to the first filter. WordPress
+must allow the types as well (`upload_mimes`), which it does for ZIP and MIDI by default.

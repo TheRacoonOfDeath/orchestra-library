@@ -50,6 +50,8 @@ orchestra-core's `docs/persistence.md`).
 - Only users with `orchestra_library_sheet_music_manage`, on the piece edit screen, with a valid nonce.
 - The type is detected from the content (`wp_check_filetype_and_ext()`); only allowed types are
   accepted (see `orchestra_library_allowed_file_types` in [api.md](api.md)).
+  Piece files may also be ZIP and MIDI (since 0.11); a ZIP is stored and downloaded as it is,
+  never unpacked on the server.
 - The original name is sanitized with `sanitize_file_name()`.
 
 ## Downloads

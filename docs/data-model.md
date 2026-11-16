@@ -45,11 +45,19 @@ instrument and keep their name as free text, so their label does not change.
 
 ## Instruments
 
-The option `orchestra_library_instruments` holds the instruments as `ID => name`. They are listed
-alphabetically. Until a conductor saves them, the defaults apply: Bass (1), Gitarre (2),
-Oktavgitarre (3) and Quartgitarre (4); they are data and not translated. A new instrument gets the
-highest ID plus one. Names are required, unique ignoring case and at most 60 characters. An
-instrument used by a voice cannot be deleted.
+The option `orchestra_library_instruments` holds the instruments as
+`ID => ['name' => …, 'short' => …]` (up to 0.10 `ID => name`). They are listed alphabetically.
+Until a conductor saves them, the defaults apply: Bass (1), Gitarre (2, short name Git),
+Oktavgitarre (3, Okt) and Quartgitarre (4, Quart); they are data and not translated. A new
+instrument gets the highest ID plus one. Names are required, unique ignoring case and at most 60
+characters. An instrument used by a voice cannot be deleted: its Delete button is disabled and
+says how many voices use it.
+
+The **short name** (since 0.11) is optional, at most 20 characters, and shown where space is
+short, e.g. in the seating (`LibraryService::shortName()`): "Solo Git 1 (tief)". Without one,
+the name is used. It is not stored in the labels of the voices, so changing it renames nothing.
+Instruments saved as `ID => name` get the default short name of the default instrument with the
+same name (e.g. Gitarre → Git) until they are saved again.
 
 ## Files
 
@@ -79,6 +87,10 @@ name is not uploaded, and a name without a file is reported. Piece files are lis
 name, and download as the display name with the original extension (`LibraryFile::downloadName()`,
 e.g. "Full score.pdf"). The migration to schema version 3 gave existing piece files their file name
 without the extension.
+
+Besides the types of sheet music, piece files may be ZIP archives and MIDI files (since 0.11, see
+[api.md](api.md)). They are downloaded as attachments like every file and never opened in the
+browser.
 
 ## Options
 

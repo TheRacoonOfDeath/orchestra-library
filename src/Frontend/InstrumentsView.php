@@ -26,11 +26,12 @@ final class InstrumentsView
     public function form(): string
     {
         $usage = $this->parts->countByInstrument();
-        $headings = [\__('Instrument', 'orchestra-library'), ''];
+        $headings = [\__('Instrument', 'orchestra-library'), \__('Short name', 'orchestra-library'), ''];
 
         $html = '<p class="orchestra-muted">' . \esc_html__(
             'Every voice of a piece is built from one of these instruments. They are listed alphabetically.'
-                . ' Renaming an instrument renames its voices in all pieces.',
+                . ' Renaming an instrument renames its voices in all pieces. The short name is shown where'
+                . ' space is short, e.g. in the seating; without one, the name is shown.',
             'orchestra-library'
         ) . '</p>'
             . Form::open(InstrumentsController::ACTION, InstrumentsController::ACTION, [], [
@@ -52,7 +53,12 @@ final class InstrumentsView
                     $instrument->name,
                     true
                 ),
-                ($usage[$instrument->id] ?? 0) === 0 ? self::deleteButton($instrument) : '',
+                self::shortNameInput(
+                    InstrumentsInput::FIELD_SHORT_NAMES . '[' . $instrument->id . ']',
+                    $instrument->shortName,
+                    $instrument->name
+                ),
+                self::deleteButton($instrument, $usage[$instrument->id] ?? 0),
             ]);
         }
 
@@ -61,7 +67,11 @@ final class InstrumentsView
             . '<div class="orchestra-actions"><button type="button" class="orchestra-button orchestra-button--small"'
             . ' data-orchestra-add-row="' . self::NEW_ROW_TEMPLATE . '" data-orchestra-target="' . self::ROWS . '">'
             . \esc_html__('+ Add instrument', 'orchestra-library') . '</button><span class="orchestra-muted">'
-            . \esc_html__('Instruments that are used by a voice cannot be deleted.', 'orchestra-library')
+            . \esc_html__(
+                'Instruments that are used by a voice cannot be deleted. Change these voices to another'
+                    . ' instrument first.',
+                'orchestra-library'
+            )
             . '</span></div>'
             . '<div class="orchestra-actions">' . Form::submit(\__('Save', 'orchestra-library'), 'primary') . '</div>'
             . '</form>';
@@ -77,13 +87,35 @@ final class InstrumentsView
                 . '[name]" maxlength="' . Instrument::NAME_MAX_LENGTH . '" placeholder="'
                 . \esc_attr__('New instrument, e.g. Mandoline', 'orchestra-library') . '" aria-label="'
                 . \esc_attr__('Name of the new instrument', 'orchestra-library') . '">',
+            '<input type="text" name="' . \esc_attr(InstrumentsInput::FIELD_NEW_INSTRUMENTS . '[' . $key . ']')
+                . '[short]" maxlength="' . Instrument::SHORT_NAME_MAX_LENGTH . '" placeholder="'
+                . \esc_attr__('e.g. Mand', 'orchestra-library') . '" aria-label="'
+                . \esc_attr__('Short name of the new instrument', 'orchestra-library') . '">',
             '<button type="button" class="orchestra-button orchestra-button--small" data-orchestra-remove-row>'
                 . \esc_html__('Remove', 'orchestra-library') . '</button>',
         ]);
     }
 
-    private static function deleteButton(Instrument $instrument): string
+    /**
+     * An instrument used by voices cannot be deleted: its button is disabled and says why.
+     */
+    private static function deleteButton(Instrument $instrument, int $used): string
     {
+        if ($used > 0) {
+            /* translators: %d: number of voices */
+            $reason = \sprintf(\_n(
+                'Used by %d voice',
+                'Used by %d voices',
+                $used,
+                'orchestra-library'
+            ), $used);
+
+            return '<button type="button" class="orchestra-button orchestra-button--small" disabled title="'
+                . \esc_attr__('Change these voices to another instrument first.', 'orchestra-library') . '">'
+                . \esc_html__('Delete', 'orchestra-library') . '</button>'
+                . '<span class="orchestra-muted">' . \esc_html($reason) . '</span>';
+        }
+
         /* translators: %s: instrument name */
         $confirm = \__('Delete the instrument "%s"?', 'orchestra-library');
 
@@ -91,6 +123,15 @@ final class InstrumentsView
             . ' name="' . InstrumentsInput::FIELD_DELETE . '" value="' . $instrument->id . '" formnovalidate'
             . ' data-orchestra-confirm="' . \esc_attr(\sprintf($confirm, $instrument->name)) . '">'
             . \esc_html__('Delete', 'orchestra-library') . '</button>';
+    }
+
+    private static function shortNameInput(string $name, string $value, string $instrumentName): string
+    {
+        /* translators: %s: instrument name */
+        $label = \sprintf(\__('Short name of %s', 'orchestra-library'), $instrumentName);
+
+        return '<input type="text" name="' . \esc_attr($name) . '" value="' . \esc_attr($value) . '" maxlength="'
+            . Instrument::SHORT_NAME_MAX_LENGTH . '" aria-label="' . \esc_attr($label) . '">';
     }
 
     private static function nameInput(string $name, string $value, bool $required): string

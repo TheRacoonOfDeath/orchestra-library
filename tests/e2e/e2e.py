@@ -214,6 +214,31 @@ save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Cari
                                  "orchestra_library_composer": "Klaus Badelt",
                                  f"orchestra_piece_file_names[{score_file}]": "Gesamtpartitur Märchen"})
 
+# 1b. Piece files may also be ZIP archives and MIDI files; sheet music may not
+recordings = os.path.join(WORK, "recordings.zip")
+with zipfile.ZipFile(recordings, "w") as archive:
+    archive.writestr("notes.txt", "Rehearsal notes")
+midi = os.path.join(WORK, "rehearsal.mid")
+open(midi, "wb").write(b"MThd\x00\x00\x00\x06\x00\x00\x00\x01\x00\x60MTrk\x00\x00\x00\x04\x00\xff\x2f\x00")
+page, _ = piece_form(conductor, piece_id)
+check('accept=".pdf,.jpg,.jpeg,.png,.zip,.mid,.midi"' in page and 'accept=".pdf,.jpg,.jpeg,.png"' in page,
+      "piece files accept ZIP and MIDI, sheet music does not")
+_, _, body = save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                              "orchestra_library_composer": "Klaus Badelt",
+                                              "orchestra_new_piece_files[0]": "Aufnahmen",
+                                              "orchestra_new_piece_files[1]": "Probe-MIDI"},
+                        files=[("orchestra_new_piece_file[0]", recordings), ("orchestra_new_piece_file[1]", midi)])
+uploaded = {name: original for name, original in piece_files(piece_id)}
+check(uploaded.get("Aufnahmen") == "recordings.zip" and uploaded.get("Probe-MIDI") == "rehearsal.mid",
+      f"ZIP and MIDI piece files are uploaded: {piece_files(piece_id)}")
+extra_ids = wp_eval(f'foreach (Orchestra\\Library\\Plugin::instance()->library()->pieceFiles({piece_id}) as $f)'
+                    ' { if ($f->displayName !== "Gesamtpartitur Märchen") echo $f->id, " "; }').split()
+for extra_id in extra_ids:
+    save_piece(conductor, piece_id, {"orchestra_library_title": "Pirates of the Caribbean",
+                                     "orchestra_library_composer": "Klaus Badelt",
+                                     "orchestra_delete_piece_file": extra_id})
+check(len(piece_files(piece_id)) == 1, "the ZIP and MIDI piece files are deleted again")
+
 # 1b. A librarian (a member who maintains the library) does the same
 librarian = Session("librarian")
 _, final, _ = (lambda r: (r[0], r[1].get("location", ""), r[2]))(librarian.request("/wp-admin/", follow=False))
@@ -270,8 +295,9 @@ parts = parts_of(piece_id)
 check([(p["name"], p["file"]) for p in parts] == [("Horn 2 in F", "horn2.pdf"), ("Horn 1", "horn1b.pdf")],
       f"rename, reorder, replace and delete applied: {parts}")
 page, _ = piece_form(conductor, piece_id)
-check("data-orchestra-sortable" in page and page.count("data-orchestra-drag-handle") >= 3
-      and '[position]' not in page, "parts are reordered by dragging, without order numbers")
+check("data-orchestra-sortable" in page and page.count('data-orchestra-move="up"') >= 3
+      and "data-orchestra-drag-handle" not in page and '[position]' not in page,
+      "parts are reordered with move buttons, without order numbers")
 check('name="orchestra_delete_part"' in page and "[delete]" not in page and "orchestra-default-submit" in page,
       "parts are deleted with a button, not a checkbox, and Enter still saves")
 check("[description]" not in page, "parts have no description field")
@@ -314,16 +340,30 @@ check("Duplicate entry" not in body.decode() and "could not be saved" not in bod
 
 _, _, body = conductor.request(LIBRARY)
 check("orchestra_library_view=instruments" in body.decode(), "the library links to the instruments for conductors")
+check('<details class="orchestra-disclosure"><summary>2 parts</summary>' in body.decode()
+      and '<details class="orchestra-disclosure"><summary>1 piece file</summary>' in body.decode()
+      and "<details class=\"orchestra-disclosure\" open" not in body.decode(),
+      "the parts and piece files of a card are collapsed")
 _, _, body = conductor.request(f"{LIBRARY}&orchestra_library_view=instruments")
 page = body.decode()
 instruments_form = {key: field(page, key) for key in ["action", "_wpnonce", "redirect_to"]}
 check(instruments_form["action"] == "orchestra_library_save_instruments", "conductors see the instruments form")
-check(page.count('name="orchestra_delete_instrument"') == 2, "only unused instruments have a delete button")
+check(page.count('name="orchestra_delete_instrument"') == 2 and page.count("Used by 1 voice") == 2,
+      "only unused instruments can be deleted; used ones say how many voices use them")
+check('name="orchestra_instrument_short_names[' + instrument["Gitarre"] + ']" value="Git"' in page,
+      "the default instruments have short names")
 names = {f"orchestra_instruments[{value}]": name for name, value in instrument.items()}
 _, _, body = conductor.request("/wp-admin/admin-post.php", data={
     **instruments_form, **names, f"orchestra_instruments[{instrument['Gitarre']}]": "Konzertgitarre",
-    "orchestra_new_instruments[0][name]": "Mandoline",
+    "orchestra_new_instruments[0][name]": "Mandoline", "orchestra_new_instruments[0][short]": "Mand",
+    f"orchestra_instrument_short_names[{instrument['Gitarre']}]": "KGit",
 })
+short_names = json.loads(wp_eval(
+    f'$l = Orchestra\\Library\\Plugin::instance()->library();'
+    f' echo json_encode([array_map(fn($i) => $i->shortName, $l->instruments()),'
+    f' array_map(fn($p) => $l->shortName($p), $l->parts({voices_id}))]);'))
+check(short_names == [["", "KGit", "Mand", "Okt", "Quart"], ["Bass 2", "Solo KGit 1 (tief)"]],
+      f"short names are saved and used for the short labels of voices: {short_names}")
 listed = json.loads(wp_eval('echo json_encode(array_map(fn($i) => $i->name,'
                             ' Orchestra\\Library\\Plugin::instance()->library()->instruments()));'))
 check("The instruments have been saved." in body.decode()

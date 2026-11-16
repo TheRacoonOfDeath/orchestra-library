@@ -305,7 +305,7 @@ final class PieceFormHandler
             try {
                 $this->fileService->attachToPiece(
                     $pieceId,
-                    $this->uploads->validate($upload),
+                    $this->uploads->validate($upload, pieceFile: true),
                     $name
                 );
             } catch (UploadRejected | RuntimeException $exception) {

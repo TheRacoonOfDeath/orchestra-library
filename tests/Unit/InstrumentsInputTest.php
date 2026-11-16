@@ -45,6 +45,36 @@ final class InstrumentsInputTest extends TestCase
         $this->assertSame(['The instrument "Gitarre" cannot be deleted: 4 voices use it.'], $used->errors);
     }
 
+    public function testKeepsShortNames(): void
+    {
+        $input = InstrumentsInput::fromForm(
+            [
+                InstrumentsInput::FIELD_SHORT_NAMES => [1 => '', 2 => ' Git '],
+                InstrumentsInput::FIELD_NEW_INSTRUMENTS => [['name' => 'Mandoline', 'short' => 'Mand']],
+            ],
+            $this->current(),
+            []
+        );
+
+        $this->assertSame([], $input->errors);
+        $this->assertEquals(
+            [new Instrument(1, 'Bass'), new Instrument(2, 'Gitarre', 'Git'), new Instrument(3, 'Mandoline', 'Mand')],
+            $input->instruments
+        );
+        $this->assertSame([], $input->renamed);
+    }
+
+    public function testRejectsLongShortNames(): void
+    {
+        $input = InstrumentsInput::fromForm(
+            [InstrumentsInput::FIELD_SHORT_NAMES => [1 => \str_repeat('b', Instrument::SHORT_NAME_MAX_LENGTH + 1)]],
+            $this->current(),
+            []
+        );
+
+        $this->assertCount(1, $input->errors);
+    }
+
     public function testRejectsEmptyAndDuplicateNames(): void
     {
         $input = InstrumentsInput::fromForm(

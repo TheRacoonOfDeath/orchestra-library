@@ -73,6 +73,34 @@ final class UploadValidatorTest extends TestCase
         $this->validator()->validate(['size' => 0] + $this->upload('Horn.pdf'));
     }
 
+    public function testAcceptsZipAndMidiOnlyAsPieceFiles(): void
+    {
+        $zip = new \ZipArchive();
+        $zip->open($this->pdf, \ZipArchive::OVERWRITE);
+        $zip->addFromString('notes.txt', 'Rehearsal notes');
+        $zip->close();
+
+        $file = $this->validator()->validate($this->upload('Recordings.zip'), pieceFile: true);
+        $this->assertSame('application/zip', $file->mimeType);
+
+        $this->expectException(UploadRejected::class);
+        $this->expectExceptionMessage('Allowed types: pdf, jpg, jpeg, png.');
+        $this->validator()->validate($this->upload('Recordings.zip'));
+    }
+
+    public function testAcceptsMidiPieceFiles(): void
+    {
+        // The header of a MIDI file with one track.
+        \file_put_contents(
+            $this->pdf,
+            "MThd\x00\x00\x00\x06\x00\x00\x00\x01\x00\x60MTrk\x00\x00\x00\x04\x00\xff\x2f\x00"
+        );
+
+        $file = $this->validator()->validate($this->upload('Rehearsal.mid'), pieceFile: true);
+
+        $this->assertSame('audio/midi', $file->mimeType);
+    }
+
     public function testExtractsNestedUploads(): void
     {
         $files = ['orchestra_part_file' => [
@@ -102,6 +130,7 @@ final class UploadValidatorTest extends TestCase
     public function testAcceptAttributeListsAllExtensions(): void
     {
         $this->assertSame('.pdf,.jpg,.jpeg,.png', UploadValidator::acceptAttribute());
+        $this->assertSame('.pdf,.jpg,.jpeg,.png,.zip,.mid,.midi', UploadValidator::acceptAttribute(true));
     }
 
     private function validator(): UploadValidator

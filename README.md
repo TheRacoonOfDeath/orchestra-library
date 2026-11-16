@@ -6,22 +6,25 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 ## Features
 
 - Pieces with composer, description and archived status (**Library** menu in wp-admin)
-- Parts per piece, each with exactly one sheet music file, ordered by dragging
+- Parts per piece, each with exactly one sheet music file, ordered with up and down buttons
 - Each part is a voice: an instrument, solo, a number and a free text, e.g. "Solo Gitarre 1 (tief)"
 - Conductors and librarians maintain the instruments (alphabetical list; Bass, Gitarre, Oktavgitarre and
-  Quartgitarre to start with) under **Instruments** on the library page or in wp-admin
-- Additional files for the whole piece, e.g. the full score, each with a name that is shown in the
-  library instead of the file name
+  Quartgitarre to start with) under **Instruments** on the library page or in wp-admin. Each
+  instrument can have a short name (Git, Okt, Quart to start with), shown where space is short,
+  e.g. in the seating. Instruments used by a voice cannot be deleted; the list says how many use them
+- Additional files for the whole piece, e.g. the full score, a MIDI file or a ZIP archive, each with
+  a name that is shown in the library instead of the file name
 - Private file storage and permission-checked downloads, including zip downloads of several parts
 - The library page `[orchestra_library]`: members search and download; conductors and librarians create and edit
   pieces, parts and files there as well (or in **Library** in wp-admin). Every part and every file
-  of a piece has its own "Download" button; parts without a file say "No sheet music"
+  of a piece has its own "Download" button; parts without a file say "No sheet music". The parts and
+  the files of a piece are collapsed in its card ("12 parts", "2 piece files") and open with a click
 - Privacy (GDPR): no download logs and no record of who uploaded a file; a suggested text for the privacy policy in **Settings → Privacy**
 - An API for the other Orchestra plugins
 
 ## Installation
 
-1. Install and activate orchestra-core 0.6 or later (earlier versions cannot add or drag parts).
+1. Install and activate orchestra-core 0.19 or later (earlier versions cannot reorder parts).
 2. Upload `orchestra-library-{VERSION}.zip` under **Plugins → Add New → Upload Plugin** and activate it.
 3. **On nginx**, protect the file storage, see [docs/security.md](docs/security.md).
 4. Create the Orchestra pages (**Create Orchestra pages** in wp-admin), or put `[orchestra_library]` on a page.

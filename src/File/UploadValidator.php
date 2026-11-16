@@ -20,6 +20,15 @@ final class UploadValidator
     ];
 
     /**
+     * Allowed in addition for the files of a whole piece (since 0.11): recordings and collections.
+     * Extend with the `orchestra_library_allowed_piece_file_types` filter.
+     */
+    public const EXTRA_PIECE_FILE_TYPES = [
+        'zip' => 'application/zip',
+        'mid|midi' => 'audio/midi',
+    ];
+
+    /**
      * @param \Closure(string $path): bool $isUploadedFile Defaults to PHP's is_uploaded_file()
      */
     public function __construct(private readonly ?\Closure $isUploadedFile = null)
@@ -69,9 +78,10 @@ final class UploadValidator
 
     /**
      * @param array<string, mixed> $upload A single `$_FILES` entry
+     * @param bool $pieceFile A file of the whole piece, which allows more types than sheet music
      * @throws UploadRejected
      */
-    public function validate(array $upload): UploadedFile
+    public function validate(array $upload, bool $pieceFile = false): UploadedFile
     {
         $name = \is_string($upload['name'] ?? null) ? $upload['name'] : '';
         $temporaryPath = \is_string($upload['tmp_name'] ?? null) ? $upload['tmp_name'] : '';
@@ -90,11 +100,12 @@ final class UploadValidator
             throw new UploadRejected(self::message(\__('"%s" is empty.', 'orchestra-library'), $name));
         }
 
-        $check = \wp_check_filetype_and_ext($temporaryPath, $name, self::allowedFileTypes());
+        $allowed = $pieceFile ? self::allowedPieceFileTypes() : self::allowedFileTypes();
+        $check = \wp_check_filetype_and_ext($temporaryPath, $name, $allowed);
         if (!\is_string($check['type']) || $check['type'] === '') {
             /* translators: 1: file name, 2: list of allowed file extensions */
             $message = \__('"%1$s" has a file type that is not allowed. Allowed types: %2$s.', 'orchestra-library');
-            throw new UploadRejected(\sprintf($message, $name, self::allowedExtensionsLabel()));
+            throw new UploadRejected(\sprintf($message, $name, self::extensionsLabel($allowed)));
         }
 
         $properName = \is_string($check['proper_filename']) && $check['proper_filename'] !== ''
@@ -109,9 +120,32 @@ final class UploadValidator
      */
     public static function allowedFileTypes(): array
     {
-        $types = \apply_filters('orchestra_library_allowed_file_types', self::DEFAULT_FILE_TYPES);
+        return self::filteredTypes('orchestra_library_allowed_file_types', self::DEFAULT_FILE_TYPES);
+    }
+
+    /**
+     * The types of sheet music, plus ZIP and MIDI.
+     *
+     * @return array<string, string>
+     */
+    public static function allowedPieceFileTypes(): array
+    {
+        return self::filteredTypes(
+            'orchestra_library_allowed_piece_file_types',
+            self::allowedFileTypes() + self::EXTRA_PIECE_FILE_TYPES
+        );
+    }
+
+    /**
+     * @param non-empty-string $filter
+     * @param array<string, string> $default
+     * @return array<string, string>
+     */
+    private static function filteredTypes(string $filter, array $default): array
+    {
+        $types = \apply_filters($filter, $default);
         if (!\is_array($types)) {
-            return self::DEFAULT_FILE_TYPES;
+            return $default;
         }
 
         $allowed = [];
@@ -127,16 +161,20 @@ final class UploadValidator
     /**
      * The value for the `accept` attribute of file inputs.
      */
-    public static function acceptAttribute(): string
+    public static function acceptAttribute(bool $pieceFile = false): string
     {
-        $extensions = \explode('|', \implode('|', \array_keys(self::allowedFileTypes())));
+        $types = $pieceFile ? self::allowedPieceFileTypes() : self::allowedFileTypes();
+        $extensions = \explode('|', \implode('|', \array_keys($types)));
 
         return \implode(',', \array_map(static fn (string $extension): string => '.' . $extension, $extensions));
     }
 
-    private static function allowedExtensionsLabel(): string
+    /**
+     * @param array<string, string> $types
+     */
+    private static function extensionsLabel(array $types): string
     {
-        return \str_replace('|', ', ', \implode(', ', \array_keys(self::allowedFileTypes())));
+        return \str_replace('|', ', ', \implode(', ', \array_keys($types)));
     }
 
     private static function errorMessage(string $name, int $error): string

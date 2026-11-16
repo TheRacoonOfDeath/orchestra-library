@@ -66,3 +66,18 @@ function _n(string $single, string $plural, int $number, string $domain = 'defau
 {
     return $number === 1 ? $single : $plural;
 }
+
+/** @var array<string, mixed> $GLOBALS['orchestra_test_options'] */
+$GLOBALS['orchestra_test_options'] = [];
+
+function get_option(string $option, mixed $defaultValue = false): mixed
+{
+    return $GLOBALS['orchestra_test_options'][$option] ?? $defaultValue;
+}
+
+function update_option(string $option, mixed $value, bool|null $autoload = null): bool
+{
+    $GLOBALS['orchestra_test_options'][$option] = $value;
+
+    return true;
+}

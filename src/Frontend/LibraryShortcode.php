@@ -139,9 +139,13 @@ final class LibraryShortcode
                 $html .= '<div class="orchestra-card__meta">' . \esc_html($piece->composer) . '</div>';
             }
 
+            // Parts and piece files are collapsed, so that the cards stay short.
             $parts = $partsByPiece[$piece->id] ?? [];
             if ($parts !== []) {
-                $html .= '<ul class="orchestra-list">';
+                /* translators: %d: number of parts */
+                $summary = \sprintf(\_n('%d part', '%d parts', \count($parts), 'orchestra-library'), \count($parts));
+                $html .= '<details class="orchestra-disclosure"><summary>' . \esc_html($summary) . '</summary>'
+                    . '<ul class="orchestra-list">';
                 foreach ($parts as $part) {
                     $file = $sheetMusic[$part->id] ?? null;
                     $download = '';
@@ -154,18 +158,22 @@ final class LibraryShortcode
                     }
                     $html .= '<li><span>' . \esc_html($part->name) . '</span>' . $download . '</li>';
                 }
-                $html .= '</ul>';
+                $html .= '</ul></details>';
             }
 
             // The files of the whole piece, listed like the parts.
-            if ($canDownload && ($pieceFiles[$piece->id] ?? []) !== []) {
-                $html .= '<p class="orchestra-muted">' . \esc_html__('Piece files', 'orchestra-library')
-                    . '</p><ul class="orchestra-list">';
-                foreach ($pieceFiles[$piece->id] as $file) {
+            $files = $pieceFiles[$piece->id] ?? [];
+            if ($canDownload && $files !== []) {
+                /* translators: %d: number of piece files */
+                $count = \count($files);
+                $summary = \sprintf(\_n('%d piece file', '%d piece files', $count, 'orchestra-library'), $count);
+                $html .= '<details class="orchestra-disclosure"><summary>' . \esc_html($summary) . '</summary>'
+                    . '<ul class="orchestra-list">';
+                foreach ($files as $file) {
                     $html .= '<li><span>' . \esc_html($file->displayName) . '</span>' . self::downloadButton($file)
                         . '</li>';
                 }
-                $html .= '</ul>';
+                $html .= '</ul></details>';
             }
             $html .= '</article>';
         }

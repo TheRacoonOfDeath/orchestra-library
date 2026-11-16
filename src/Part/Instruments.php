@@ -5,15 +5,20 @@ declare(strict_types=1);
 namespace Orchestra\Library\Part;
 
 /**
- * The instruments that voices are built from, stored in an option. Until the conductors change
- * them, the defaults apply.
+ * The instruments that voices are built from, stored in an option as `ID => ['name' => …,
+ * 'short' => …]`. Until the conductors change them, the defaults apply.
  */
 final class Instruments
 {
     public const OPTION = 'orchestra_library_instruments';
 
-    /** The instruments of a new installation. They are data, not translated. */
-    private const DEFAULTS = [1 => 'Bass', 2 => 'Gitarre', 3 => 'Oktavgitarre', 4 => 'Quartgitarre'];
+    /** The instruments of a new installation, as name and short name. They are data, not translated. */
+    private const DEFAULTS = [
+        1 => ['Bass', ''],
+        2 => ['Gitarre', 'Git'],
+        3 => ['Oktavgitarre', 'Okt'],
+        4 => ['Quartgitarre', 'Quart'],
+    ];
 
     /**
      * @return list<Instrument> sorted by name
@@ -23,17 +28,18 @@ final class Instruments
         $stored = \get_option(self::OPTION, null);
         if (!\is_array($stored)) {
             $instruments = [];
-            foreach (self::DEFAULTS as $id => $name) {
-                $instruments[] = new Instrument($id, $name);
+            foreach (self::DEFAULTS as $id => [$name, $shortName]) {
+                $instruments[] = new Instrument($id, $name, $shortName);
             }
 
             return self::sort($instruments);
         }
 
         $instruments = [];
-        foreach ($stored as $id => $name) {
-            if (\is_int($id) && $id > 0 && \is_string($name) && $name !== '') {
-                $instruments[] = new Instrument($id, $name);
+        foreach ($stored as $id => $value) {
+            $instrument = \is_int($id) && $id > 0 ? self::fromStored($id, $value) : null;
+            if ($instrument !== null) {
+                $instruments[] = $instrument;
             }
         }
 
@@ -58,9 +64,32 @@ final class Instruments
     {
         $stored = [];
         foreach ($instruments as $instrument) {
-            $stored[$instrument->id] = $instrument->name;
+            $stored[$instrument->id] = ['name' => $instrument->name, 'short' => $instrument->shortName];
         }
         \update_option(self::OPTION, $stored, false);
+    }
+
+    /**
+     * Up to 0.10 the option held only the names. Those instruments get the short name of the
+     * default instrument with the same name, if there is one.
+     */
+    private static function fromStored(int $id, mixed $value): ?Instrument
+    {
+        if (\is_string($value)) {
+            $shortName = '';
+            foreach (self::DEFAULTS as [$name, $defaultShortName]) {
+                if ($name === $value) {
+                    $shortName = $defaultShortName;
+                }
+            }
+
+            return $value === '' ? null : new Instrument($id, $value, $shortName);
+        }
+        if (!\is_array($value) || !\is_string($value['name'] ?? null) || $value['name'] === '') {
+            return null;
+        }
+
+        return new Instrument($id, $value['name'], \is_string($value['short'] ?? null) ? $value['short'] : '');
     }
 
     /**

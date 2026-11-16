@@ -10,6 +10,8 @@ namespace Orchestra\Library\Part;
 final class InstrumentsInput
 {
     public const FIELD_INSTRUMENTS = 'orchestra_instruments';
+    /** The short names of the existing instruments, by ID (since 0.11). */
+    public const FIELD_SHORT_NAMES = 'orchestra_instrument_short_names';
     public const FIELD_NEW_INSTRUMENTS = 'orchestra_new_instruments';
     /** The delete button of an instrument submits its ID in this field. */
     public const FIELD_DELETE = 'orchestra_delete_instrument';
@@ -34,6 +36,7 @@ final class InstrumentsInput
     public static function fromForm(array $input, array $current, array $usage): self
     {
         $submitted = \is_array($input[self::FIELD_INSTRUMENTS] ?? null) ? $input[self::FIELD_INSTRUMENTS] : [];
+        $shortNames = \is_array($input[self::FIELD_SHORT_NAMES] ?? null) ? $input[self::FIELD_SHORT_NAMES] : [];
         $delete = \is_string($input[self::FIELD_DELETE] ?? null) ? (int) $input[self::FIELD_DELETE] : 0;
 
         $instruments = [];
@@ -43,6 +46,9 @@ final class InstrumentsInput
             $name = \is_string($submitted[$instrument->id] ?? null)
                 ? PartNames::normalize($submitted[$instrument->id])
                 : $instrument->name;
+            $shortName = \is_string($shortNames[$instrument->id] ?? null)
+                ? PartNames::normalize($shortNames[$instrument->id])
+                : $instrument->shortName;
             if ($instrument->id === $delete) {
                 $used = $usage[$instrument->id] ?? 0;
                 if ($used === 0) {
@@ -60,7 +66,7 @@ final class InstrumentsInput
                     $used
                 );
             }
-            $changed = new Instrument($instrument->id, $name);
+            $changed = new Instrument($instrument->id, $name, $shortName);
             $instruments[] = $changed;
             if ($name !== $instrument->name) {
                 $renamed[] = $changed;
@@ -71,8 +77,13 @@ final class InstrumentsInput
         $newRows = \is_array($input[self::FIELD_NEW_INSTRUMENTS] ?? null) ? $input[self::FIELD_NEW_INSTRUMENTS] : [];
         foreach ($newRows as $row) {
             $name = \is_array($row) && \is_string($row['name'] ?? null) ? PartNames::normalize($row['name']) : '';
+            $shortName = \is_array($row) && \is_string($row['short'] ?? null)
+                ? PartNames::normalize($row['short'])
+                : '';
             if ($name !== '') {
-                $instruments[] = new Instrument($nextId++, $name);
+                $instruments[] = new Instrument($nextId++, $name, $shortName);
+            } elseif ($shortName !== '') {
+                $errors[] = \__('Instrument names must not be empty.', 'orchestra-library');
             }
         }
 
@@ -86,6 +97,11 @@ final class InstrumentsInput
                 /* translators: 1: instrument name, 2: maximum number of characters */
                 $message = \__('The instrument name "%1$s" is longer than %2$d characters.', 'orchestra-library');
                 $errors[] = \sprintf($message, $instrument->name, Instrument::NAME_MAX_LENGTH);
+            }
+            if (\mb_strlen($instrument->shortName) > Instrument::SHORT_NAME_MAX_LENGTH) {
+                /* translators: 1: short name of an instrument, 2: maximum number of characters */
+                $message = \__('The short name "%1$s" is longer than %2$d characters.', 'orchestra-library');
+                $errors[] = \sprintf($message, $instrument->shortName, Instrument::SHORT_NAME_MAX_LENGTH);
             }
             $key = \mb_strtolower($instrument->name);
             if (isset($seen[$key])) {

@@ -28,12 +28,14 @@ final class Voice
     /**
      * "Solo Gitarre 1 (tief)"; empty parts are left out. Without anything but the free text, the
      * label is the free text itself.
+     *
+     * @param bool $short With the short name of the instrument, e.g. "Solo Git 1 (tief)"
      */
-    public function label(?Instrument $instrument): string
+    public function label(?Instrument $instrument, bool $short = false): string
     {
         $head = \implode(' ', \array_filter([
             $this->solo ? self::SOLO : '',
-            $instrument->name ?? '',
+            ($short ? $instrument?->shortOrName() : $instrument?->name) ?? '',
             $this->number > 0 ? (string) $this->number : '',
         ], static fn (string $part): bool => $part !== ''));
 
