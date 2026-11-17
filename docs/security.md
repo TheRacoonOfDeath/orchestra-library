@@ -7,10 +7,10 @@ Registered with orchestra-core (see its `docs/capabilities.md`).
 | Capability | Granted to | Used for |
 |-----------|------------|----------|
 | `orchestra_library_piece_read` | members, conductors, organizers, librarians | library page |
-| `orchestra_library_piece_edit` | conductors, librarians | creating, editing and archiving pieces and parts; maintaining the instruments |
+| `orchestra_library_piece_edit` | conductors, organizers, librarians | creating, editing and archiving pieces and parts; maintaining the instruments |
 | `orchestra_library_piece_delete` | administrators | deleting pieces |
 | `orchestra_library_sheet_music_download` | members, conductors, organizers, librarians | downloads |
-| `orchestra_library_sheet_music_manage` | conductors, librarians | uploading, replacing and deleting files |
+| `orchestra_library_sheet_music_manage` | conductors, organizers, librarians | uploading, replacing and deleting files |
 
 The post type maps WordPress's post capabilities onto these, so `current_user_can('edit_post', $pieceId)`
 works as usual.
@@ -62,7 +62,7 @@ Downloads go through `wp-admin/admin-post.php?action=orchestra_library_download&
 - Logged-out users are redirected to the Orchestra login page (`LoginPageRedirect::requireLogin()`
   of orchestra-core) and come back to the download after logging in.
 - The user needs `orchestra_library_sheet_music_download` and must be allowed to read the piece,
-  so sheet music of draft pieces is only available to conductors and administrators.
+  so sheet music of draft pieces is only available to those who edit pieces.
 - Unknown files and missing permissions both answer 404, so file IDs cannot be probed.
 - Responses are sent with `Cache-Control: private, no-store` and `X-Content-Type-Options: nosniff`
   as attachments.

@@ -26,7 +26,7 @@ The plugin does not manage:
 
 ### Piece Management
 
-Conductors and librarians (orchestra-core 0.17) can create and maintain musical pieces.
+Conductors, organizers and librarians (orchestra-core 0.17) can create and maintain musical pieces.
 
 Examples:
 
@@ -46,7 +46,7 @@ as e.g. "Solo Gitarre 1 (tief)". Examples:
 - Solo Oktavgitarre
 - Bass (tief)
 
-The instruments come from a list that the conductors maintain ("Instruments" on the library page
+The instruments come from a list that conductors, organizers and librarians maintain ("Instruments" on the library page
 and in wp-admin). See [data-model.md](data-model.md#voices).
 
 ### Sheet Music Management

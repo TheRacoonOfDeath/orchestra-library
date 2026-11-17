@@ -33,12 +33,13 @@ final class Capabilities
     public static function register(CapabilityRegistry $registry): void
     {
         $everyone = [Roles::MEMBER, Roles::CONDUCTOR, Roles::ORGANIZER, Roles::LIBRARIAN];
+        $maintainers = [Roles::CONDUCTOR, Roles::ORGANIZER, Roles::LIBRARIAN];
 
         $registry
             ->register(self::PIECE_READ, $everyone)
-            ->register(self::PIECE_EDIT, [Roles::CONDUCTOR, Roles::LIBRARIAN])
+            ->register(self::PIECE_EDIT, $maintainers)
             ->register(self::PIECE_DELETE)
             ->register(self::SHEET_MUSIC_DOWNLOAD, $everyone)
-            ->register(self::SHEET_MUSIC_MANAGE, [Roles::CONDUCTOR, Roles::LIBRARIAN]);
+            ->register(self::SHEET_MUSIC_MANAGE, $maintainers);
     }
 }

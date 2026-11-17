@@ -22,13 +22,13 @@ final class CapabilitiesTest extends TestCase
             [Capabilities::PIECE_READ, Capabilities::SHEET_MUSIC_DOWNLOAD],
             $byRole[Roles::MEMBER]
         );
-        $this->assertSame($byRole[Roles::MEMBER], $byRole[Roles::ORGANIZER]);
         $this->assertSame([
             Capabilities::PIECE_EDIT,
             Capabilities::PIECE_READ,
             Capabilities::SHEET_MUSIC_DOWNLOAD,
             Capabilities::SHEET_MUSIC_MANAGE,
         ], $byRole[Roles::CONDUCTOR]);
+        $this->assertSame($byRole[Roles::CONDUCTOR], $byRole[Roles::ORGANIZER]);
         $this->assertSame($byRole[Roles::CONDUCTOR], $byRole[Roles::LIBRARIAN]);
         $this->assertContains(Capabilities::PIECE_DELETE, $byRole[Roles::ADMINISTRATOR]);
         $this->assertNotContains(Capabilities::PIECE_DELETE, $byRole[Roles::CONDUCTOR]);

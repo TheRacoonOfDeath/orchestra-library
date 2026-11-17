@@ -233,8 +233,7 @@ msgstr ""
 
 #: src/Frontend/LibraryShortcode.php:122
 msgid ""
-"The library is still empty. Pieces appear here once the conductors have "
-"added them."
+"The library is still empty. Pieces appear here once they have been added."
 msgstr ""
 
 #. translators: %d: number of parts

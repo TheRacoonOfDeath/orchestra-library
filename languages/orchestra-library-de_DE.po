@@ -230,11 +230,10 @@ msgstr "Keine Stücke gefunden. Versuche einen anderen Titel oder Komponisten."
 
 #: src/Frontend/LibraryShortcode.php:122
 msgid ""
-"The library is still empty. Pieces appear here once the conductors have "
-"added them."
+"The library is still empty. Pieces appear here once they have been added."
 msgstr ""
-"Die Notenbibliothek ist noch leer. Stücke erscheinen hier, sobald die "
-"Dirigenten sie angelegt haben."
+"Die Notenbibliothek ist noch leer. Stücke erscheinen hier, sobald sie "
+"angelegt wurden."
 
 #. translators: %d: number of parts
 #: src/Frontend/LibraryShortcode.php:146

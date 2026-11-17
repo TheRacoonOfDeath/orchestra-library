@@ -18,7 +18,7 @@ use Orchestra\Library\Piece\PieceForm;
 use Orchestra\Library\Piece\PieceRepository;
 
 /**
- * `[orchestra_library]`: search the library and download sheet music. Conductors also create and
+ * `[orchestra_library]`: search the library and download sheet music. Maintainers also create and
  * edit pieces, parts and files here (`?orchestra_piece=ID` or `new`) and maintain the instruments
  * (`?orchestra_library_view=instruments`).
  */
@@ -119,14 +119,14 @@ final class LibraryShortcode
             return $html . Html::empty($query !== ''
                 ? \__('No pieces found. Try another title or composer.', 'orchestra-library')
                 : \__(
-                    'The library is still empty. Pieces appear here once the conductors have added them.',
+                    'The library is still empty. Pieces appear here once they have been added.',
                     'orchestra-library'
                 ));
         }
 
         $html .= '<div class="orchestra-cards">';
         foreach ($pieces as $piece) {
-            // Conductors open the editor by clicking the title.
+            // Those who edit pieces open the editor by clicking the title.
             $title = \esc_html($piece->title);
             if ($canEdit && \current_user_can('edit_post', $piece->id)) {
                 $title = '<a href="' . \esc_url(\add_query_arg(self::PIECE_PARAMETER, $piece->id, $base)) . '">'
