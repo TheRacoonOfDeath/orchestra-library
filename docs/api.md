@@ -16,7 +16,7 @@ Only call it from `plugins_loaded` or later, and only if orchestra-library is ac
 
 | Method | Returns |
 |--------|---------|
-| `piece(int $pieceId)` | `?Piece`: `id`, `title`, `composer`, `description`, `archived`, `published` |
+| `piece(int $pieceId)` | `?Piece`: `id`, `title`, `composer`, `description`, `archived`, `published`, and since 0.13 `duration` (seconds, `null` if not known) |
 | `searchPieces(string $query = '', bool $includeArchived = false, int $limit = 100)` | `list<Piece>`: published pieces matching title, description or composer, ordered by title |
 | `part(int $partId)` | `?Part`: `id`, `pieceId`, `name` (the label of the voice, e.g. "Solo Gitarre 1 (tief)"), `description`, `position`, and since 0.5 `instrumentId` (0 for none), `solo`, `number` (0 for none), `note` |
 | `parts(int $pieceId)` | `list<Part>` ordered by position |
@@ -41,6 +41,9 @@ $zipUrl = $library->bundleDownloadUrl($assignedPartIds, $project->title);
 ```
 
 Archived pieces must not be added to new programs; check `$piece->archived`.
+
+Show durations with `Orchestra\Library\Piece\Duration::format(int $seconds)` (since 0.13): `4:05`,
+or `1:02:30` from one hour on, so that totals look like the durations of the library.
 
 ## Filters
 

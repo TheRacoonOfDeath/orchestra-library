@@ -13,6 +13,7 @@ use Orchestra\Library\File\FileRepository;
 use Orchestra\Library\File\LibraryFile;
 use Orchestra\Library\Part\Part;
 use Orchestra\Library\Part\PartRepository;
+use Orchestra\Library\Piece\Duration;
 use Orchestra\Library\Piece\Piece;
 use Orchestra\Library\Piece\PieceForm;
 use Orchestra\Library\Piece\PieceRepository;
@@ -135,8 +136,12 @@ final class LibraryShortcode
             $html .= '<article class="orchestra-card"><div class="orchestra-toolbar"><h3 class="orchestra-card__title">'
                 . $title . '</h3>'
                 . ($piece->archived ? Html::badge(\__('Archived', 'orchestra-library'), 'warning') : '') . '</div>';
-            if ($piece->composer !== '') {
-                $html .= '<div class="orchestra-card__meta">' . \esc_html($piece->composer) . '</div>';
+            $meta = \array_filter(
+                [$piece->composer, $piece->duration === null ? '' : Duration::format($piece->duration)],
+                static fn (string $value): bool => $value !== ''
+            );
+            if ($meta !== []) {
+                $html .= '<div class="orchestra-card__meta">' . \esc_html(\implode(' · ', $meta)) . '</div>';
             }
 
             // Parts and piece files are collapsed, so that the cards stay short.

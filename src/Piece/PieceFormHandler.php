@@ -17,10 +17,11 @@ use Orchestra\Library\Part\PartNames;
 use Orchestra\Library\Part\PartRepository;
 use Orchestra\Library\Part\PartService;
 use Orchestra\Library\Part\Voice;
+use InvalidArgumentException;
 use RuntimeException;
 
 /**
- * Saves the fields of {@see PieceForm}: composer, archived flag, parts with their sheet music, and
+ * Saves the fields of {@see PieceForm}: composer, duration, archived flag, parts with their sheet music, and
  * piece files. Used by the piece editor in wp-admin and by the editor on the library page.
  */
 final class PieceFormHandler
@@ -48,7 +49,24 @@ final class PieceFormHandler
         $this->pieces->setComposer($pieceId, \sanitize_text_field(self::string($input, PieceForm::FIELD_COMPOSER)));
         $this->pieces->setArchived($pieceId, !empty($input[PieceForm::FIELD_ARCHIVED]));
 
-        $errors = $this->saveParts($pieceId, $input, $uploads);
+        $errors = [];
+        try {
+            $this->pieces->setDuration($pieceId, Duration::fromMinutesAndSeconds(
+                self::string($input, PieceForm::FIELD_DURATION_MINUTES),
+                self::string($input, PieceForm::FIELD_DURATION_SECONDS),
+            ));
+        } catch (InvalidArgumentException) {
+            $errors[] = \sprintf(
+                /* translators: %d: maximum number of minutes */
+                \__(
+                    'The duration was not saved: enter whole minutes (at most %d) and seconds (0 to 59).',
+                    'orchestra-library'
+                ),
+                Duration::MAX_MINUTES
+            );
+        }
+
+        $errors = [...$errors, ...$this->saveParts($pieceId, $input, $uploads)];
         if (\current_user_can(Capabilities::SHEET_MUSIC_MANAGE)) {
             $errors = [...$errors, ...$this->savePieceFiles($pieceId, $input, $uploads)];
         }

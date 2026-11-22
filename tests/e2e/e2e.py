@@ -271,6 +271,33 @@ status, _, _ = save_piece(conductor, "new", {"orchestra_library_title": ""})
 check(int(wp_eval('echo count(get_posts(["post_type" => "orchestra_piece", "numberposts" => -1]));')) == 1,
       "a piece needs a title")
 
+# 1b. A piece has an optional duration in minutes and seconds
+def duration_data(minutes, seconds):
+    data = {"orchestra_library_title": "Pirates of the Caribbean", "orchestra_library_composer": "Klaus Badelt",
+            "orchestra_library_duration_minutes": minutes, "orchestra_library_duration_seconds": seconds,
+            "orchestra_part_order[]": [str(p["id"]) for p in parts]}
+    for p in parts:
+        data[f"orchestra_parts[{p['id']}][note]"] = p["name"]
+    return data
+
+
+def stored_duration():
+    return wp_eval(f'echo json_encode(Orchestra\\Library\\Plugin::instance()->library()->piece({piece_id})->duration);')
+
+
+save_piece(conductor, piece_id, duration_data("4", "5"))
+check(stored_duration() == "245", "duration stored in seconds")
+page, _ = piece_form(conductor, piece_id)
+check(field(page, "orchestra_library_duration_minutes") == "4" and field(page, "orchestra_library_duration_seconds") == "5",
+      "the editor shows the duration in minutes and seconds")
+_, _, body = conductor.request(LIBRARY)
+check("Klaus Badelt · 4:05" in body.decode(), "the card shows composer and duration")
+_, _, body = save_piece(conductor, piece_id, duration_data("4", "75"))
+check("The duration was not saved" in body.decode() and stored_duration() == "245",
+      "an invalid duration is reported and the old one kept")
+save_piece(conductor, piece_id, duration_data("", ""))
+check(stored_duration() == "null" and len(parts_of(piece_id)) == 3, "empty fields remove the duration")
+
 # 2. Duplicate names are rejected and nothing changes
 by_name = {p["name"]: p["id"] for p in parts}
 _, _, body = save_piece(conductor, piece_id, {

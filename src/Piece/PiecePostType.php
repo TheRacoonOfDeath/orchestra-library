@@ -8,13 +8,16 @@ use Orchestra\Library\Capabilities;
 
 /**
  * Pieces are stored as the private custom post type `orchestra_piece`:
- * title = piece title, content = description, meta = composer and archived flag.
+ * title = piece title, content = description, meta = composer, duration and archived flag.
  */
 final class PiecePostType
 {
     public const NAME = 'orchestra_piece';
 
     public const META_COMPOSER = 'orchestra_library_composer';
+
+    /** The duration in seconds; absent if not known. */
+    public const META_DURATION = 'orchestra_library_duration';
 
     /** Present (value "1") only while the piece is archived. */
     public const META_ARCHIVED = 'orchestra_library_archived';
@@ -68,6 +71,12 @@ final class PiecePostType
             'type' => 'string',
             'single' => true,
             'sanitize_callback' => 'sanitize_text_field',
+            'auth_callback' => static fn (): bool => \current_user_can(Capabilities::PIECE_EDIT),
+        ]);
+        \register_post_meta(self::NAME, self::META_DURATION, [
+            'type' => 'integer',
+            'single' => true,
+            'sanitize_callback' => 'absint',
             'auth_callback' => static fn (): bool => \current_user_can(Capabilities::PIECE_EDIT),
         ]);
     }

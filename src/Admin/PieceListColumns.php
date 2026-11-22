@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Orchestra\Library\Admin;
 
 use Orchestra\Library\Part\PartRepository;
+use Orchestra\Library\Piece\Duration;
 use Orchestra\Library\Piece\PiecePostType;
 use Orchestra\Library\Piece\PieceRepository;
 
 /**
- * Adds composer, number of parts and archived status to the piece list in wp-admin.
+ * Adds composer, duration, number of parts and archived status to the piece list in wp-admin.
  */
 final class PieceListColumns
 {
@@ -35,6 +36,7 @@ final class PieceListColumns
             $result[$key] = $label;
             if ($key === 'title') {
                 $result['orchestra_composer'] = \__('Composer', 'orchestra-library');
+                $result['orchestra_duration'] = \__('Duration', 'orchestra-library');
                 $result['orchestra_parts'] = \__('Parts', 'orchestra-library');
                 $result['orchestra_archived'] = \__('Archived', 'orchestra-library');
             }
@@ -51,6 +53,10 @@ final class PieceListColumns
         switch ($column) {
             case 'orchestra_composer':
                 echo \esc_html($this->pieces->find($pieceId)->composer ?? '');
+                break;
+            case 'orchestra_duration':
+                $duration = $this->pieces->find($pieceId)?->duration;
+                echo \esc_html($duration === null ? '' : Duration::format($duration));
                 break;
             case 'orchestra_parts':
                 echo \esc_html((string) $this->parts->countForPiece($pieceId));

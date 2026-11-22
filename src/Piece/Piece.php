@@ -13,6 +13,8 @@ final class Piece
         public readonly string $description,
         public readonly bool $archived,
         public readonly bool $published,
+        /** In seconds; null if not known. Since 0.13. */
+        public readonly ?int $duration = null,
     ) {
     }
 }

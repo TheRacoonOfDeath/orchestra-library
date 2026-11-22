@@ -27,6 +27,8 @@ final class PieceForm
 {
     public const FIELD_COMPOSER = 'orchestra_library_composer';
     public const FIELD_ARCHIVED = 'orchestra_library_archived';
+    public const FIELD_DURATION_MINUTES = 'orchestra_library_duration_minutes';
+    public const FIELD_DURATION_SECONDS = 'orchestra_library_duration_seconds';
     public const FIELD_PARTS = 'orchestra_parts';
     /** The delete button of a part submits the form with the part's ID in this field. */
     public const FIELD_DELETE_PART = 'orchestra_delete_part';
@@ -63,6 +65,7 @@ final class PieceForm
                 '<input type="text" id="orchestra-library-composer" name="' . self::FIELD_COMPOSER . '" value="'
                     . \esc_attr($piece->composer ?? '') . '">'
             )
+            . self::duration($piece?->duration)
             . '<label class="orchestra-checkbox"><input type="checkbox" name="' . self::FIELD_ARCHIVED . '" value="1"'
             . \checked($piece->archived ?? false, true, false) . '> <span>'
             . \esc_html__('Archived', 'orchestra-library')
@@ -70,6 +73,28 @@ final class PieceForm
                 'Archived pieces are hidden in the library and cannot be added to new projects.',
                 'orchestra-library'
             ) . '</p></div>';
+    }
+
+    private static function duration(?int $seconds): string
+    {
+        $minutes = $seconds === null ? '' : (string) \intdiv($seconds, 60);
+        $rest = $seconds === null ? '' : (string) ($seconds % 60);
+
+        return '<div class="orchestra-field"><span class="orchestra-field__label">'
+            . \esc_html__('Duration', 'orchestra-library') . '</span><div class="orchestra-actions">'
+            . '<input type="number" id="orchestra-library-duration-minutes" name="' . self::FIELD_DURATION_MINUTES
+            . '" value="' . \esc_attr($minutes) . '" min="0" max="' . Duration::MAX_MINUTES . '" step="1"'
+            . ' inputmode="numeric" style="width:6rem" aria-label="'
+            . \esc_attr__('Minutes', 'orchestra-library') . '">'
+            . '<label for="orchestra-library-duration-minutes">' . \esc_html__('min', 'orchestra-library') . '</label>'
+            . '<input type="number" id="orchestra-library-duration-seconds" name="' . self::FIELD_DURATION_SECONDS
+            . '" value="' . \esc_attr($rest) . '" min="0" max="59" step="1"'
+            . ' inputmode="numeric" style="width:6rem" aria-label="'
+            . \esc_attr__('Seconds', 'orchestra-library') . '">'
+            . '<label for="orchestra-library-duration-seconds">' . \esc_html__('sec', 'orchestra-library') . '</label>'
+            . '</div><span class="orchestra-field__hint">'
+            . \esc_html__('How long the piece takes. Leave empty if not known.', 'orchestra-library')
+            . '</span></div>';
     }
 
     public function parts(int $pieceId): string

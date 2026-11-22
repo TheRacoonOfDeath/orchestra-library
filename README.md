@@ -5,7 +5,7 @@ Part of the Orchestra plugin suite. Requires the [orchestra-core](https://github
 
 ## Features
 
-- Pieces with composer, description and archived status (**Library** menu in wp-admin)
+- Pieces with composer, duration (minutes and seconds), description and archived status (**Library** menu in wp-admin)
 - Parts per piece, each with exactly one sheet music file, ordered with up and down buttons
 - Each part is a voice: an instrument, solo, a number and a free text, e.g. "Solo Gitarre 1 (tief)"
 - Conductors, organizers and librarians maintain the instruments (alphabetical list; Bass, Gitarre, Oktavgitarre and

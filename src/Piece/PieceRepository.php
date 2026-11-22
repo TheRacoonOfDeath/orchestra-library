@@ -62,6 +62,18 @@ final class PieceRepository
         \update_post_meta($pieceId, PiecePostType::META_COMPOSER, \sanitize_text_field($composer));
     }
 
+    /**
+     * @param int|null $seconds null or 0 removes the duration
+     */
+    public function setDuration(int $pieceId, ?int $seconds): void
+    {
+        if ($seconds !== null && $seconds > 0) {
+            \update_post_meta($pieceId, PiecePostType::META_DURATION, $seconds);
+        } else {
+            \delete_post_meta($pieceId, PiecePostType::META_DURATION);
+        }
+    }
+
     public function setArchived(int $pieceId, bool $archived): void
     {
         if ($archived) {
@@ -93,6 +105,8 @@ final class PieceRepository
     private function hydrate(WP_Post $post): Piece
     {
         $composer = \get_post_meta($post->ID, PiecePostType::META_COMPOSER, true);
+        $duration = \get_post_meta($post->ID, PiecePostType::META_DURATION, true);
+        $duration = \is_numeric($duration) && (int) $duration > 0 ? (int) $duration : null;
 
         return new Piece(
             $post->ID,
@@ -101,6 +115,7 @@ final class PieceRepository
             $post->post_content,
             \get_post_meta($post->ID, PiecePostType::META_ARCHIVED, true) === '1',
             $post->post_status === 'publish',
+            $duration,
         );
     }
 }

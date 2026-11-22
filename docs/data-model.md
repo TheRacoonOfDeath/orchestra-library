@@ -12,6 +12,7 @@ Custom post type `orchestra_piece` (not public, no REST API, classic editor).
 | Title | `post_title` |
 | Description | `post_content` |
 | Composer | post meta `orchestra_library_composer` |
+| Duration (since 0.13) | post meta `orchestra_library_duration`: whole seconds, absent when not known; entered as minutes (at most 999) and seconds (0 to 59) |
 | Archived | post meta `orchestra_library_archived` = `1`, absent when not archived |
 | Status | `post_status`; only `publish` pieces are visible to members |
 
